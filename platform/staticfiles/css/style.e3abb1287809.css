@@ -678,6 +678,7 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
 .score-num{ font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--ink-0); }
 .score-track{ margin-top: 8px; height: 6px; border-radius: 4px; background: var(--line-0); overflow: hidden; }
 .score-fill{ height: 100%; width: 0%; border-radius: 4px; background: var(--ink-0); transition: width 1s var(--ease-out); }
+.score-row-desc{ margin-top: 8px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
 .checker-verdict{
   margin-top: 28px;
   padding: 18px 22px;

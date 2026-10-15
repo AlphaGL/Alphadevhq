@@ -434,6 +434,12 @@
       accessibility: "Accessibility",
       "best-practices": "Best Practices"
     };
+    var CATEGORY_DESCRIPTIONS = {
+      performance: "How fast your pages load and respond. Slow sites lose visitors and rank lower on Google.",
+      seo: "How easy it is for Google to read, index and rank your pages. Higher SEO means more people find you through search.",
+      accessibility: "How usable your site is for people with disabilities and screen readers. Also a factor in Google rankings.",
+      "best-practices": "Security, modern coding standards and avoiding common errors that make a site feel outdated or unsafe."
+    };
 
     function showState(state){
       loadingEl.hidden = state !== "loading";
@@ -468,7 +474,8 @@
         row.className = "score-row";
         row.innerHTML =
           '<div class="score-row-head"><span>' + CATEGORY_LABELS[key] + '</span><span class="score-num">0</span></div>' +
-          '<div class="score-track"><div class="score-fill"></div></div>';
+          '<div class="score-track"><div class="score-fill"></div></div>' +
+          '<p class="score-row-desc">' + CATEGORY_DESCRIPTIONS[key] + '</p>';
         scoresEl.appendChild(row);
 
         var numEl = row.querySelector(".score-num");
