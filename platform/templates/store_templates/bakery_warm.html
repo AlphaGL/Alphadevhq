@@ -1,0 +1,101 @@
+{% load static store_extras %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}</title>
+<meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/store-common.css' %}">
+<link rel="stylesheet" href="{% static 'css/store_templates/bakery_warm.css' %}">
+</head>
+<body>
+{% include "store_templates/_preview_watermark.html" %}
+{% include "store_templates/_nav.html" with cta_label="Order on WhatsApp" %}
+
+<header class="bw-hero" id="top">
+  <div class="container">
+    {% if store.logo %}<img src="{{ store.logo.url }}" alt="{{ store.business_name }}" class="bw-logo">{% endif %}
+    <span class="bw-eyebrow">{{ store.get_category_display }}</span>
+    <h1 class="bw-name">{{ store.business_name }}</h1>
+    {% if store.tagline %}<p class="bw-tagline">{{ store.tagline }}</p>{% endif %}
+    {% if store.whatsapp_url %}<a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="bw-cta">Order on WhatsApp</a>{% endif %}
+  </div>
+</header>
+
+{% for section in sections %}
+  {% if section.section_type == 'about' %}
+    <section class="bw-section bw-about" id="about">
+      <div class="container">
+        <div class="bw-section-head"><h2>{{ section.get_heading }}</h2></div>
+        <p>{{ section.body|default:store.bio|linebreaksbr }}</p>
+      </div>
+    </section>
+  {% elif section.section_type == 'services' %}
+    <section class="bw-section" id="services">
+      <div class="container" data-services-root>
+        <div class="bw-section-head"><h2>{{ section.get_heading }}</h2></div>
+        {% with tags=section.body|service_tags %}
+          {% if tags %}
+          <div class="store-pills">
+            <button type="button" class="store-pill is-active" data-tag="all">All</button>
+            {% for tag in tags %}<button type="button" class="store-pill" data-tag="{{ tag }}">{{ tag }}</button>{% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+        <div class="store-services-grid">
+          {% for item in section.body|parse_services %}
+            <div class="store-service-card" data-tag="{{ item.tag }}" data-search-text="{{ item.title }} {{ item.subtitle }}">
+              <div class="store-service-card-title">{{ item.title }}</div>
+              {% if item.subtitle %}<div class="store-service-card-sub">{{ item.subtitle }}</div>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <p class="store-empty-note">No matching services found.</p>
+      </div>
+    </section>
+  {% elif section.section_type == 'gallery' and images %}
+    <section class="bw-section" id="gallery">
+      <div class="container">
+        <div class="bw-section-head"><h2>{{ section.get_heading }}</h2></div>
+        <div class="bw-gallery">{% for image in images %}<img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">{% endfor %}</div>
+      </div>
+    </section>
+  {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours %}
+    <section class="bw-section bw-info">
+      <div class="container">
+        <div class="bw-section-head"><h2>{{ section.get_heading }}</h2></div>
+        <div class="bw-info-card">
+          {% if store.address %}<p>{{ store.address }}</p>{% endif %}
+          {% if store.hours %}<p>{{ store.hours }}</p>{% endif %}
+        </div>
+      </div>
+    </section>
+  {% elif section.section_type == 'socials' and social_links %}
+    <section class="bw-section bw-info">
+      <div class="container">
+        <div class="bw-section-head"><h2>{{ section.get_heading }}</h2></div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          {% for link in social_links %}<a href="{{ link.url }}" target="_blank" rel="noopener" class="bw-cta" style="background:#fff;color:var(--accent);border:1px solid var(--line);box-shadow:none">{{ link.get_platform_display }}</a>{% endfor %}
+        </div>
+      </div>
+    </section>
+  {% elif section.section_type == 'contact' %}
+    <section class="bw-section bw-contact" id="contact">
+      <div class="container">
+        <h2>{{ section.get_heading }}</h2>
+        <p>Fresh orders, straight to WhatsApp.</p>
+        {% if store.whatsapp_url %}<a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="bw-cta">Order on WhatsApp</a>{% endif %}
+      </div>
+    </section>
+  {% endif %}
+{% endfor %}
+
+<footer class="bw-footer">
+  <div class="container">Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a></div>
+</footer>
+<script src="{% static 'js/store-common.js' %}" defer></script>
+</body>
+</html>

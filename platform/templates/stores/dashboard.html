@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-wide">
+  <a href="{% url 'stores:store_list' %}" class="helptext">&larr; All my stores</a>
+  <h1 class="platform-title" style="margin-top:8px">{{ store.business_name }}</h1>
+
+  {% if subscription %}
+    {% if subscription.status == 'active' %}
+      <span class="status-pill is-active">Live</span>
+    {% elif subscription.status == 'past_due' %}
+      <span class="status-pill is-warning">Payment due — grace period</span>
+    {% elif subscription.status == 'trialing' %}
+      <span class="status-pill">Not published yet</span>
+    {% else %}
+      <span class="status-pill is-warning">{{ subscription.get_status_display }}</span>
+    {% endif %}
+  {% else %}
+    <span class="status-pill">Not published yet</span>
+  {% endif %}
+
+  {% if store.is_live %}
+    <p class="platform-sub" style="margin-top:10px">Your store is live at <a href="{{ store.get_public_url }}" target="_blank"><strong>alphadevhq.com{{ store.get_public_url }}</strong></a></p>
+  {% endif %}
+
+  {% if near_cap %}
+    <div class="banner is-warning">Your store is getting real traffic ({{ visits_today }} visits today) — consider upgrading to keep it fast.</div>
+  {% endif %}
+
+  {% if not subscription or subscription.status == 'trialing' %}
+    <div class="banner">Your store is built but not published. <a href="{% url 'billing:choose_plan' store.slug %}">Choose a plan to go live</a>.</div>
+  {% endif %}
+
+  <div class="contact-cta" style="margin-top:20px">
+    <a class="btn btn-primary" href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview your store</a>
+    {% if not store.is_live %}<a class="btn btn-ghost" href="{% url 'billing:choose_plan' store.slug %}">Publish for real</a>{% endif %}
+  </div>
+  <p class="helptext" style="margin-top:8px">This preview link expires in {{ preview_minutes }} minutes and shows a watermark. Revisit this page for a fresh one.</p>
+
+  <div class="dash-grid">
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">Visits today</div>
+      <div class="dash-stat-value">{{ visits_today }}</div>
+    </div>
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">Images used</div>
+      <div class="dash-stat-value">{{ store.image_count }}/{{ store.image_limit }}</div>
+    </div>
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">Plan</div>
+      <div class="dash-stat-value">{% if store.plan %}{{ store.plan.name }}{% else %}None{% endif %}</div>
+    </div>
+  </div>
+
+  <div class="platform-card glass" style="margin-top:28px">
+    <h3 style="font-family:var(--font-display);font-weight:650;font-size:17px">Edit your store</h3>
+    <div class="builder-steps" style="margin-top:16px">
+      <a href="{% url 'stores:builder_theme' store.slug %}">Theme</a>
+      <a href="{% url 'stores:builder_details' store.slug %}">Details</a>
+      <a href="{% url 'stores:builder_sections' store.slug %}">Sections</a>
+      <a href="{% url 'stores:builder_images' store.slug %}">Images</a>
+      <a href="{% url 'stores:builder_socials' store.slug %}">Socials</a>
+      {% if not store.is_live %}<a href="{% url 'billing:choose_plan' store.slug %}">Publish</a>{% endif %}
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:28px">
+    <a href="{% url 'stores:builder_new' %}" class="btn btn-ghost">+ Build another store</a>
+  </div>
+</div>
+{% endblock %}

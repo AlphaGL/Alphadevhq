@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Create your store — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-narrow">
+  <div class="platform-card glass">
+    <h1 class="platform-title">Create your store</h1>
+    <p class="platform-sub">Free to build. You only pay when you're ready to publish.</p>
+
+    <form method="post" novalidate style="margin-top:28px">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-block">Continue</button>
+    </form>
+
+    <p class="platform-sub" style="margin-top:22px">Already have a store? <a href="{% url 'accounts:login' %}">Log in</a></p>
+  </div>
+</div>
+{% endblock %}

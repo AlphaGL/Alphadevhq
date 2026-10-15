@@ -1,0 +1,66 @@
+{% load static %}<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Alpha Dev Stores{% endblock %}</title>
+<link rel="icon" type="image/png" href="{% static 'img/alpha-dev-mark.png' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;650;700&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/platform.css' %}">
+<script>
+(function(){
+  var stored = null;
+  try { stored = localStorage.getItem("alphadev-theme"); } catch(e){}
+  var theme = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  document.documentElement.setAttribute("data-theme", theme);
+})();
+</script>
+</head>
+<body class="is-ready">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+  <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="1.8"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="1.5" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22.5" y2="12"/><line x1="4.2" y1="4.2" x2="6" y2="6"/><line x1="18" y1="18" x2="19.8" y2="19.8"/><line x1="4.2" y1="19.8" x2="6" y2="18"/><line x1="18" y1="6" x2="19.8" y2="4.2"/></g></symbol>
+  <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20 14.2A8.5 8.5 0 1 1 9.8 4 6.7 6.7 0 0 0 20 14.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+</defs>
+</svg>
+
+<header class="platform-header">
+  <div class="container platform-header-inner">
+    <a href="{% url 'stores:home' %}" class="platform-brand">
+      <img src="{% static 'img/alpha-dev-mark.png' %}" alt="">
+      ALPHA DEV STORES
+    </a>
+    <nav class="platform-nav">
+      <a href="{% url 'stores:explore' %}">Explore</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'stores:store_list' %}">Dashboard</a>
+        <a href="{% url 'accounts:logout' %}">Log out</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Log in</a>
+        <a class="btn btn-primary btn-sm" href="{% url 'accounts:signup' %}">Get started</a>
+      {% endif %}
+      <button class="theme-toggle" onclick="var h=document.documentElement,t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);try{localStorage.setItem('alphadev-theme',t);}catch(e){}" aria-label="Toggle light and dark theme">
+        <svg class="icon-sun"><use href="#icon-sun"></use></svg>
+        <svg class="icon-moon"><use href="#icon-moon"></use></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="platform-main">
+  <div class="container">
+    {% if messages %}
+      <ul class="messages platform-narrow">
+        {% for message in messages %}<li class="{{ message.tags }}">{{ message }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+</body>
+</html>

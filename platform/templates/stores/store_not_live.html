@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Store not published{% endblock %}
+{% block content %}
+<div class="paused-page">
+  <div>
+    <h1 class="platform-title">This store isn't published yet</h1>
+    <p class="platform-sub">{{ store.business_name }} is still being set up. If this is your store, log in and choose a plan to go live.</p>
+    <a href="{% url 'accounts:login' %}" class="btn btn-primary" style="margin-top:20px">Log in</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Alpha Dev Stores — a site for your business in minutes{% endblock %}
+{% block content %}
+<div class="platform-narrow" style="text-align:center">
+  <span class="eyebrow"><span class="dot"></span>Alpha Dev Stores</span>
+  <h1 class="hero-title" style="margin-top:18px;font-size:clamp(32px,6vw,54px)">Is your business name taken?</h1>
+  <div><span class="badge-pill">Now onboarding our first 100 stores</span></div>
+  <p class="platform-sub" style="font-size:17px">Check if <strong>alphadevhq.com/your-business/</strong> is free, then build your page. Free to design, pay only when you publish.</p>
+
+  <div class="platform-card glass" style="margin-top:28px;text-align:left">
+    <div class="field" style="margin-bottom:12px">
+      <label for="slugCheckInput">Your business name</label>
+      <input type="text" id="slugCheckInput" placeholder="e.g. Crestcare Medical Centre">
+    </div>
+    <div id="slugCheckResult" style="font-size:14px;color:var(--ink-1);min-height:20px"></div>
+    <a href="{% url 'accounts:signup' %}" class="btn btn-primary btn-block" style="margin-top:14px">Claim this name</a>
+  </div>
+</div>
+
+<div class="platform-wide" style="margin-top:70px">
+  <h2 class="section-title" style="text-align:center">Pick a real template, not a blank page</h2>
+  <div class="template-grid" style="margin-top:28px">
+    {% for tpl in templates %}
+      <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card">
+        <div class="template-card-preview">
+          {% if tpl.preview_image %}
+            <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
+          {% else %}
+            <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
+          {% endif %}
+          <span class="template-card-preview-link">See full preview</span>
+        </div>
+        <div class="template-card-body">
+          <h4>{{ tpl.name }}</h4>
+          <p>{{ tpl.description }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="platform-wide" style="margin-top:70px">
+  <h2 class="section-title" style="text-align:center">Plans</h2>
+  <div class="plan-grid">
+    {% for plan in plans %}
+      <div class="platform-card glass">
+        <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">{{ plan.name }}</h3>
+        <p class="platform-sub">{{ plan.description }}</p>
+        <div class="plan-price">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
+        <ul class="plan-features">
+          {% for f in plan.features %}<li>&#8226; {{ f }}</li>{% endfor %}
+        </ul>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-ghost btn-block">Get started</a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="platform-narrow" style="margin-top:70px">
+  <div class="platform-card glass" style="text-align:center">
+    <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">Need more than a one-page store?</h3>
+    <p class="platform-sub">If your business needs more pages, bookings, a custom domain or a fully custom build, Alpha Dev also designs and builds full websites and apps from scratch.</p>
+    <a href="/#pricing" class="btn btn-ghost">See our web development packages</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var input = document.getElementById('slugCheckInput');
+  var result = document.getElementById('slugCheckResult');
+  var timer = null;
+  input.addEventListener('input', function(){
+    clearTimeout(timer);
+    var name = input.value.trim();
+    if (!name){ result.textContent = ''; return; }
+    timer = setTimeout(function(){
+      result.innerHTML = '<img class="checker-spinner" style="width:18px;height:18px;vertical-align:middle;margin-right:8px" src="/static/assets/img/alpha-dev-mark.png" alt="">Checking...';
+      fetch('{% url "stores:slug_check" %}?name=' + encodeURIComponent(name))
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (!data.slug){ result.textContent = ''; return; }
+          if (data.available){
+            result.innerHTML = '<strong style="color:var(--ink-0)">alphadevhq.com/' + data.slug + '/</strong> is available.';
+          } else {
+            result.innerHTML = 'alphadevhq.com/' + data.slug + '/ is already taken — try another name.';
+          }
+        });
+    }, 350);
+  });
+})();
+</script>
+{% endblock %}

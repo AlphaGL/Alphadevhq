@@ -1,0 +1,95 @@
+{% load static %}<!doctype html>
+<html lang="en" data-theme="dark" style="--store-accent:{{ store.theme_color }};--store-font:'{{ store.font_choice }}', var(--font-display)">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}</title>
+<meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;650;700&family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/platform.css' %}">
+<script>
+(function(){
+  var stored = null;
+  try { stored = localStorage.getItem("alphadev-theme"); } catch(e){}
+  var theme = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  document.documentElement.setAttribute("data-theme", theme);
+})();
+</script>
+</head>
+<body class="is-ready public-store">
+
+{% if is_preview %}
+  <div class="preview-banner">
+    Preview only &middot; not published &middot; this link expires in a couple of minutes
+    <a href="{% url 'stores:dashboard' store.slug %}">Back to dashboard</a>
+  </div>
+  <div class="preview-watermark" aria-hidden="true"></div>
+{% endif %}
+
+<div class="public-store-hero">
+  <div class="container">
+    {% if store.logo %}<img src="{{ store.logo.url }}" alt="{{ store.business_name }}" class="public-store-logo">{% endif %}
+    <h1 class="public-store-name">{{ store.business_name }}</h1>
+    {% if store.tagline %}<p class="public-store-tagline">{{ store.tagline }}</p>{% endif %}
+    {% if store.whatsapp_url %}
+      <a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:24px;background:var(--store-accent)">
+        Message us on WhatsApp
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+{% for section in sections %}
+  <section class="public-store-section">
+    <div class="container">
+      {% if section.section_type == 'about' %}
+        <h2>{{ section.get_heading }}</h2>
+        <p>{{ section.body|default:store.bio|linebreaksbr }}</p>
+
+      {% elif section.section_type == 'services' %}
+        <h2>{{ section.get_heading }}</h2>
+        <p>{{ section.body|linebreaksbr }}</p>
+
+      {% elif section.section_type == 'gallery' and images %}
+        <h2>{{ section.get_heading }}</h2>
+        <div class="public-store-gallery">
+          {% for image in images %}
+            <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
+          {% endfor %}
+        </div>
+
+      {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours %}
+        <h2>{{ section.get_heading }}</h2>
+        {% if store.address %}<p>{{ store.address }}</p>{% endif %}
+        {% if store.hours %}<p>{{ store.hours }}</p>{% endif %}
+
+      {% elif section.section_type == 'socials' and social_links %}
+        <h2>{{ section.get_heading }}</h2>
+        <div class="public-store-socials">
+          {% for link in social_links %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">{{ link.get_platform_display }}</a>
+          {% endfor %}
+        </div>
+
+      {% elif section.section_type == 'contact' %}
+        <h2>{{ section.get_heading }}</h2>
+        {% if store.whatsapp_url %}
+          <a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary" style="background:var(--store-accent)">Message us on WhatsApp</a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </section>
+{% endfor %}
+
+<footer class="public-store-footer">
+  <div class="container">
+    Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a>
+  </div>
+</footer>
+
+</body>
+</html>

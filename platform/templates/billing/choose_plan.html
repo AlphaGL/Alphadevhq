@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Choose a plan — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-wide">
+  <h1 class="platform-title" style="text-align:center">Go live</h1>
+  <p class="platform-sub" style="text-align:center">Your store is built. Pick a plan to publish it at <strong>alphadevhq.com{{ store.get_public_url }}</strong></p>
+
+  <div class="plan-grid">
+    {% for plan in plans %}
+      <div class="platform-card glass">
+        <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">{{ plan.name }}</h3>
+        <p class="platform-sub">{{ plan.description }}</p>
+        <div class="plan-price">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
+        <ul class="plan-features">
+          {% for f in plan.features %}<li>&#8226; {{ f }}</li>{% endfor %}
+        </ul>
+        <form method="post" action="{% url 'billing:checkout' store.slug plan.slug %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-block">Choose {{ plan.name }}</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

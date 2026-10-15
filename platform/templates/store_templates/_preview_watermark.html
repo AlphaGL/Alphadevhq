@@ -1,0 +1,14 @@
+{% if is_preview %}
+  <div class="preview-banner">
+    Preview only &middot; not published &middot; this link expires in a couple of minutes
+    <a href="{% url 'stores:dashboard' store.slug %}">Back to dashboard</a>
+  </div>
+  <div class="preview-watermark" aria-hidden="true"></div>
+{% elif is_template_demo %}
+  <div class="preview-banner">
+    This is a template demo, filled with example content &middot; not a real store
+    <a href="{{ use_template_url }}">Use this template</a>
+    <a href="{% url 'stores:store_landing' %}">All templates</a>
+  </div>
+  <div class="preview-watermark" aria-hidden="true"></div>
+{% endif %}

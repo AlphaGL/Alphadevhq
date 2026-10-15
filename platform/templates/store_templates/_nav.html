@@ -1,0 +1,26 @@
+<nav class="store-nav">
+  <div class="store-nav-inner">
+    <a href="#top" class="store-nav-brand">
+      {% if store.logo %}<img src="{{ store.logo.url }}" alt="">{% endif %}
+      {{ store.business_name }}
+    </a>
+    <button type="button" class="store-nav-toggle" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+    </button>
+    <div class="store-nav-links">
+      <a href="#top">Home</a>
+      {% for section in sections %}
+        {% if section.section_type == 'about' %}<a href="#about">About</a>
+        {% elif section.section_type == 'services' %}<a href="#services">Services</a>
+        {% elif section.section_type == 'gallery' and images %}<a href="#gallery">Gallery</a>
+        {% elif section.section_type == 'contact' %}<a href="#contact">Contact</a>
+        {% endif %}
+      {% endfor %}
+      <div class="store-nav-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+        <input type="text" class="store-search-input" placeholder="Search services">
+      </div>
+    </div>
+    {% if store.whatsapp_url %}<a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="store-nav-cta">{{ cta_label|default:"WhatsApp" }}</a>{% endif %}
+  </div>
+</nav>

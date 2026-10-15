@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Verify your number — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-narrow">
+  <div class="platform-card glass" style="text-align:center">
+    <h1 class="platform-title">Enter your code</h1>
+    <p class="platform-sub">We sent a 6-digit code to your WhatsApp number.</p>
+
+    {% if dev_code %}
+      <div class="dev-code-box">
+        No SMS provider connected yet, so here's your code directly: <strong>{{ dev_code }}</strong>
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate style="margin-top:24px">
+      {% csrf_token %}
+      <div class="field">
+        {{ form.code }}
+        {% if form.code.errors %}<ul class="errorlist">{% for e in form.code.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Verify</button>
+    </form>
+
+    <form method="post" action="{% url 'accounts:resend_otp' %}" style="margin-top:14px">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-ghost btn-sm">Resend code</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

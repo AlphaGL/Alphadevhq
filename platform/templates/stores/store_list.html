@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}My stores — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-wide">
+  <h1 class="platform-title">My stores</h1>
+  <p class="platform-sub">Each store is published and billed on its own — pick one to edit, or start another.</p>
+
+  <div class="store-list-grid" style="margin-top:28px">
+    {% for store in stores %}
+      <a href="{% url 'stores:dashboard' store.slug %}" class="platform-card glass store-list-card">
+        <h3 style="font-family:var(--font-display);font-weight:650;font-size:17px">{{ store.business_name }}</h3>
+        <p class="platform-sub" style="margin-top:4px">alphadevhq.com/{{ store.slug }}/</p>
+        {% if store.is_live %}
+          <span class="status-pill is-active">Live</span>
+        {% elif store.subscription_or_none.status == 'past_due' %}
+          <span class="status-pill is-warning">Payment due</span>
+        {% else %}
+          <span class="status-pill">Not published</span>
+        {% endif %}
+      </a>
+    {% endfor %}
+
+    <a href="{% url 'stores:builder_new' %}" class="platform-card store-list-card store-list-card-new">
+      <span>+ Build another store</span>
+    </a>
+  </div>
+</div>
+{% endblock %}

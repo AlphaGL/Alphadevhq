@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Pick a template — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-wide">
+  <div class="builder-steps">
+    <a href="{{ self_url }}" class="is-active">1. Template</a>
+    {% if store %}
+      <a href="{% url 'stores:builder_details' store.slug %}">2. Details</a>
+      <a href="{% url 'stores:builder_sections' store.slug %}">3. Sections</a>
+      <a href="{% url 'stores:builder_images' store.slug %}">4. Images</a>
+      <a href="{% url 'stores:builder_socials' store.slug %}">5. Socials</a>
+    {% else %}
+      <span class="is-disabled">2. Details</span>
+      <span class="is-disabled">3. Sections</span>
+      <span class="is-disabled">4. Images</span>
+      <span class="is-disabled">5. Socials</span>
+    {% endif %}
+  </div>
+
+  <div style="text-align:center;margin-bottom:28px">
+    <h1 class="platform-title">Pick a real template</h1>
+    <p class="platform-sub">A pre-designed page for your kind of business. You'll only edit the name, logo, text and photos after this.</p>
+  </div>
+
+  <div class="filter-row" style="justify-content:center;margin-bottom:28px">
+    <a href="{{ self_url }}" class="filter-btn{% if not selected_category %} is-active{% endif %}">All</a>
+    {% for value, label in categories %}
+      <a href="{{ self_url }}?category={{ value }}" class="filter-btn{% if selected_category == value %} is-active{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
+  <form method="post" id="templateForm">
+    {% csrf_token %}
+    <div class="template-grid">
+      {% for tpl in templates %}
+        <label class="template-card{% if selected_template_id == tpl.id %} is-checked{% endif %}">
+          <input type="radio" name="template" value="{{ tpl.id }}" {% if selected_template_id == tpl.id %}checked{% endif %} required>
+          <div class="template-card-preview">
+            {% if tpl.preview_image %}
+              <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
+            {% else %}
+              <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
+            {% endif %}
+            <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card-preview-link" onclick="event.stopPropagation()">See full preview</a>
+          </div>
+          <div class="template-card-body">
+            <h4>{{ tpl.name }}</h4>
+            <p>{{ tpl.description }}</p>
+          </div>
+        </label>
+      {% endfor %}
+    </div>
+    {% if form.template.errors %}<ul class="errorlist">{% for e in form.template.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+    <button type="submit" class="btn btn-primary btn-block" style="margin-top:28px">Continue</button>
+  </form>
+</div>
+
+<script>
+document.querySelectorAll('.template-card input').forEach(function(input){
+  input.addEventListener('change', function(){
+    document.querySelectorAll('.template-card').forEach(function(l){ l.classList.remove('is-checked'); });
+    input.closest('.template-card').classList.add('is-checked');
+  });
+});
+</script>
+{% endblock %}

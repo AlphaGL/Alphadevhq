@@ -1,0 +1,114 @@
+{% load static store_extras %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}</title>
+<meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/store-common.css' %}">
+<link rel="stylesheet" href="{% static 'css/store_templates/business_pro.css' %}">
+</head>
+<body>
+{% include "store_templates/_preview_watermark.html" %}
+{% include "store_templates/_nav.html" with cta_label="Message us on WhatsApp" %}
+
+<div class="bp-atmosphere" aria-hidden="true">
+  <div class="bp-orb bp-orb-1"></div>
+  <div class="bp-orb bp-orb-2"></div>
+  <div class="bp-orb bp-orb-3"></div>
+</div>
+
+<header class="bp-hero" id="top">
+  <div class="container">
+    <div class="bp-glass bp-hero-card">
+      <div>
+        <div class="bp-eyebrow">{{ store.get_category_display }}</div>
+        <h1 class="bp-name">{{ store.business_name }}</h1>
+        {% if store.tagline %}<p class="bp-tagline">{{ store.tagline }}</p>{% endif %}
+        {% if store.whatsapp_url %}<a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="bp-cta">Message us on WhatsApp</a>{% endif %}
+      </div>
+      <div class="bp-mark">
+        {% if store.logo %}<img src="{{ store.logo.url }}" alt="{{ store.business_name }}">{% else %}{{ store.business_name|slice:":1" }}{% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+
+{% if store.address or store.hours %}
+<div class="container">
+  <div class="bp-glass bp-strip">
+    {% if store.address %}<span><strong>Address&nbsp;</strong>{{ store.address }}</span>{% endif %}
+    {% if store.hours %}<span><strong>Hours&nbsp;</strong>{{ store.hours }}</span>{% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% for section in sections %}
+  {% if section.section_type == 'about' %}
+    <section class="bp-section bp-about" id="about">
+      <div class="container"><div class="bp-glass bp-section-card">
+        <div class="bp-section-head"><span class="bp-section-num">01</span><h2>{{ section.get_heading }}</h2></div>
+        <p>{{ section.body|default:store.bio|linebreaksbr }}</p>
+      </div></div>
+    </section>
+  {% elif section.section_type == 'services' %}
+    <section class="bp-section bp-services-list" id="services">
+      <div class="container"><div class="bp-glass bp-section-card" data-services-root>
+        <div class="bp-section-head"><span class="bp-section-num">02</span><h2>{{ section.get_heading }}</h2></div>
+        {% with tags=section.body|service_tags %}
+          {% if tags %}
+          <div class="store-pills">
+            <button type="button" class="store-pill is-active" data-tag="all">All</button>
+            {% for tag in tags %}<button type="button" class="store-pill" data-tag="{{ tag }}">{{ tag }}</button>{% endfor %}
+          </div>
+          {% endif %}
+        {% endwith %}
+        <div class="store-services-grid">
+          {% for item in section.body|parse_services %}
+            <div class="store-service-card" data-tag="{{ item.tag }}" data-search-text="{{ item.title }} {{ item.subtitle }}">
+              <div class="store-service-card-title">{{ item.title }}</div>
+              {% if item.subtitle %}<div class="store-service-card-sub">{{ item.subtitle }}</div>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <p class="store-empty-note">No matching services found.</p>
+      </div></div>
+    </section>
+  {% elif section.section_type == 'gallery' and images %}
+    <section class="bp-section" id="gallery">
+      <div class="container"><div class="bp-glass bp-section-card">
+        <div class="bp-section-head"><span class="bp-section-num">03</span><h2>{{ section.get_heading }}</h2></div>
+        <div class="bp-gallery">
+          {% for image in images %}<img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">{% endfor %}
+        </div>
+      </div></div>
+    </section>
+  {% elif section.section_type == 'socials' and social_links %}
+    <section class="bp-section">
+      <div class="container"><div class="bp-glass bp-section-card">
+        <div class="bp-section-head"><span class="bp-section-num">04</span><h2>{{ section.get_heading }}</h2></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          {% for link in social_links %}<a href="{{ link.url }}" target="_blank" rel="noopener" class="bp-cta" style="background:transparent;color:var(--accent);border:1px solid var(--line);box-shadow:none">{{ link.get_platform_display }}</a>{% endfor %}
+        </div>
+      </div></div>
+    </section>
+  {% elif section.section_type == 'contact' %}
+    <section class="bp-section bp-contact" id="contact">
+      <div class="container"><div class="bp-glass bp-section-card">
+        <div class="bp-section-head" style="justify-content:center"><h2>{{ section.get_heading }}</h2></div>
+        <p>We typically reply quickly on WhatsApp.</p>
+        {% if store.whatsapp_url %}<a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="bp-cta">Message us on WhatsApp</a>{% endif %}
+      </div></div>
+    </section>
+  {% endif %}
+{% endfor %}
+
+<footer class="bp-footer">
+  <div class="container">Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a></div>
+</footer>
+<script src="{% static 'js/store-common.js' %}" defer></script>
+</body>
+</html>

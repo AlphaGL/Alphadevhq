@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Preview expired — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="paused-page">
+  <div>
+    <h1 class="platform-title">This preview link has expired</h1>
+    <p class="platform-sub">Preview links only last a couple of minutes. Go back to your dashboard to generate a fresh one.</p>
+    <a href="{% url 'stores:store_list' %}" class="btn btn-primary" style="margin-top:20px">Back to dashboard</a>
+  </div>
+</div>
+{% endblock %}

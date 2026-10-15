@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Store paused{% endblock %}
+{% block content %}
+<div class="paused-page">
+  <div>
+    <h1 class="platform-title">This store is paused</h1>
+    <p class="platform-sub">{{ store.business_name }} isn't live right now. If this is your store, log in to renew and bring it back.</p>
+    <a href="{% url 'accounts:login' %}" class="btn btn-primary" style="margin-top:20px">Log in</a>
+  </div>
+</div>
+{% endblock %}
