@@ -13,6 +13,10 @@ class SignupForm(forms.Form):
     )
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirm password', widget=forms.PasswordInput)
+    accepted_terms = forms.BooleanField(
+        required=True,
+        error_messages={'required': 'You must accept the Terms & Conditions and Privacy Policy to continue.'},
+    )
 
     def clean_email(self):
         email = self.cleaned_data['email'].lower().strip()

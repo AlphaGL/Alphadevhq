@@ -10,6 +10,8 @@ urlpatterns = [
     path('explore/', views.explore, name='explore'),
     path('check-name/', views.slug_check, name='slug_check'),
     path('template-preview/<slug:slug>/', views.template_preview, name='template_preview'),
+    path('legal/privacy/', views.privacy_policy, name='privacy'),
+    path('legal/terms/', views.terms, name='terms'),
 
     path('dashboard/', views.store_list, name='store_list'),
     path('dashboard/<slug:store_slug>/', views.dashboard, name='dashboard'),

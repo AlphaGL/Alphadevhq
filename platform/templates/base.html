@@ -28,28 +28,44 @@
 </defs>
 </svg>
 
-<header class="platform-header">
-  <div class="container platform-header-inner">
-    <a href="{% url 'stores:home' %}" class="platform-brand">
-      <img src="{% static 'img/alpha-dev-mark.png' %}" alt="">
+<header class="nav">
+  <div class="container nav-inner glass">
+    <a href="{% url 'stores:home' %}" class="nav-brand" aria-label="Alpha Dev home">
+      <img src="{% static 'img/alpha-dev-mark.png' %}" alt="" width="28" height="28">
       ALPHA DEV STORES
     </a>
-    <nav class="platform-nav">
+    <nav class="nav-links" aria-label="Primary">
+      <a href="{% url 'stores:home' %}">Alpha Dev</a>
       <a href="{% url 'stores:explore' %}">Explore</a>
-      {% if user.is_authenticated %}
-        <a href="{% url 'stores:store_list' %}">Dashboard</a>
-        <a href="{% url 'accounts:logout' %}">Log out</a>
-      {% else %}
-        <a href="{% url 'accounts:login' %}">Log in</a>
-        <a class="btn btn-primary btn-sm" href="{% url 'accounts:signup' %}">Get started</a>
-      {% endif %}
-      <button class="theme-toggle" onclick="var h=document.documentElement,t=h.getAttribute('data-theme')==='dark'?'light':'dark';h.setAttribute('data-theme',t);try{localStorage.setItem('alphadev-theme',t);}catch(e){}" aria-label="Toggle light and dark theme">
+      {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">Dashboard</a>{% endif %}
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle light and dark theme">
         <svg class="icon-sun"><use href="#icon-sun"></use></svg>
         <svg class="icon-moon"><use href="#icon-moon"></use></svg>
       </button>
-    </nav>
+      {% if user.is_authenticated %}
+        <a class="btn btn-ghost btn-sm hide-mobile" href="{% url 'accounts:logout' %}">Log out</a>
+      {% else %}
+        <a class="btn btn-ghost btn-sm hide-mobile" href="{% url 'accounts:login' %}">Log in</a>
+        <a class="btn btn-primary btn-sm hide-mobile" href="{% url 'accounts:signup' %}">Get started</a>
+      {% endif %}
+      <button class="menu-toggle" aria-label="Open menu"><span></span><span></span></button>
+    </div>
   </div>
 </header>
+
+<div class="mobile-menu">
+  <a href="{% url 'stores:home' %}">Alpha Dev</a>
+  <a href="{% url 'stores:explore' %}">Explore</a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'stores:store_list' %}">Dashboard</a>
+    <a href="{% url 'accounts:logout' %}">Log out</a>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">Log in</a>
+    <a class="btn btn-primary" href="{% url 'accounts:signup' %}">Get started</a>
+  {% endif %}
+</div>
 
 <main class="platform-main">
   <div class="container">
@@ -62,5 +78,16 @@
   </div>
 </main>
 
+<footer class="platform-footer">
+  <div class="container platform-footer-inner">
+    <span>&copy; <span data-year></span> Alpha Dev. All rights reserved.</span>
+    <span class="platform-footer-links">
+      <a href="{% url 'stores:terms' %}">Terms &amp; Conditions</a>
+      <a href="{% url 'stores:privacy' %}">Privacy Policy</a>
+    </span>
+  </div>
+</footer>
+
+<script src="{% static 'assets/js/main.js' %}"></script>
 </body>
 </html>

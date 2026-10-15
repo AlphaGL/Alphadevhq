@@ -9,14 +9,25 @@
     <form method="post" novalidate style="margin-top:28px">
       {% csrf_token %}
       {% for field in form %}
-        <div class="field">
-          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {{ field }}
-          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
-          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-        </div>
+        {% if field.name != 'accepted_terms' %}
+          <div class="field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+            {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        {% endif %}
       {% endfor %}
-      <button type="submit" class="btn btn-primary btn-block">Continue</button>
+
+      <div class="field field-checkbox">
+        <label class="checkbox-label" for="{{ form.accepted_terms.id_for_label }}">
+          {{ form.accepted_terms }}
+          <span>I agree to the <a href="{% url 'stores:terms' %}" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="{% url 'stores:privacy' %}" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+        </label>
+        {% if form.accepted_terms.errors %}<ul class="errorlist">{% for e in form.accepted_terms.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px">Continue</button>
     </form>
 
     <p class="platform-sub" style="margin-top:22px">Already have a store? <a href="{% url 'accounts:login' %}">Log in</a></p>

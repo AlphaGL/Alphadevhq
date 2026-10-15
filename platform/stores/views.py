@@ -27,6 +27,14 @@ def agency_home(request):
     return render(request, 'stores/agency_home.html')
 
 
+def privacy_policy(request):
+    return render(request, 'stores/privacy_policy.html')
+
+
+def terms(request):
+    return render(request, 'stores/terms.html')
+
+
 def store_landing(request):
     """Landing page for the Alpha Dev Stores product, reached from a CTA
     on the agency homepage. Leads with the slug-availability hook."""

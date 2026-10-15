@@ -199,7 +199,11 @@ html[data-theme="light"] .atmosphere .orb{
   align-items: center;
   justify-content: center;
   background: var(--bg-0);
+  pointer-events: none;
   transition: opacity .7s var(--ease-soft), visibility .7s;
+  /* Guaranteed fallback: hides itself even if JS never adds body.is-ready
+     (e.g. a tab backgrounded mid-load throttles its timers on mobile). */
+  animation: loader-dismiss .01s linear 1.6s forwards;
 }
 .loader img{
   width: 64px;
@@ -214,6 +218,7 @@ body.is-ready .loader{ opacity: 0; visibility: hidden; }
   60%{ opacity: 1; transform: scale(1.05); }
   100%{ opacity: 1; transform: scale(1); }
 }
+@keyframes loader-dismiss{ to{ opacity: 0; visibility: hidden; } }
 
 /* ---------- Cursor ---------- */
 .cursor-dot, .cursor-ring{
@@ -433,13 +438,12 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
   letter-spacing: -.02em;
 }
 .hero-title .line{ display: block; overflow: hidden; }
+@keyframes hero-rise{ from{ transform: translateY(110%); } to{ transform: translateY(0); } }
 .hero-title .line span{
   display: inline-block;
-  transform: translateY(110%);
-  transition: transform 1s var(--ease-out);
-  transition-delay: calc(var(--i, 0) * 90ms + 200ms);
+  animation: hero-rise 1s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 200ms);
 }
-body.is-ready .hero-title .line span{ transform: translateY(0); }
 .hero-title em{
   font-style: normal;
   position: relative;
@@ -452,17 +456,16 @@ body.is-ready .hero-title .line span{ transform: translateY(0); }
 }
 @keyframes sheen{ to{ background-position: -200% center; } }
 
+@keyframes hero-fade-up{ from{ opacity: 0; transform: translateY(16px); } to{ opacity: 1; transform: translateY(0); } }
+
 .hero-sub{
   max-width: 600px;
   margin: 28px auto 0;
   font-size: 18px;
   line-height: 1.7;
   color: var(--ink-1);
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity .9s var(--ease-out) .7s, transform .9s var(--ease-out) .7s;
+  animation: hero-fade-up .9s var(--ease-out) .7s both;
 }
-body.is-ready .hero-sub{ opacity: 1; transform: translateY(0); }
 
 .hero-cta{
   display: flex;
@@ -471,11 +474,8 @@ body.is-ready .hero-sub{ opacity: 1; transform: translateY(0); }
   gap: 14px;
   margin-top: 40px;
   flex-wrap: wrap;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity .9s var(--ease-out) .85s, transform .9s var(--ease-out) .85s;
+  animation: hero-fade-up .9s var(--ease-out) .85s both;
 }
-body.is-ready .hero-cta{ opacity: 1; transform: translateY(0); }
 
 .hero-stats{
   margin-top: 88px;
@@ -486,11 +486,8 @@ body.is-ready .hero-cta{ opacity: 1; transform: translateY(0); }
   border: 1px solid var(--line-1);
   border-radius: var(--radius-md);
   overflow: hidden;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity .9s var(--ease-out) 1s, transform .9s var(--ease-out) 1s;
+  animation: hero-fade-up .9s var(--ease-out) 1s both;
 }
-body.is-ready .hero-stats{ opacity: 1; transform: translateY(0); }
 .stat{
   background: var(--glass-fill);
   padding: 28px 16px;
@@ -1175,4 +1172,11 @@ body.lightbox-open{ overflow: hidden; }
   .section{ padding: 88px 0; }
   .hero{ padding-top: calc(var(--nav-h) + 40px); min-height: auto; }
   .contact-panel{ gap: 36px; }
+  /* A long button label (e.g. "Check if your business name is free")
+     otherwise forces white-space:nowrap wide enough to push its whole
+     flex/grid container past the viewport, clipping everything beside it. */
+  .btn{ white-space: normal; text-align: center; }
+  .contact-cta, .addon-head .btn{ width: 100%; }
+  .contact-cta{ flex-direction: column; align-items: stretch; }
+  .contact-cta .btn{ justify-content: center; }
 }
