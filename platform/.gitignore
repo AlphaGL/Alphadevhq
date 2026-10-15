@@ -13,7 +13,11 @@ venv/
 # Django
 db.sqlite3
 media/
-staticfiles/
+
+# staticfiles/ is intentionally committed, not ignored — Vercel's build
+# does not reliably run `collectstatic`, so the pre-built output is what
+# actually gets served at /static/. Regenerate and commit it after any
+# change to CSS/JS/images under static/.
 
 # Vercel
 .vercel/
