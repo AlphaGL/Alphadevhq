@@ -108,6 +108,14 @@
       });
     }, { threshold: 0.14, rootMargin: "0px 0px -60px 0px" });
     targets.forEach(function(t){ io.observe(t); });
+
+    // Safety net: a section already in view when the observer attaches can
+    // be missed on some mobile browsers (timing/throttling quirks), which
+    // leaves it stuck at opacity:0 forever. Force-reveal anything still
+    // hidden after a few seconds regardless.
+    setTimeout(function(){
+      targets.forEach(function(t){ t.classList.add("is-visible"); });
+    }, 2500);
   });
 
   /* ---------------- Counters ---------------- */
