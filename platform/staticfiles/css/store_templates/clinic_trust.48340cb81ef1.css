@@ -1,0 +1,106 @@
+:root{
+  --accent: #0F5C56;
+  --accent-ink: #ffffff;
+  --accent-soft: #E7F1EF;
+  --ink: #16201E;
+  --ink-soft: #5B6966;
+  --bg: #FBFAF7;
+  --card-bg: #FFFFFF;
+  --line: #E3E2DB;
+}
+body{
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+.container{ max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+h1, h2, h3{ font-family: 'Manrope', system-ui, sans-serif; letter-spacing: -.01em; }
+
+.ht-icon{ width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+/* ---------- hero ---------- */
+.ht-hero{ padding: 72px 0 0; }
+.ht-eyebrow{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding-left: 12px; border-left: 3px solid var(--accent);
+  font-size: 12.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent);
+}
+.ht-name{ margin-top: 18px; font-size: clamp(34px, 5vw, 54px); font-weight: 700; line-height: 1.08; max-width: 720px; }
+.ht-tagline{ margin-top: 16px; font-size: 17px; line-height: 1.6; color: var(--ink-soft); max-width: 560px; }
+.ht-cta{
+  margin-top: 28px; display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 30px; border-radius: 10px; background: var(--accent); color: var(--accent-ink);
+  font-weight: 650; font-size: 14.5px;
+}
+.ht-cta:hover{ background: #0C4943; }
+
+.ht-info-strip{
+  margin-top: 40px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.ht-info-strip-inner{
+  display: flex; flex-wrap: wrap; gap: 28px; padding: 18px 0;
+}
+.ht-info-item{ display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-soft); }
+.ht-info-item strong{ color: var(--ink); font-weight: 650; }
+.ht-info-item .ht-icon{ color: var(--accent); }
+
+/* ---------- sections ---------- */
+.ht-section{ padding: 56px 0; border-bottom: 1px solid var(--line); }
+.ht-section:last-of-type{ border-bottom: none; }
+.ht-section-head{ margin-bottom: 28px; }
+.ht-section-head h2{ font-size: 24px; font-weight: 700; }
+
+/* ---------- about: two column with pull-quote ---------- */
+.ht-about-grid{ display: grid; grid-template-columns: 1.3fr .9fr; gap: 48px; align-items: start; }
+@media (max-width: 760px){ .ht-about-grid{ grid-template-columns: 1fr; gap: 28px; } }
+.ht-about-body p{ font-size: 16px; line-height: 1.8; color: var(--ink-soft); }
+.ht-quote-box{
+  padding: 26px 28px; border-radius: 12px; background: var(--accent-soft); border: 1px solid var(--line);
+}
+.ht-quote-mark{ color: var(--accent); opacity: .5; }
+.ht-quote-box p{ margin-top: 10px; font-size: 17px; line-height: 1.55; font-weight: 600; color: var(--ink); }
+
+/* ---------- services: left-icon cards ---------- */
+.ht-services .store-service-card{
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--card-bg); border-radius: 10px;
+}
+.ht-service-icon{
+  flex: none; width: 36px; height: 36px; border-radius: 9px;
+  background: var(--accent-soft); color: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+}
+.ht-service-icon .ht-icon{ width: 18px; height: 18px; }
+.store-nav-cta, .store-pill.is-active{ --pill-active-ink: var(--accent-ink); }
+
+/* ---------- gallery ---------- */
+.ht-gallery{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+@media (max-width: 640px){ .ht-gallery{ grid-template-columns: repeat(2, 1fr); } }
+.ht-gallery img{ width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+
+/* ---------- hours & location band ---------- */
+.ht-hours-band{ background: var(--card-bg); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.ht-hours-grid{ display: grid; grid-template-columns: 1fr 1fr; }
+@media (max-width: 640px){ .ht-hours-grid{ grid-template-columns: 1fr; } }
+.ht-hours-cell{ padding: 26px 28px; }
+.ht-hours-cell:first-child{ border-right: 1px solid var(--line); }
+@media (max-width: 640px){ .ht-hours-cell:first-child{ border-right: none; border-bottom: 1px solid var(--line); } }
+.ht-hours-cell-label{ display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.ht-hours-cell p{ margin-top: 10px; font-size: 15px; color: var(--ink); line-height: 1.6; }
+
+/* ---------- socials ---------- */
+.ht-socials{ display: flex; gap: 10px; flex-wrap: wrap; }
+.ht-social-btn{
+  padding: 10px 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--card-bg);
+  font-size: 13.5px; font-weight: 650; color: var(--ink);
+}
+
+/* ---------- contact ---------- */
+.ht-contact{ text-align: center; }
+.ht-contact p{ color: var(--ink-soft); font-size: 15px; margin-bottom: 20px; }
+
+/* ---------- footer ---------- */
+.ht-footer{ padding: 36px 0; text-align: center; font-size: 12.5px; color: var(--ink-soft); }
+.ht-footer a{ color: var(--accent); font-weight: 650; }

@@ -7,6 +7,7 @@ from django.utils.text import slugify
 
 
 TEMPLATE_CATEGORY_CHOICES = [
+    ('healthcare', 'Healthcare & Clinics'),
     ('business', 'Business & Professional'),
     ('salon', 'Salon & Beauty'),
     ('bakery', 'Bakery & Food'),

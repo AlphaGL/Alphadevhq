@@ -10,10 +10,29 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         templates = [
             dict(
+                name='Healthcare & Clinics', slug='clinic-trust', category='healthcare', tier='single',
+                layout_key='clinic_trust', accent_color='#0F5C56',
+                description='Calm, credible layout for clinics, hospitals and private practices.',
+                order=0,
+                example_tagline='Trusted diagnostic and family care, close to home',
+                example_bio=(
+                    'For over a decade we have combined modern equipment with a calm, unhurried '
+                    'approach to care. Every visit starts with listening, not a rushed ten-minute slot. '
+                    'Replace this with your own story — how the practice started and what patients can '
+                    'expect when they walk in.'
+                ),
+                example_services=(
+                    'General consultations — walk-in or by appointment [Consultations]\n'
+                    'Lab diagnostics and screening — same-day results [Diagnostics]\n'
+                    'Minor procedures — outpatient [Procedures]\n'
+                    'Family health plans — monthly [Plans]'
+                ),
+            ),
+            dict(
                 name='Business & Professional', slug='business-pro', category='business', tier='single',
                 layout_key='business_pro', accent_color='#0B2E4F',
-                description='Clean, trustworthy layout for clinics, consultants and professional services.',
-                order=0,
+                description='Clean, trustworthy layout for consultants and professional services.',
+                order=1,
                 example_tagline='Trusted, professional service you can count on',
                 example_bio=(
                     'We have served this community for years with reliable, professional care and '
@@ -31,7 +50,7 @@ class Command(BaseCommand):
                 name='Salon & Beauty', slug='salon-bold', category='salon', tier='single',
                 layout_key='salon_bold', accent_color='#B8860B',
                 description='Bold, image-led layout for hair, makeup and beauty studios.',
-                order=1,
+                order=2,
                 example_tagline='Signature looks, tailored to you',
                 example_bio=(
                     'Every client leaves looking and feeling their best. We combine skill, premium '
@@ -49,7 +68,7 @@ class Command(BaseCommand):
                 name='Bakery & Food', slug='bakery-warm', category='bakery', tier='single',
                 layout_key='bakery_warm', accent_color='#B45309',
                 description='Warm, appetite-driving layout for bakeries, cakes and catering.',
-                order=2,
+                order=3,
                 example_tagline='Fresh, made-to-order, every time',
                 example_bio=(
                     'Every order is baked fresh with real ingredients and no shortcuts. From everyday '
@@ -67,7 +86,7 @@ class Command(BaseCommand):
                 name='Portfolio & Creative', slug='portfolio-editorial', category='portfolio', tier='single',
                 layout_key='portfolio_editorial', accent_color='#111111',
                 description='Minimal, image-forward layout for photographers, designers and creatives.',
-                order=3,
+                order=4,
                 example_tagline='Your craft, in one line',
                 example_bio=(
                     'A short line about your focus and approach — what you shoot, design or make, and '
