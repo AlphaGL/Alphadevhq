@@ -32,10 +32,11 @@
   {% endif %}
 
   <div class="contact-cta" style="margin-top:20px">
-    <a class="btn btn-primary" href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview your store</a>
+    <a class="btn btn-primary" href="{% url 'stores:builder_edit' store.slug %}">Edit your site</a>
+    <a class="btn btn-ghost" href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview your store</a>
     {% if not store.is_live %}<a class="btn btn-ghost" href="{% url 'billing:choose_plan' store.slug %}">Publish for real</a>{% endif %}
   </div>
-  <p class="helptext" style="margin-top:8px">This preview link expires in {{ preview_minutes }} minutes and shows a watermark. Revisit this page for a fresh one.</p>
+  <p class="helptext" style="margin-top:8px">The preview link expires in {{ preview_minutes }} minutes and shows a watermark — handy for sharing before you publish.</p>
 
   <div class="dash-grid">
     <div class="dash-stat glass">
@@ -55,11 +56,8 @@
   <div class="platform-card glass" style="margin-top:28px">
     <h3 style="font-family:var(--font-display);font-weight:650;font-size:17px">Edit your store</h3>
     <div class="builder-steps" style="margin-top:16px">
-      <a href="{% url 'stores:builder_theme' store.slug %}">Theme</a>
-      <a href="{% url 'stores:builder_details' store.slug %}">Details</a>
-      <a href="{% url 'stores:builder_sections' store.slug %}">Sections</a>
-      <a href="{% url 'stores:builder_images' store.slug %}">Images</a>
-      <a href="{% url 'stores:builder_socials' store.slug %}">Socials</a>
+      <a href="{% url 'stores:builder_edit' store.slug %}">Edit your site</a>
+      <a href="{% url 'stores:builder_theme' store.slug %}">Change template</a>
       {% if not store.is_live %}<a href="{% url 'billing:choose_plan' store.slug %}">Publish</a>{% endif %}
     </div>
   </div>

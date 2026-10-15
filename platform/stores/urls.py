@@ -21,13 +21,15 @@ urlpatterns = [
     path('builder/new/', views.builder_theme, name='builder_new'),
 
     path('builder/<slug:store_slug>/theme/', views.builder_theme, name='builder_theme'),
-    path('builder/<slug:store_slug>/details/', views.builder_details, name='builder_details'),
-    path('builder/<slug:store_slug>/sections/', views.builder_sections, name='builder_sections'),
-    path('builder/<slug:store_slug>/sections/<int:section_id>/move/<str:direction>/', views.move_section, name='move_section'),
-    path('builder/<slug:store_slug>/images/', views.builder_images, name='builder_images'),
-    path('builder/<slug:store_slug>/images/<int:image_id>/delete/', views.delete_image, name='delete_image'),
-    path('builder/<slug:store_slug>/socials/', views.builder_socials, name='builder_socials'),
-    path('builder/<slug:store_slug>/socials/<int:link_id>/delete/', views.delete_social, name='delete_social'),
+    path('builder/<slug:store_slug>/edit/', views.builder_edit, name='builder_edit'),
+
+    # Click-to-edit AJAX endpoints — all JSON, all require store ownership.
+    path('builder/<slug:store_slug>/edit/field/', views.editor_save_field, name='editor_save_field'),
+    path('builder/<slug:store_slug>/edit/section/<int:section_id>/toggle/', views.editor_toggle_section, name='editor_toggle_section'),
+    path('builder/<slug:store_slug>/edit/logo/', views.editor_upload_logo, name='editor_upload_logo'),
+    path('builder/<slug:store_slug>/edit/image/add/', views.editor_add_image, name='editor_add_image'),
+    path('builder/<slug:store_slug>/edit/image/<int:image_id>/delete/', views.editor_delete_image, name='editor_delete_image'),
+    path('builder/<slug:store_slug>/edit/social/', views.editor_save_social, name='editor_save_social'),
 
     path('preview/<str:token>/', views.preview_store, name='preview_store'),
 

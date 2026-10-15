@@ -36,8 +36,8 @@ class StoreTemplate(models.Model):
 
     # Shown immediately when a store first picks this template, so the page
     # looks like a real finished site from minute one instead of an empty
-    # shell. The owner overwrites these with their own words — never shipped
-    # to a live, published store untouched (builder_details.html flags it).
+    # shell. The owner overwrites these with their own words directly on
+    # the live page (see Store.has_customized_content).
     example_tagline = models.CharField(max_length=160, blank=True)
     example_bio = models.TextField(blank=True)
     example_services = models.TextField(blank=True, help_text="One service per line")

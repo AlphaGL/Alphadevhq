@@ -5,21 +5,15 @@
   <div class="builder-steps">
     <a href="{{ self_url }}" class="is-active">1. Template</a>
     {% if store %}
-      <a href="{% url 'stores:builder_details' store.slug %}">2. Details</a>
-      <a href="{% url 'stores:builder_sections' store.slug %}">3. Sections</a>
-      <a href="{% url 'stores:builder_images' store.slug %}">4. Images</a>
-      <a href="{% url 'stores:builder_socials' store.slug %}">5. Socials</a>
+      <a href="{% url 'stores:builder_edit' store.slug %}">2. Edit your site</a>
     {% else %}
-      <span class="is-disabled">2. Details</span>
-      <span class="is-disabled">3. Sections</span>
-      <span class="is-disabled">4. Images</span>
-      <span class="is-disabled">5. Socials</span>
+      <span class="is-disabled">2. Edit your site</span>
     {% endif %}
   </div>
 
   <div style="text-align:center;margin-bottom:28px">
     <h1 class="platform-title">Pick a real template</h1>
-    <p class="platform-sub">A pre-designed page for your kind of business. You'll only edit the name, logo, text and photos after this.</p>
+    <p class="platform-sub">A pre-designed page for your kind of business. Click straight onto the real page afterward to make it yours.</p>
   </div>
 
   <div class="filter-row" style="justify-content:center;margin-bottom:28px">

@@ -1,0 +1,12 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/editor.css' %}">
+<div class="editor-toolbar">
+  <span class="editor-toolbar-title">Editing &middot; {{ store.business_name }}</span>
+  <div class="editor-toolbar-actions">
+    <span class="editor-status"></span>
+    <a href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview</a>
+    <a href="{% url 'stores:dashboard' store.slug %}" class="editor-primary">Done</a>
+  </div>
+</div>
+{% csrf_token %}
+<script src="{% static 'js/editor.js' %}" defer></script>

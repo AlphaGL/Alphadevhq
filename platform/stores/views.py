@@ -8,9 +8,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.text import slugify
 
-from .forms import SocialLinkForm, StoreDetailsForm, StoreImageForm, TemplatePickForm, ThemeCustomizeForm
+from .forms import TemplatePickForm
 from .models import (
-    CATEGORY_CHOICES, SECTION_TYPES, TEMPLATE_CATEGORY_CHOICES,
+    CATEGORY_CHOICES, SECTION_TYPES, SOCIAL_PLATFORMS, TEMPLATE_CATEGORY_CHOICES,
     SocialLink, Store, StoreImage, StoreSection, StoreTemplate,
 )
 
@@ -135,7 +135,7 @@ def builder_theme(request, store_slug=None):
                         services_section.save(update_fields=['body'])
 
             store.save(update_fields=update_fields)
-            return redirect('stores:builder_details', store_slug=store.slug)
+            return redirect('stores:builder_edit', store_slug=store.slug)
     else:
         initial_template_id = store.template_id if store else None
         requested_slug = request.GET.get('template')
@@ -155,135 +155,141 @@ def builder_theme(request, store_slug=None):
     })
 
 
+STORE_TEXT_FIELDS = {'business_name', 'tagline', 'bio', 'phone', 'address', 'hours'}
+SECTION_BODY_FIELDS = {'about_body': 'about', 'services_body': 'services'}
+
+
+def _mark_customized(store):
+    if not store.has_customized_content:
+        store.has_customized_content = True
+        store.save(update_fields=['has_customized_content'])
+
+
 @require_verified
-def builder_details(request, store_slug):
+def builder_edit(request, store_slug):
+    """The whole editing experience: the real, live template rendered in
+    an editable mode, so the owner edits text, logo and photos directly
+    on the actual page instead of a disconnected form."""
     store = _get_store(request, store_slug)
-
-    if request.method == 'POST':
-        form = StoreDetailsForm(request.POST, request.FILES, instance=store)
-        theme_form = ThemeCustomizeForm(request.POST, instance=store)
-        if form.is_valid() and theme_form.is_valid():
-            tpl = store.template
-            edited_example_copy = tpl and (
-                form.cleaned_data.get('tagline') != tpl.example_tagline
-                or form.cleaned_data.get('bio') != tpl.example_bio
-            )
-            form.save()
-            theme_form.save()
-            if edited_example_copy and not store.has_customized_content:
-                store.has_customized_content = True
-                store.save(update_fields=['has_customized_content'])
-            messages.success(request, 'Store details saved.')
-            return redirect('stores:builder_sections', store_slug=store.slug)
-    else:
-        form = StoreDetailsForm(instance=store)
-        theme_form = ThemeCustomizeForm(instance=store)
-
-    return render(request, 'stores/builder_details.html', {'form': form, 'theme_form': theme_form, 'store': store})
+    existing_links = {link.platform: link.url for link in store.social_links.all()}
+    social_rows = [
+        {'platform': key, 'label': label, 'url': existing_links.get(key, '')}
+        for key, label in SOCIAL_PLATFORMS
+    ]
+    # Built here (not via {% url %} in the template) because the id has to
+    # stay a placeholder token for JS to fill in — reverse() needs a real
+    # int, so a dummy one is swapped for a token unlikely to collide with
+    # anything in the slug itself.
+    toggle_section_url_tpl = reverse(
+        'stores:editor_toggle_section', args=[store.slug, 999999999],
+    ).replace('999999999', '__ID__')
+    delete_image_url_tpl = reverse(
+        'stores:editor_delete_image', args=[store.slug, 999999999],
+    ).replace('999999999', '__ID__')
+    return render(request, _store_template_name(store), {
+        'store': store,
+        'sections': store.sections.all(),
+        'images': store.images.all(),
+        'social_links': store.social_links.all(),
+        'is_editor': True,
+        'editor_social_rows': social_rows,
+        'preview_token': make_preview_token(store),
+        'toggle_section_url_tpl': toggle_section_url_tpl,
+        'delete_image_url_tpl': delete_image_url_tpl,
+    })
 
 
 @require_verified
-def builder_sections(request, store_slug):
+def editor_save_field(request, store_slug):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
     store = _get_store(request, store_slug)
+    field = request.POST.get('field', '')
+    value = request.POST.get('value', '').strip()
 
-    if request.method == 'POST':
-        tpl = store.template
-        enabled_ids = set(request.POST.getlist('enabled'))
-        edited_example_copy = False
-        for section in store.sections.all():
-            section.is_enabled = str(section.id) in enabled_ids
-            section.heading_override = request.POST.get(f'heading_{section.id}', '').strip()
-            new_body = request.POST.get(f'body_{section.id}', '').strip()
-            if (
-                tpl and section.section_type == 'services'
-                and new_body != tpl.example_services and new_body != section.body
-            ):
-                edited_example_copy = True
-            section.body = new_body
-            section.save(update_fields=['is_enabled', 'heading_override', 'body'])
-        if edited_example_copy and not store.has_customized_content:
-            store.has_customized_content = True
-            store.save(update_fields=['has_customized_content'])
-        messages.success(request, 'Sections updated.')
-        return redirect('stores:builder_images', store_slug=store.slug)
+    if field in STORE_TEXT_FIELDS:
+        setattr(store, field, value)
+        store.save(update_fields=[field])
+        _mark_customized(store)
+        return JsonResponse({'ok': True})
 
-    return render(request, 'stores/builder_sections.html', {'store': store, 'sections': store.sections.all()})
+    if field in SECTION_BODY_FIELDS:
+        section_type = SECTION_BODY_FIELDS[field]
+        section, _created = StoreSection.objects.get_or_create(
+            store=store, section_type=section_type, defaults={'order': 99},
+        )
+        section.body = value
+        section.save(update_fields=['body'])
+        _mark_customized(store)
+        return JsonResponse({'ok': True})
+
+    return JsonResponse({'ok': False, 'error': 'Unknown field'}, status=400)
 
 
 @require_verified
-def move_section(request, store_slug, section_id, direction):
+def editor_toggle_section(request, store_slug, section_id):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
     store = _get_store(request, store_slug)
     section = get_object_or_404(StoreSection, pk=section_id, store=store)
-    sections = list(store.sections.all())
-    idx = next(i for i, s in enumerate(sections) if s.id == section.id)
-
-    swap_idx = idx - 1 if direction == 'up' else idx + 1
-    if 0 <= swap_idx < len(sections):
-        other = sections[swap_idx]
-        section.order, other.order = other.order, section.order
-        section.save(update_fields=['order'])
-        other.save(update_fields=['order'])
-
-    return redirect('stores:builder_sections', store_slug=store.slug)
+    section.is_enabled = not section.is_enabled
+    section.save(update_fields=['is_enabled'])
+    return JsonResponse({'ok': True, 'is_enabled': section.is_enabled})
 
 
 @require_verified
-def builder_images(request, store_slug):
+def editor_upload_logo(request, store_slug):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
     store = _get_store(request, store_slug)
-
-    if request.method == 'POST':
-        if not store.can_add_image:
-            messages.error(request, f'Your plan allows up to {store.image_limit} images. Upgrade to add more.')
-            return redirect('stores:builder_images', store_slug=store.slug)
-        form = StoreImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = form.save(commit=False)
-            image.store = store
-            image.order = store.image_count
-            image.save()
-            messages.success(request, 'Image added.')
-            return redirect('stores:builder_images', store_slug=store.slug)
-    else:
-        form = StoreImageForm()
-
-    return render(request, 'stores/builder_images.html', {
-        'store': store, 'form': form, 'images': store.images.all(),
-    })
+    file = request.FILES.get('logo')
+    if not file:
+        return JsonResponse({'ok': False, 'error': 'No file received'}, status=400)
+    store.logo = file
+    store.save(update_fields=['logo'])
+    _mark_customized(store)
+    return JsonResponse({'ok': True, 'url': store.logo.url})
 
 
 @require_verified
-def delete_image(request, store_slug, image_id):
+def editor_add_image(request, store_slug):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
+    store = _get_store(request, store_slug)
+    if not store.can_add_image:
+        return JsonResponse({'ok': False, 'error': f'Your plan allows up to {store.image_limit} images.'}, status=400)
+    file = request.FILES.get('image')
+    if not file:
+        return JsonResponse({'ok': False, 'error': 'No file received'}, status=400)
+    image = StoreImage.objects.create(store=store, image=file, order=store.image_count)
+    _mark_customized(store)
+    return JsonResponse({'ok': True, 'id': image.id, 'url': image.image.url})
+
+
+@require_verified
+def editor_delete_image(request, store_slug, image_id):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
     store = _get_store(request, store_slug)
     StoreImage.objects.filter(pk=image_id, store=store).delete()
-    return redirect('stores:builder_images', store_slug=store.slug)
+    return JsonResponse({'ok': True})
 
 
 @require_verified
-def builder_socials(request, store_slug):
+def editor_save_social(request, store_slug):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
     store = _get_store(request, store_slug)
-
-    if request.method == 'POST':
-        form = SocialLinkForm(request.POST)
-        if form.is_valid():
-            link, _ = SocialLink.objects.update_or_create(
-                store=store, platform=form.cleaned_data['platform'],
-                defaults={'url': form.cleaned_data['url']},
-            )
-            messages.success(request, 'Social link saved.')
-            return redirect('stores:builder_socials', store_slug=store.slug)
+    platform = request.POST.get('platform', '')
+    url = request.POST.get('url', '').strip()
+    if platform not in dict(SOCIAL_PLATFORMS):
+        return JsonResponse({'ok': False, 'error': 'Unknown platform'}, status=400)
+    if url:
+        SocialLink.objects.update_or_create(store=store, platform=platform, defaults={'url': url})
     else:
-        form = SocialLinkForm()
-
-    return render(request, 'stores/builder_socials.html', {
-        'store': store, 'form': form, 'links': store.social_links.all(),
-    })
-
-
-@require_verified
-def delete_social(request, store_slug, link_id):
-    store = _get_store(request, store_slug)
-    SocialLink.objects.filter(pk=link_id, store=store).delete()
-    return redirect('stores:builder_socials', store_slug=store.slug)
+        SocialLink.objects.filter(store=store, platform=platform).delete()
+    _mark_customized(store)
+    return JsonResponse({'ok': True})
 
 
 def explore(request):
