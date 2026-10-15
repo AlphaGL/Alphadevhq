@@ -140,7 +140,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 STORAGES = {
     'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
-    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    # Hash-based cache busting without the .gz/.br precompressed siblings —
+    # keeps the committed staticfiles/ (and the Vercel lambda bundle) small.
+    # WhiteNoiseMiddleware still compresses responses on the fly at serve time.
+    'staticfiles': {'BACKEND': 'whitenoise.storage.ManifestStaticFilesStorage'},
 }
 
 if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY:

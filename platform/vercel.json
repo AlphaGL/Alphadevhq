@@ -4,17 +4,13 @@
             "src": "alphaplatform/wsgi.py",
             "use": "@vercel/python",
             "config": {
-                "maxLambdaSize": "15mb",
+                "maxLambdaSize": "50mb",
                 "runtime": "python3.12",
                 "buildCommand": "bash setup.sh"
             }
         }
     ],
     "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
-        },
         {
             "src": "/(.*)",
             "dest": "alphaplatform/wsgi.py"
