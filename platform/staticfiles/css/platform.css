@@ -24,14 +24,14 @@
 .dash-section-block{ min-width: 0; }
 
 /* ---------- Dashboard: sidebar shell (sits below the regular top nav) ---------- */
-.dash-shell{ display:flex; align-items:flex-start; max-width: 1400px; margin: 0 auto; padding-top: 48px; min-height: 100vh; }
+.dash-shell{ display:flex; align-items:flex-start; max-width: 1400px; margin: 0 auto; padding-top: 128px; min-height: 100vh; }
 
 .dash-sidebar{
   flex: none; width: 232px;
   padding: 0 16px 40px;
   border-right: 1px solid var(--line-1);
   display: flex; flex-direction: column;
-  position: sticky; top: 48px;
+  position: sticky; top: 128px;
   align-self: stretch;
 }
 .dash-sidebar-nav{ display:flex; flex-direction:column; gap:3px; }
@@ -72,7 +72,7 @@
     font-size: 13px; font-weight: 650; color: var(--ink-1);
   }
   .dash-sidebar-toggle svg{ width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.8; }
-  .dash-main{ padding: 90px 18px 56px; }
+  .dash-main{ padding: 112px 18px 56px; }
 }
 
 .platform-card{ padding: 36px; border-radius: var(--radius-lg); min-width: 0; overflow-wrap: anywhere; }
