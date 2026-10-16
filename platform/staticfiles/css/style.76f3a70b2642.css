@@ -175,6 +175,11 @@ html[data-theme="light"] .atmosphere .orb{
 .to-top.glass{
   backdrop-filter: blur(22px) saturate(140%);
   -webkit-backdrop-filter: blur(22px) saturate(140%);
+  /* Promotes this to its own stable GPU layer — sticky + backdrop-filter
+     is a known trigger for Chrome/Windows to leave stale blur paint behind
+     on scroll, bleeding content from below into the nav. */
+  transform: translateZ(0);
+  will-change: transform;
 }
 .glass::before{
   content: "";
