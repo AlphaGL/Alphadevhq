@@ -42,6 +42,8 @@ html[data-theme="dark"]{
   --shadow-color: 0,0,0;
   --grain-opacity: .05;
   --invert-logo: 0;
+  --dash-accent: #1c8c63;
+  --dash-accent-soft: rgba(28,140,99,.16);
 }
 
 html[data-theme="light"]{
@@ -62,6 +64,8 @@ html[data-theme="light"]{
   --shadow-color: 10,10,12;
   --grain-opacity: .035;
   --invert-logo: 1;
+  --dash-accent: #17754f;
+  --dash-accent-soft: rgba(23,117,79,.12);
 }
 
 *,*::before,*::after{ box-sizing: border-box; }

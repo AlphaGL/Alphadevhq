@@ -1,0 +1,38 @@
+{% load static %}<header class="nav">
+  <div class="container nav-inner glass">
+    <a href="{% url 'stores:home' %}" class="nav-brand" aria-label="Alpha Dev home">
+      <img src="{% static 'img/alpha-dev-mark.png' %}" alt="" width="28" height="28">
+      ALPHA DEV STORES
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="{% url 'stores:home' %}">Alpha Dev</a>
+      <a href="{% url 'stores:explore' %}">Explore</a>
+      {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">Dashboard</a>{% endif %}
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle light and dark theme">
+        <svg class="icon-sun"><use href="#icon-sun"></use></svg>
+        <svg class="icon-moon"><use href="#icon-moon"></use></svg>
+      </button>
+      {% if user.is_authenticated %}
+        <a class="btn btn-ghost btn-sm hide-mobile" href="{% url 'accounts:logout' %}">Log out</a>
+      {% else %}
+        <a class="btn btn-ghost btn-sm hide-mobile" href="{% url 'accounts:login' %}">Log in</a>
+        <a class="btn btn-primary btn-sm hide-mobile" href="{% url 'accounts:signup' %}">Get started</a>
+      {% endif %}
+      <button class="menu-toggle" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu">
+  <a href="{% url 'stores:home' %}">Alpha Dev</a>
+  <a href="{% url 'stores:explore' %}">Explore</a>
+  {% if user.is_authenticated %}
+    <a href="{% url 'stores:store_list' %}">Dashboard</a>
+    <a href="{% url 'accounts:logout' %}">Log out</a>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">Log in</a>
+    <a class="btn btn-primary" href="{% url 'accounts:signup' %}">Get started</a>
+  {% endif %}
+</div>

@@ -90,6 +90,24 @@
         a.addEventListener("click", function(){ body.classList.remove("menu-open"); });
       });
     }
+
+    /* Dashboard sidebar (mobile) */
+    var sidebarToggle = document.querySelector(".dash-sidebar-toggle");
+    if (sidebarToggle){
+      sidebarToggle.addEventListener("click", function(){
+        body.classList.toggle("sidebar-open");
+      });
+      document.querySelectorAll(".dash-sidebar-nav a").forEach(function(a){
+        a.addEventListener("click", function(){ body.classList.remove("sidebar-open"); });
+      });
+      document.addEventListener("click", function(e){
+        if (!body.classList.contains("sidebar-open")) return;
+        var sidebar = document.querySelector(".dash-sidebar");
+        if (sidebar && !sidebar.contains(e.target) && e.target !== sidebarToggle && !sidebarToggle.contains(e.target)){
+          body.classList.remove("sidebar-open");
+        }
+      });
+    }
   });
 
   /* ---------------- Reveal on scroll ---------------- */

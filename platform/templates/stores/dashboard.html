@@ -1,12 +1,12 @@
-{% extends "base.html" %}
-{% block title %}Dashboard — Alpha Dev Stores{% endblock %}
+{% extends "base_dashboard.html" %}
+{% block title %}{{ store.business_name }} — Dashboard{% endblock %}
 
 {% block extra_head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 {% endblock %}
 
 {% block content %}
-<div class="platform-wide">
+<div class="dash-wide">
   <a href="{% url 'stores:store_list' %}" class="helptext">&larr; All my stores</a>
   <h1 class="platform-title" style="margin-top:8px">{{ store.business_name }}</h1>
 
@@ -39,15 +39,9 @@
     <div class="banner">Your store is built but not published. <a href="{% url 'billing:choose_plan' store.slug %}">Choose a plan to go live</a>.</div>
   {% endif %}
 
-  <div class="contact-cta" style="margin-top:20px">
-    <a class="btn btn-primary" href="{% url 'stores:builder_edit' store.slug %}">Edit your site</a>
-    <a class="btn btn-ghost" href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview your store</a>
-    {% if not store.is_live %}<a class="btn btn-ghost" href="{% url 'billing:choose_plan' store.slug %}">Publish for real</a>{% endif %}
-  </div>
-  <p class="helptext" style="margin-top:8px">The preview link expires in {{ preview_minutes }} minutes and shows a watermark — handy for sharing before you publish.</p>
-
-  <div class="dash-grid">
-    <div class="dash-stat glass">
+  <!-- Stat row -->
+  <div class="dash-grid-4">
+    <div class="dash-stat glass is-accent">
       <div class="dash-stat-label">Visits today</div>
       <div class="dash-stat-value">{{ visits_today }}</div>
     </div>
@@ -63,10 +57,14 @@
       <div class="dash-stat-label">Plan</div>
       <div class="dash-stat-value">{% if store.plan %}{{ store.plan.name }}{% else %}None{% endif %}</div>
     </div>
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">Site health</div>
+      <div class="dash-stat-value">{{ health.score }}<span style="font-size:14px;color:var(--ink-2);font-weight:600"> /100</span></div>
+    </div>
   </div>
 
-  <!-- Visits chart -->
-  <div class="dash-section">
+  <!-- Chart + quick actions -->
+  <div class="dash-section dash-grid-2">
     <div class="chart-card glass">
       <div class="chart-card-head">
         <h3 class="dash-section-title" style="margin:0">Visits, last 14 days</h3>
@@ -74,12 +72,60 @@
       <canvas id="visitsChart" height="90"></canvas>
       {% if best_day %}<div class="insight-card">📈 Your store tends to get the most visits on <strong>{{ best_day }}s</strong>.</div>{% endif %}
     </div>
+
+    <div class="dash-quick-actions">
+      <h3>Quick actions</h3>
+      <p>Jump straight into the things you'll use most.</p>
+      <div class="dash-quick-actions-links">
+        <a href="{% url 'stores:builder_edit' store.slug %}">Edit your site &rarr;</a>
+        <a href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview your store &rarr;</a>
+        {% if not store.is_live %}
+          <a href="{% url 'billing:choose_plan' store.slug %}">Publish for real &rarr;</a>
+        {% else %}
+          <a href="{% url 'billing:choose_plan' store.slug %}">Manage billing &rarr;</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Site health + Milestones -->
+  <div class="dash-section dash-grid-2">
+    <div class="dash-section-block">
+      <h3 class="dash-section-title">Site health</h3>
+      <div class="health-card glass">
+        <div class="health-ring" style="--score: {{ health.score }}">
+          <div class="health-ring-value">{{ health.score }}<small>/ 100</small></div>
+        </div>
+        <ul class="health-checklist">
+          {% for item in health.items %}
+            <li{% if item.done %} class="is-done"{% endif %}>
+              <span class="health-check-dot"></span>
+              {{ item.label }}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="dash-section-block">
+      <h3 class="dash-section-title">Milestones</h3>
+      <div class="platform-card glass" style="padding:22px">
+        <div class="milestone-row">
+          {% for m in milestones %}
+            <span class="milestone-chip{% if m.done %} is-done{% endif %}">
+              <span class="milestone-chip-icon">{% if m.done %}🏆{% else %}🔒{% endif %}</span>
+              {{ m.label }}
+            </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Usage -->
   <div class="dash-section">
     <h3 class="dash-section-title">Usage</h3>
-    <div class="dash-grid" style="grid-template-columns: repeat(2,1fr)">
+    <div class="dash-grid-2-even">
       <div class="dash-stat glass">
         <div class="dash-stat-label">Photos</div>
         <div class="dash-stat-value" style="font-size:20px">{{ store.image_count }} / {{ store.image_limit }}</div>
@@ -93,63 +139,26 @@
     </div>
   </div>
 
-  <!-- Site health -->
+  <!-- Benchmark -->
   <div class="dash-section">
-    <h3 class="dash-section-title">Site health</h3>
-    <div class="health-card glass">
-      <div class="health-ring" style="--score: {{ health.score }}">
-        <div class="health-ring-value">{{ health.score }}<small>/ 100</small></div>
-      </div>
-      <ul class="health-checklist">
-        {% for item in health.items %}
-          <li{% if item.done %} class="is-done"{% endif %}>
-            <span class="health-check-dot"></span>
-            {{ item.label }}
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <!-- Benchmark + Milestones -->
-  <div class="dash-section dash-two-col">
+    <h3 class="dash-section-title">How you compare</h3>
     <div class="benchmark-card glass">
-      <h3 class="dash-section-title">How you compare</h3>
       {% if benchmark %}
         <p class="helptext" style="margin-bottom:4px">Against {{ benchmark.peer_count }} other live {{ store.get_category_display|lower }} stores — none of them shown by name, just the averages.</p>
-        {% for row in benchmark_rows %}
-        <div class="benchmark-row">
-          <div class="benchmark-row-label">{{ row.label }}</div>
-          <div class="benchmark-bars">
-            <div><div class="benchmark-bar-track"><div class="benchmark-bar-fill is-you" style="width:{{ row.data.you_pct }}%"></div></div><div class="benchmark-bar-caption"><span>You: {{ row.data.you }}</span></div></div>
-            <div><div class="benchmark-bar-track"><div class="benchmark-bar-fill is-avg" style="width:{{ row.data.avg_pct }}%"></div></div><div class="benchmark-bar-caption"><span>Category average: {{ row.data.avg }}</span></div></div>
+        <div class="dash-grid-3">
+          {% for row in benchmark_rows %}
+          <div class="benchmark-row" style="margin-top:14px">
+            <div class="benchmark-row-label">{{ row.label }}</div>
+            <div class="benchmark-bars">
+              <div><div class="benchmark-bar-track"><div class="benchmark-bar-fill is-you" style="width:{{ row.data.you_pct }}%"></div></div><div class="benchmark-bar-caption"><span>You: {{ row.data.you }}</span></div></div>
+              <div><div class="benchmark-bar-track"><div class="benchmark-bar-fill is-avg" style="width:{{ row.data.avg_pct }}%"></div></div><div class="benchmark-bar-caption"><span>Category average: {{ row.data.avg }}</span></div></div>
+            </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       {% else %}
         <p class="benchmark-empty">Not enough other live stores in your category yet to compare against. Check back once a few more join.</p>
       {% endif %}
-    </div>
-
-    <div class="platform-card glass" style="padding:24px">
-      <h3 class="dash-section-title">Milestones</h3>
-      <div class="milestone-row">
-        {% for m in milestones %}
-          <span class="milestone-chip{% if m.done %} is-done{% endif %}">
-            <span class="milestone-chip-icon">{% if m.done %}🏆{% else %}🔒{% endif %}</span>
-            {{ m.label }}
-          </span>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-
-  <div class="platform-card glass" style="margin-top:28px">
-    <h3 style="font-family:var(--font-display);font-weight:650;font-size:17px">Edit your store</h3>
-    <div class="builder-steps" style="margin-top:16px">
-      <a href="{% url 'stores:builder_edit' store.slug %}">Edit your site</a>
-      <a href="{% url 'stores:builder_theme' store.slug %}">Change template</a>
-      {% if not store.is_live %}<a href="{% url 'billing:choose_plan' store.slug %}">Publish</a>{% endif %}
     </div>
   </div>
 
@@ -168,9 +177,14 @@
   if (!canvas || typeof Chart === 'undefined') return;
   var series = JSON.parse(document.getElementById('visits-series-data').textContent);
   var styles = getComputedStyle(document.documentElement);
-  var accent = styles.getPropertyValue('--ink-0').trim() || '#000';
+  var accent = styles.getPropertyValue('--dash-accent').trim() || '#17754f';
+  var accentSoft = styles.getPropertyValue('--dash-accent-soft').trim() || 'rgba(23,117,79,.12)';
   var line = styles.getPropertyValue('--line-0').trim() || '#ccc';
   var ink2 = styles.getPropertyValue('--ink-2').trim() || '#888';
+
+  var gradient = canvas.getContext('2d').createLinearGradient(0, 0, 0, 200);
+  gradient.addColorStop(0, accentSoft);
+  gradient.addColorStop(1, 'rgba(0,0,0,0)');
 
   new Chart(canvas.getContext('2d'), {
     type: 'line',
@@ -179,12 +193,12 @@
       datasets: [{
         data: series.map(function(p){ return p.count; }),
         borderColor: accent,
-        backgroundColor: accent,
+        backgroundColor: gradient,
         tension: 0.35,
-        fill: false,
+        fill: true,
         pointRadius: 2.5,
         pointBackgroundColor: accent,
-        borderWidth: 2
+        borderWidth: 2.5
       }]
     },
     options: {
