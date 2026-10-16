@@ -84,13 +84,33 @@ def store_list(request):
 
 @login_required
 def dashboard(request, store_slug):
+    from . import analytics
     store = _get_store(request, store_slug)
     sub = store.subscription_or_none
+    health = analytics.health_check(store)
+    visits_week, visits_change_pct = analytics.visits_trend(store)
+    benchmark = analytics.category_benchmark(store)
+    benchmark_rows = None
+    if benchmark:
+        benchmark_rows = [
+            {'label': 'Services listed', 'data': benchmark['services']},
+            {'label': 'Photos uploaded', 'data': benchmark['images']},
+            {'label': 'Visits today', 'data': benchmark['visits']},
+        ]
     return render(request, 'stores/dashboard.html', {
         'store': store,
         'subscription': sub,
         'visits_today': store.visits_today(),
+        'visits_week': visits_week,
+        'visits_change_pct': visits_change_pct,
+        'visits_series': analytics.visits_series(store),
+        'best_day': analytics.best_day_of_week(store),
         'near_cap': store.is_near_traffic_cap,
+        'health': health,
+        'benchmark': benchmark,
+        'benchmark_rows': benchmark_rows,
+        'renewal': analytics.renewal_status(sub),
+        'milestones': analytics.milestones(store, health),
         'preview_token': make_preview_token(store),
         'preview_minutes': PREVIEW_MAX_AGE // 60,
     })

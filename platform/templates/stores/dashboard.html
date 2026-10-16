@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — Alpha Dev Stores{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="platform-wide">
   <a href="{% url 'stores:store_list' %}" class="helptext">&larr; All my stores</a>
@@ -17,6 +22,9 @@
     {% endif %}
   {% else %}
     <span class="status-pill">Not published yet</span>
+  {% endif %}
+  {% if renewal %}
+    <span class="status-pill{% if renewal.urgency != 'ok' %} is-warning{% endif %}">{{ renewal.label }}</span>
   {% endif %}
 
   {% if store.is_live %}
@@ -44,12 +52,95 @@
       <div class="dash-stat-value">{{ visits_today }}</div>
     </div>
     <div class="dash-stat glass">
-      <div class="dash-stat-label">Images used</div>
-      <div class="dash-stat-value">{{ store.image_count }}/{{ store.image_limit }}</div>
+      <div class="dash-stat-label">This week
+        {% if visits_change_pct != None %}
+          <span class="trend-arrow {% if visits_change_pct >= 0 %}is-up{% else %}is-down{% endif %}">{% if visits_change_pct >= 0 %}&uarr;{% else %}&darr;{% endif %} {{ visits_change_pct|cut:"-" }}%</span>
+        {% endif %}
+      </div>
+      <div class="dash-stat-value">{{ visits_week }}</div>
     </div>
     <div class="dash-stat glass">
       <div class="dash-stat-label">Plan</div>
       <div class="dash-stat-value">{% if store.plan %}{{ store.plan.name }}{% else %}None{% endif %}</div>
+    </div>
+  </div>
+
+  <!-- Visits chart -->
+  <div class="dash-section">
+    <div class="chart-card glass">
+      <div class="chart-card-head">
+        <h3 class="dash-section-title" style="margin:0">Visits, last 14 days</h3>
+      </div>
+      <canvas id="visitsChart" height="90"></canvas>
+      {% if best_day %}<div class="insight-card">📈 Your store tends to get the most visits on <strong>{{ best_day }}s</strong>.</div>{% endif %}
+    </div>
+  </div>
+
+  <!-- Usage -->
+  <div class="dash-section">
+    <h3 class="dash-section-title">Usage</h3>
+    <div class="dash-grid" style="grid-template-columns: repeat(2,1fr)">
+      <div class="dash-stat glass">
+        <div class="dash-stat-label">Photos</div>
+        <div class="dash-stat-value" style="font-size:20px">{{ store.image_count }} / {{ store.image_limit }}</div>
+        <div class="quota-bar"><div class="quota-bar-fill" style="width:{% widthratio store.image_count store.image_limit 100 %}%"></div></div>
+      </div>
+      <div class="dash-stat glass">
+        <div class="dash-stat-label">Pages</div>
+        <div class="dash-stat-value" style="font-size:20px">{{ store.page_limit }} page{{ store.page_limit|pluralize }}</div>
+        <div class="helptext" style="margin-top:10px">{% if store.page_limit > 1 %}Your site is split across real pages (Home, Services, About){% else %}Upgrade to Growth to split your site into multiple pages{% endif %}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site health -->
+  <div class="dash-section">
+    <h3 class="dash-section-title">Site health</h3>
+    <div class="health-card glass">
+      <div class="health-ring" style="--score: {{ health.score }}">
+        <div class="health-ring-value">{{ health.score }}<small>/ 100</small></div>
+      </div>
+      <ul class="health-checklist">
+        {% for item in health.items %}
+          <li{% if item.done %} class="is-done"{% endif %}>
+            <span class="health-check-dot"></span>
+            {{ item.label }}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Benchmark + Milestones -->
+  <div class="dash-section dash-two-col">
+    <div class="benchmark-card glass">
+      <h3 class="dash-section-title">How you compare</h3>
+      {% if benchmark %}
+        <p class="helptext" style="margin-bottom:4px">Against {{ benchmark.peer_count }} other live {{ store.get_category_display|lower }} stores — none of them shown by name, just the averages.</p>
+        {% for row in benchmark_rows %}
+        <div class="benchmark-row">
+          <div class="benchmark-row-label">{{ row.label }}</div>
+          <div class="benchmark-bars">
+            <div><div class="benchmark-bar-track"><div class="benchmark-bar-fill is-you" style="width:{{ row.data.you_pct }}%"></div></div><div class="benchmark-bar-caption"><span>You: {{ row.data.you }}</span></div></div>
+            <div><div class="benchmark-bar-track"><div class="benchmark-bar-fill is-avg" style="width:{{ row.data.avg_pct }}%"></div></div><div class="benchmark-bar-caption"><span>Category average: {{ row.data.avg }}</span></div></div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="benchmark-empty">Not enough other live stores in your category yet to compare against. Check back once a few more join.</p>
+      {% endif %}
+    </div>
+
+    <div class="platform-card glass" style="padding:24px">
+      <h3 class="dash-section-title">Milestones</h3>
+      <div class="milestone-row">
+        {% for m in milestones %}
+          <span class="milestone-chip{% if m.done %} is-done{% endif %}">
+            <span class="milestone-chip-icon">{% if m.done %}🏆{% else %}🔒{% endif %}</span>
+            {{ m.label }}
+          </span>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
@@ -66,4 +157,46 @@
     <a href="{% url 'stores:builder_new' %}" class="btn btn-ghost">+ Build another store</a>
   </div>
 </div>
+
+{{ visits_series|json_script:"visits-series-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function(){
+  var canvas = document.getElementById('visitsChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  var series = JSON.parse(document.getElementById('visits-series-data').textContent);
+  var styles = getComputedStyle(document.documentElement);
+  var accent = styles.getPropertyValue('--ink-0').trim() || '#000';
+  var line = styles.getPropertyValue('--line-0').trim() || '#ccc';
+  var ink2 = styles.getPropertyValue('--ink-2').trim() || '#888';
+
+  new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: series.map(function(p){ return p.date; }),
+      datasets: [{
+        data: series.map(function(p){ return p.count; }),
+        borderColor: accent,
+        backgroundColor: accent,
+        tension: 0.35,
+        fill: false,
+        pointRadius: 2.5,
+        pointBackgroundColor: accent,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: ink2, maxTicksLimit: 7, font: { size: 11 } } },
+        y: { beginAtZero: true, grid: { color: line }, ticks: { color: ink2, precision: 0, font: { size: 11 } } }
+      }
+    }
+  });
+})();
+</script>
 {% endblock %}
