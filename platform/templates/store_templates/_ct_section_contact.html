@@ -1,0 +1,15 @@
+<section class="ht-section ht-contact{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}" id="contact"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="container">
+    <div class="ht-section-head" style="justify-content:center">
+      <h2>{{ section.get_heading }}</h2>
+      {% include "store_templates/_section_controls.html" %}
+    </div>
+    <p>Message us on WhatsApp to book an appointment or ask a question.</p>
+    {% if store.whatsapp_url %}
+      <a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="ht-cta">
+        <svg class="ht-icon" viewBox="0 0 24 24" stroke="#fff"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.6-1.2A9 9 0 0 0 12 21Z" stroke-linejoin="round"/></svg>
+        Book on WhatsApp
+      </a>
+    {% endif %}
+  </div>
+</section>

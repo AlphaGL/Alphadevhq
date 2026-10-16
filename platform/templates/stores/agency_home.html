@@ -409,191 +409,33 @@
   <section class="section" id="work">
     <div class="container">
       <div class="section-head" data-reveal>
-        <span class="eyebrow"><span class="dot"></span>Selected work</span>
-        <h2 class="section-title">Live projects, real clients.</h2>
-        <p class="section-sub">A sample of sites and platforms Alpha Dev has designed and built for clients across healthcare, education, business and media.</p>
+        <span class="eyebrow"><span class="dot"></span>Store templates</span>
+        <h2 class="section-title">See what you'd actually get.</h2>
+        <p class="section-sub">Real, working designs &mdash; not mockups. Pick one, preview it live, then make it yours.</p>
       </div>
 
       <div class="filter-row" data-reveal>
-        <button class="filter-btn is-active" data-filter="all">All work</button>
-        <button class="filter-btn" data-filter="healthcare">Healthcare</button>
-        <button class="filter-btn" data-filter="education">Education</button>
-        <button class="filter-btn" data-filter="business">Business</button>
-        <button class="filter-btn" data-filter="platforms">Platforms</button>
-        <button class="filter-btn" data-filter="google-business">Google Business</button>
+        <button class="filter-btn is-active" data-filter="all">All templates</button>
+        {% for template in templates %}
+          <button class="filter-btn" data-filter="{{ template.category }}">{{ template.get_category_display }}</button>
+        {% endfor %}
       </div>
 
       <div class="work-grid" data-reveal-stagger>
-
-        <article class="work-card glass" data-category="education" data-title="Sugamama Suga Babies Daycare" data-meta="Education &middot; Childcare &amp; early learning" data-link="https://www.sugamamasugababiesdaycare.org/">
-          <div class="work-window"><i></i><i></i><i></i><span>sugamama..org</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/sugamama-1.jpg,/static/assets/img/work/sugamama-2.jpg,/static/assets/img/work/sugamama-3.jpg">
-            <img src="/static/assets/img/work/sugamama-1.jpg" alt="Sugamama Suga Babies Daycare website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/sugamama-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/sugamama-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
+        {% for template in templates %}
+        <article class="work-card glass" data-category="{{ template.category }}" data-title="{{ template.name }}" data-meta="{{ template.get_category_display }}">
+          <div class="work-window"><i></i><i></i><i></i><span>Live template preview</span></div>
+          <div class="work-stack poster-preview">
+            {% if template.preview_image %}<img src="{{ template.preview_image.url }}" alt="{{ template.name }} template preview" loading="lazy">{% endif %}
           </div>
           <div class="work-body">
-            <span class="work-tag">Education</span>
-            <h3>Sugamama Suga Babies Daycare</h3>
-            <p class="work-client">Childcare &amp; early learning</p>
-            <p>A daycare website built to build parent trust ahead of enrolment and turn visits into enquiries.</p>
-            <a class="work-link" href="https://www.sugamamasugababiesdaycare.org/" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
+            <span class="work-tag">{{ template.get_category_display }}</span>
+            <h3>{{ template.name }}</h3>
+            <p>{{ template.description }}</p>
+            <a class="work-link" href="{% url 'stores:template_preview' template.slug %}" target="_blank" rel="noopener">Preview live <svg><use href="#icon-arrow-up-right"></use></svg></a>
           </div>
         </article>
-
-        <article class="work-card glass" data-category="healthcare" data-title="CrestCare Medical Centre" data-meta="Healthcare &middot; Diagnostic centre, Owerri" data-link="https://crestcaremedicalcenter.vercel.app/">
-          <div class="work-window"><i></i><i></i><i></i><span>crestcare..vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/crestcare-1.jpg,/static/assets/img/work/crestcare-2.jpg,/static/assets/img/work/crestcare-3.jpg">
-            <img src="/static/assets/img/work/crestcare-1.jpg" alt="CrestCare Medical Centre website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/crestcare-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/crestcare-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Healthcare</span>
-            <h3>CrestCare Medical Centre</h3>
-            <p class="work-client">NHIS-accredited diagnostic centre</p>
-            <p>A diagnostics-focused site presenting MRI, CT scan, ultrasound and lab services, with an appointment booking call to action.</p>
-            <a class="work-link" href="https://crestcaremedicalcenter.vercel.app/" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="healthcare" data-title="Guarantee Specialist Dental Clinics" data-meta="Healthcare &middot; Multi-specialty dental practice, Owerri" data-link="https://guarantee-specialist.vercel.app/">
-          <div class="work-window"><i></i><i></i><i></i><span>guarantee-specialist..vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/guarantee-dental-1.jpg,/static/assets/img/work/guarantee-dental-2.jpg,/static/assets/img/work/guarantee-dental-3.jpg">
-            <img src="/static/assets/img/work/guarantee-dental-1.jpg" alt="Guarantee Specialist Dental Clinics website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/guarantee-dental-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/guarantee-dental-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Healthcare</span>
-            <h3>Guarantee Specialist Dental Clinics</h3>
-            <p class="work-client">Multi-specialty dental practice, Owerri</p>
-            <p>A dental practice site built around their guarantee of care, specialties, and appointment bookings.</p>
-            <a class="work-link" href="https://guarantee-specialist.vercel.app/" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass is-featured" data-category="platforms" data-title="NextMedia" data-meta="Platform &middot; News &amp; media publishing" data-link="https://www.nextmediahq.net">
-          <div class="work-window"><i></i><i></i><i></i><span>nextmediahq.net</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/nextmedia-1.jpg,/static/assets/img/work/nextmedia-2.jpg,/static/assets/img/work/nextmedia-3.jpg">
-            <img src="/static/assets/img/work/nextmedia-1.jpg" alt="NextMedia website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/nextmedia-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/nextmedia-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Platform</span>
-            <h3>NextMedia</h3>
-            <p class="work-client">News &amp; media publishing</p>
-            <p>A Django news and media platform aggregating stories across education, sport and global news in one place.</p>
-            <a class="work-link" href="https://www.nextmediahq.net" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="business" data-title="Alifing Power Engineering" data-meta="Business &middot; Electrical &amp; power engineering, Owerri" data-link="https://alifing-power-engineering-site.vercel.app/">
-          <div class="work-window"><i></i><i></i><i></i><span>alifing-power..vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/alifing-1.jpg,/static/assets/img/work/alifing-2.jpg,/static/assets/img/work/alifing-3.jpg">
-            <img src="/static/assets/img/work/alifing-1.jpg" alt="Alifing Power Engineering website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/alifing-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/alifing-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Business</span>
-            <h3>Alifing Power Engineering</h3>
-            <p class="work-client">Electrical &amp; power engineering, Owerri</p>
-            <p>A business site presenting electrical, transformer, UPS and solar installation services, backed by 15+ years in service.</p>
-            <a class="work-link" href="https://alifing-power-engineering-site.vercel.app/" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="business" data-title="Naoberry Signature" data-meta="Business &middot; Bridal &amp; owanbe makeup studio" data-link="https://naoberry-signature.vercel.app/">
-          <div class="work-window"><i></i><i></i><i></i><span>naoberry-signature..vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/naoberry-1.jpg,/static/assets/img/work/naoberry-2.jpg,/static/assets/img/work/naoberry-3.jpg">
-            <img src="/static/assets/img/work/naoberry-1.jpg" alt="Naoberry Signature website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/naoberry-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/naoberry-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Business</span>
-            <h3>Naoberry Signature</h3>
-            <p class="work-client">Bridal &amp; owanbe makeup studio</p>
-            <p>A studio site showcasing bridal glam and owanbe looks, with WhatsApp booking built straight in.</p>
-            <a class="work-link" href="https://naoberry-signature.vercel.app/" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="business" data-title="Eze-Enyia Technical Services" data-meta="Business &middot; Repair &amp; technical services, Owerri" data-link="https://eze-enyia-website.vercel.app/">
-          <div class="work-window"><i></i><i></i><i></i><span>eze-enyia..vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/eze-enyia-1.jpg,/static/assets/img/work/eze-enyia-2.jpg,/static/assets/img/work/eze-enyia-3.jpg">
-            <img src="/static/assets/img/work/eze-enyia-1.jpg" alt="Eze-Enyia Technical Services website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/eze-enyia-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/eze-enyia-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Business</span>
-            <h3>Eze-Enyia Technical Services</h3>
-            <p class="work-client">Repair &amp; technical services, Owerri</p>
-            <p>A business site listing repair services from home electronics to solar inverters and CCTV, with call and WhatsApp CTAs.</p>
-            <a class="work-link" href="https://eze-enyia-website.vercel.app/" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="business" data-title="Princess Pure Honey" data-meta="Business &middot; Natural honey brand" data-link="https://princesspurehoney.vercel.app">
-          <div class="work-window"><i></i><i></i><i></i><span>princesspurehoney..vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/princess-honey-1.jpg,/static/assets/img/work/princess-honey-2.jpg,/static/assets/img/work/princess-honey-3.jpg">
-            <img src="/static/assets/img/work/princess-honey-1.jpg" alt="Princess Pure Honey website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/princess-honey-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/princess-honey-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Business</span>
-            <h3>Princess Pure Honey</h3>
-            <p class="work-client">Natural honey brand</p>
-            <p>A responsive storefront built to promote and sell premium natural honey beyond word of mouth and physical sales.</p>
-            <a class="work-link" href="https://princesspurehoney.vercel.app" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="education" data-title="FUTO BME Departmental Portal" data-meta="Education &middot; Biomedical Engineering Department, FUTO" data-link="https://futobme.vercel.app">
-          <div class="work-window"><i></i><i></i><i></i><span>futobme.vercel.app</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/work/futobme-1.jpg,/static/assets/img/work/futobme-2.jpg,/static/assets/img/work/futobme-3.jpg">
-            <img src="/static/assets/img/work/futobme-1.jpg" alt="FUTO BME Departmental Portal website screenshot" loading="lazy">
-            <img src="/static/assets/img/work/futobme-2.jpg" alt="" loading="lazy">
-            <img src="/static/assets/img/work/futobme-3.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Education</span>
-            <h3>FUTO BME Departmental Portal</h3>
-            <p class="work-client">Biomedical Engineering Department, FUTO</p>
-            <p>A Django portal giving the department a central, always-available resource for students and staff.</p>
-            <a class="work-link" href="https://futobme.vercel.app" target="_blank" rel="noopener">Visit live site <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
-        <article class="work-card glass" data-category="google-business" data-title="Princess Pure Honey &middot; Google Business Profile" data-meta="Google Business &middot; Natural honey brand, Owerri" data-link="https://share.google/sCV5oYhOKGBqFlyGi">
-          <div class="work-window"><i></i><i></i><i></i><span>Google Business Profile</span></div>
-          <div class="work-stack" data-gallery="/static/assets/img/gbp/princess-honey-search.jpg,/static/assets/img/gbp/princess-honey-panel.jpg">
-            <img src="/static/assets/img/gbp/princess-honey-search.jpg" alt="Princess Pure Honey ranking on Google search with its Business Profile" loading="lazy">
-            <img src="/static/assets/img/gbp/princess-honey-panel.jpg" alt="" loading="lazy">
-            <span class="work-stack-hint"><svg><use href="#icon-images"></use></svg>View gallery</span>
-          </div>
-          <div class="work-body">
-            <span class="work-tag">Google Business</span>
-            <h3>Princess Pure Honey</h3>
-            <p class="work-client">Natural honey brand, Owerri</p>
-            <p>Google Business Profile setup and optimisation. Verified, 5.0 rated and mapped, so the brand shows up when customers search nearby.</p>
-            <a class="work-link" href="https://share.google/sCV5oYhOKGBqFlyGi" target="_blank" rel="noopener">View Google profile <svg><use href="#icon-arrow-up-right"></use></svg></a>
-          </div>
-        </article>
-
+        {% endfor %}
       </div>
     </div>
   </section>

@@ -11,6 +11,7 @@
       <a href="#top">Home</a>
       {% for section in sections %}
         {% if section.section_type == 'about' %}<a href="#about">About</a>
+        {% elif section.section_type == 'team' and section.body %}<a href="#team">Team</a>
         {% elif section.section_type == 'services' %}<a href="#services">Services</a>
         {% elif section.section_type == 'gallery' and images %}<a href="#gallery">Gallery</a>
         {% elif section.section_type == 'contact' %}<a href="#contact">Contact</a>

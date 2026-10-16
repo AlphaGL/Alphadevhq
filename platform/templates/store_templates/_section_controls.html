@@ -1,0 +1,7 @@
+{% if is_editor %}
+<span class="section-controls">
+  <button type="button" class="section-move-btn" data-move-section="{{ section.id }}" data-direction="up" aria-label="Move section up">&uarr;</button>
+  <button type="button" class="section-move-btn" data-move-section="{{ section.id }}" data-direction="down" aria-label="Move section down">&darr;</button>
+  <button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>
+</span>
+{% endif %}

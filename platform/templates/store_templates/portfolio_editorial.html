@@ -1,5 +1,5 @@
 {% load static store_extras %}<!doctype html>
-<html lang="en"{% if is_editor %} data-editor data-save-field-url="{% url 'stores:editor_save_field' store.slug %}" data-save-social-url="{% url 'stores:editor_save_social' store.slug %}" data-upload-logo-url="{% url 'stores:editor_upload_logo' store.slug %}" data-add-image-url="{% url 'stores:editor_add_image' store.slug %}" data-toggle-section-url-template="{{ toggle_section_url_tpl }}" data-delete-image-url-template="{{ delete_image_url_tpl }}"{% endif %}>
+<html lang="en"{% if is_editor %} data-editor data-save-field-url="{% url 'stores:editor_save_field' store.slug %}" data-save-social-url="{% url 'stores:editor_save_social' store.slug %}" data-upload-logo-url="{% url 'stores:editor_upload_logo' store.slug %}" data-add-image-url="{% url 'stores:editor_add_image' store.slug %}" data-toggle-section-url-template="{{ toggle_section_url_tpl }}" data-delete-image-url-template="{{ delete_image_url_tpl }}" data-move-section-up-url-template="{{ move_section_up_url_tpl }}" data-move-section-down-url-template="{{ move_section_down_url_tpl }}"{% endif %}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -37,7 +37,7 @@
       <div class="container">
         <div class="pe-section-head">
           <h2>{{ section.get_heading }}</h2><span>01</span>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
+          {% include "store_templates/_section_controls.html" %}
         </div>
         {% if is_editor %}
           <p style="white-space:pre-line" data-editable-field="bio" data-placeholder="Write a sentence or two about your focus and approach" contenteditable="true">{{ store.bio }}</p>
@@ -51,7 +51,7 @@
       <div class="container" data-services-root{% if is_editor %} data-services-editor{% endif %}>
         <div class="pe-section-head">
           <h2>{{ section.get_heading }}</h2><span>02</span>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
+          {% include "store_templates/_section_controls.html" %}
         </div>
         {% if not is_editor %}
           {% with tags=section.body|service_tags %}
@@ -81,7 +81,7 @@
       <div class="container">
         <div class="pe-section-head">
           <h2>{{ section.get_heading }}</h2><span>03</span>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
+          {% include "store_templates/_section_controls.html" %}
         </div>
         <div class="pe-gallery">
           {% for image in images %}
@@ -90,12 +90,15 @@
                 <button type="button" class="gallery-delete-btn" data-delete-image="{{ image.id }}" aria-label="Remove photo">&times;</button>
                 <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
               </div>
+            {% elif is_template_demo %}
+              <div class="gallery-img-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
             {% else %}
               <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
               {% if image.caption %}<p class="pe-gallery-caption">{{ image.caption }}</p>{% endif %}
             {% endif %}
           {% endfor %}
           {% if is_editor %}<div class="gallery-add-tile" data-editable-image="gallery">+</div>{% endif %}
+          {% if is_template_demo %}<p class="gallery-demo-note">Add up to {{ image_limit }} of your own photos here</p>{% endif %}
         </div>
       </div>
     </section>
@@ -104,7 +107,7 @@
       <div class="container">
         <div class="pe-section-head">
           <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
+          {% include "store_templates/_section_controls.html" %}
         </div>
         {% if is_editor %}
           <p data-editable-field="address" data-singleline data-placeholder="Add an address" contenteditable="true">{{ store.address }}</p>
@@ -121,7 +124,7 @@
       <div class="container">
         <div class="pe-section-head">
           <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
+          {% include "store_templates/_section_controls.html" %}
         </div>
         {% if is_editor %}
           <div>
@@ -142,7 +145,7 @@
       <div class="container">
         <div class="pe-section-head">
           <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
+          {% include "store_templates/_section_controls.html" %}
         </div>
         <p>Open for new work. Reach out directly.</p>
         {% if store.whatsapp_url %}<a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="pe-cta">Message on WhatsApp &rarr;</a>{% endif %}

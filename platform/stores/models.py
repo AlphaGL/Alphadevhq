@@ -42,6 +42,7 @@ class StoreTemplate(models.Model):
     example_tagline = models.CharField(max_length=160, blank=True)
     example_bio = models.TextField(blank=True)
     example_services = models.TextField(blank=True, help_text="One service per line")
+    example_team = models.TextField(blank=True, help_text="One team member per line: 'Name — Role'. Only used by templates with a Team section.")
 
     class Meta:
         ordering = ['order']
@@ -167,6 +168,7 @@ class Store(models.Model):
 SECTION_TYPES = [
     ('hero', 'Hero / Introduction'),
     ('about', 'About Us'),
+    ('team', 'Our Team'),
     ('services', 'Services'),
     ('gallery', 'Gallery'),
     ('hours_location', 'Hours & Location'),
@@ -174,7 +176,7 @@ SECTION_TYPES = [
     ('contact', 'Contact / WhatsApp'),
 ]
 
-DEFAULT_SECTION_ORDER = ['hero', 'about', 'services', 'gallery', 'hours_location', 'socials', 'contact']
+DEFAULT_SECTION_ORDER = ['hero', 'about', 'team', 'services', 'gallery', 'hours_location', 'socials', 'contact']
 
 
 class StoreSection(models.Model):

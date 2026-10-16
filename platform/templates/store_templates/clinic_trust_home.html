@@ -1,0 +1,75 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}</title>
+<meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/store-common.css' %}">
+<link rel="stylesheet" href="{% static 'css/store_templates/clinic_trust.css' %}">
+</head>
+<body>
+{% include "store_templates/_preview_watermark.html" %}
+{% include "store_templates/_nav_multi.html" with page="home" cta_label="Book on WhatsApp" %}
+
+<header class="ht-hero" id="top">
+  <div class="container">
+    <span class="ht-eyebrow">{{ store.get_category_display }}</span>
+    <h1 class="ht-name">{{ store.business_name }}</h1>
+    {% if store.tagline %}<p class="ht-tagline">{{ store.tagline }}</p>{% endif %}
+    {% if store.whatsapp_url %}
+      <a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="ht-cta">
+        <svg class="ht-icon" viewBox="0 0 24 24" stroke="#fff"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.6-1.2A9 9 0 0 0 12 21Z" stroke-linejoin="round"/><path d="M8.5 9.3c.2-1 1-1.6 1.7-1.3.4.2.7 1 1 1.7.2.5 0 1-.3 1.3l-.4.4c.4.9 1.3 1.8 2.2 2.2l.4-.4c.3-.3.8-.5 1.3-.3.7.3 1.5.6 1.7 1 .3.7-.3 1.5-1.3 1.7-1.6.4-4.1-.8-5.6-2.3C8 11.9 6.8 9.4 7.2 7.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Book on WhatsApp
+      </a>
+    {% endif %}
+  </div>
+</header>
+
+{% if store.address or store.hours %}
+<div class="ht-info-strip">
+  <div class="container ht-info-strip-inner">
+    {% if store.address %}
+      <span class="ht-info-item">
+        <svg class="ht-icon" viewBox="0 0 24 24"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <strong>Address</strong>
+        <span>&nbsp;{{ store.address }}</span>
+      </span>
+    {% endif %}
+    {% if store.hours %}
+      <span class="ht-info-item">
+        <svg class="ht-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <strong>Hours</strong>
+        <span>&nbsp;{{ store.hours }}</span>
+      </span>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% for section in sections %}
+  {% if section.section_type == 'team' and section.body %}
+    {% include "store_templates/_ct_section_team.html" %}
+  {% endif %}
+{% endfor %}
+
+<section class="ht-section">
+  <div class="container" style="text-align:center">
+    <h2>Learn more</h2>
+    <p style="color:var(--ink-soft);margin-top:8px">See everything we offer, or read more about our practice.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:22px">
+      <a href="{{ services_url }}" class="ht-cta" style="background:transparent;color:var(--accent);border:1px solid var(--line)">Our Services</a>
+      <a href="{{ about_url }}" class="ht-cta" style="background:transparent;color:var(--accent);border:1px solid var(--line)">About &amp; Contact</a>
+    </div>
+  </div>
+</section>
+
+<footer class="ht-footer">
+  <div class="container">Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a></div>
+</footer>
+<script src="{% static 'js/store-common.js' %}" defer></script>
+</body>
+</html>

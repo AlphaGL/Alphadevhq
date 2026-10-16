@@ -10,6 +10,8 @@
   var addImageUrl = root.getAttribute('data-add-image-url');
   var toggleSectionUrlTpl = root.getAttribute('data-toggle-section-url-template');
   var deleteImageUrlTpl = root.getAttribute('data-delete-image-url-template');
+  var moveSectionUpUrlTpl = root.getAttribute('data-move-section-up-url-template');
+  var moveSectionDownUrlTpl = root.getAttribute('data-move-section-down-url-template');
 
   var statusEl = document.querySelector('.editor-status');
   var flashTimer = null;
@@ -139,10 +141,32 @@
     });
   });
 
-  /* ---------------- Services: structured cards (title / subtitle / tag) ---------------- */
-  var servicesRoot = document.querySelector('[data-services-editor]');
-  if (servicesRoot){
-    var grid = servicesRoot.querySelector('.store-services-grid');
+  /* ---------------- Section reorder ---------------- */
+  document.querySelectorAll('[data-move-section]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      if (btn.disabled) return;
+      btn.disabled = true;
+      flashStatus('Moving…');
+      var id = btn.getAttribute('data-move-section');
+      var direction = btn.getAttribute('data-direction');
+      var tpl = direction === 'up' ? moveSectionUpUrlTpl : moveSectionDownUrlTpl;
+      var url = tpl.replace('__ID__', id);
+      postForm(url, {}).then(function(res){
+        // Order changes rearrange the whole page, so just reload rather
+        // than reconstruct the DOM — same approach as image uploads.
+        if (res.ok && res.json.ok) location.reload();
+        else { btn.disabled = false; flashStatus('Could not move section', true); }
+      });
+    });
+  });
+
+  /* ---------------- Structured card lists: title / subtitle / tag
+     (Services, Team — any section storing lines as "Title — subtitle [Tag]") ---------------- */
+  document.querySelectorAll('[data-services-editor]').forEach(function(servicesRoot){
+    var fieldName = servicesRoot.getAttribute('data-services-field') || 'services_body';
+    var grid = servicesRoot.querySelector('.store-services-grid, .store-team-grid');
+    if (!grid) return;
 
     function serializeServices(){
       var lines = [];
@@ -162,7 +186,7 @@
     }
 
     function saveServices(){
-      postForm(saveFieldUrl, { field: 'services_body', value: serializeServices() }).then(function(res){
+      postForm(saveFieldUrl, { field: fieldName, value: serializeServices() }).then(function(res){
         flashStatus(res.ok && res.json.ok ? 'Saved' : 'Could not save', !(res.ok && res.json.ok));
       });
     }
@@ -172,7 +196,7 @@
     });
     grid.addEventListener('keydown', function(e){
       // Both are single-line in storage — a stray newline here would
-      // split into a bogus extra service line when the body is re-parsed.
+      // split into a bogus extra line when the body is re-parsed.
       if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-service-title], [data-service-sub]')){
         e.preventDefault();
         e.target.blur();
@@ -191,18 +215,20 @@
     var addBtn = servicesRoot.querySelector('[data-service-add]');
     if (addBtn){
       addBtn.addEventListener('click', function(){
+        var isTeam = grid.classList.contains('store-team-grid');
         var card = document.createElement('div');
-        card.className = 'store-service-card';
+        card.className = isTeam ? 'store-team-card' : 'store-service-card';
         card.setAttribute('data-service-card', '');
         card.setAttribute('data-tag', '');
         card.innerHTML =
-          '<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove service">&times;</button>' +
-          '<div class="store-service-card-title" data-service-title contenteditable="true">New service</div>' +
-          '<div class="store-service-card-sub" data-service-sub contenteditable="true">Short description</div>';
+          (isTeam ? '<div class="store-team-card-avatar"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>' : '') +
+          '<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove">&times;</button>' +
+          '<div class="' + (isTeam ? 'store-team-card-title' : 'store-service-card-title') + '" data-service-title contenteditable="true">' + (isTeam ? 'New team member' : 'New service') + '</div>' +
+          '<div class="' + (isTeam ? 'store-team-card-sub' : 'store-service-card-sub') + '" data-service-sub contenteditable="true">' + (isTeam ? 'Role' : 'Short description') + '</div>';
         grid.insertBefore(card, addBtn);
         bindRemove(card.querySelector('[data-service-remove]'));
         saveServices();
       });
     }
-  }
+  });
 })();

@@ -1,0 +1,36 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Services — {{ store.business_name }}</title>
+<meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/store-common.css' %}">
+<link rel="stylesheet" href="{% static 'css/store_templates/clinic_trust.css' %}">
+</head>
+<body>
+{% include "store_templates/_preview_watermark.html" %}
+{% include "store_templates/_nav_multi.html" with page="services" cta_label="Book on WhatsApp" %}
+
+<header class="ht-hero" id="top" style="padding-bottom:28px">
+  <div class="container">
+    <span class="ht-eyebrow">{{ store.get_category_display }}</span>
+    <h1 class="ht-name" style="font-size:clamp(28px,5vw,44px)">Our Services</h1>
+  </div>
+</header>
+
+{% for section in sections %}
+  {% if section.section_type == 'services' %}
+    {% include "store_templates/_ct_section_services.html" %}
+  {% endif %}
+{% endfor %}
+
+<footer class="ht-footer">
+  <div class="container">Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a></div>
+</footer>
+<script src="{% static 'js/store-common.js' %}" defer></script>
+</body>
+</html>

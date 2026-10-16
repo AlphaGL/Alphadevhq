@@ -24,7 +24,8 @@ def make_preview_token(store):
 
 def agency_home(request):
     """The real homepage — the full Alpha Dev agency marketing site."""
-    return render(request, 'stores/agency_home.html')
+    templates = StoreTemplate.objects.filter(is_active=True, tier='single').order_by('order')
+    return render(request, 'stores/agency_home.html', {'templates': templates})
 
 
 def privacy_policy(request):
@@ -133,6 +134,11 @@ def builder_theme(request, store_slug=None):
                     if services_section:
                         services_section.body = picked.example_services
                         services_section.save(update_fields=['body'])
+                if picked.example_team:
+                    team_section = store.sections.filter(section_type='team').first()
+                    if team_section:
+                        team_section.body = picked.example_team
+                        team_section.save(update_fields=['body'])
 
             store.save(update_fields=update_fields)
             return redirect('stores:builder_edit', store_slug=store.slug)
@@ -156,7 +162,7 @@ def builder_theme(request, store_slug=None):
 
 
 STORE_TEXT_FIELDS = {'business_name', 'tagline', 'bio', 'phone', 'address', 'hours'}
-SECTION_BODY_FIELDS = {'about_body': 'about', 'services_body': 'services'}
+SECTION_BODY_FIELDS = {'about_body': 'about', 'services_body': 'services', 'team_body': 'team'}
 
 
 def _mark_customized(store):
@@ -186,6 +192,12 @@ def builder_edit(request, store_slug):
     delete_image_url_tpl = reverse(
         'stores:editor_delete_image', args=[store.slug, 999999999],
     ).replace('999999999', '__ID__')
+    move_section_up_url_tpl = reverse(
+        'stores:editor_move_section', args=[store.slug, 999999999, 'up'],
+    ).replace('999999999', '__ID__')
+    move_section_down_url_tpl = reverse(
+        'stores:editor_move_section', args=[store.slug, 999999999, 'down'],
+    ).replace('999999999', '__ID__')
     return render(request, _store_template_name(store), {
         'store': store,
         'sections': store.sections.all(),
@@ -195,6 +207,8 @@ def builder_edit(request, store_slug):
         'editor_social_rows': social_rows,
         'preview_token': make_preview_token(store),
         'toggle_section_url_tpl': toggle_section_url_tpl,
+        'move_section_up_url_tpl': move_section_up_url_tpl,
+        'move_section_down_url_tpl': move_section_down_url_tpl,
         'delete_image_url_tpl': delete_image_url_tpl,
     })
 
@@ -235,6 +249,25 @@ def editor_toggle_section(request, store_slug, section_id):
     section.is_enabled = not section.is_enabled
     section.save(update_fields=['is_enabled'])
     return JsonResponse({'ok': True, 'is_enabled': section.is_enabled})
+
+
+@require_verified
+def editor_move_section(request, store_slug, section_id, direction):
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
+    store = _get_store(request, store_slug)
+    section = get_object_or_404(StoreSection, pk=section_id, store=store)
+    sections = list(store.sections.all())
+    idx = next(i for i, s in enumerate(sections) if s.id == section.id)
+
+    swap_idx = idx - 1 if direction == 'up' else idx + 1
+    if 0 <= swap_idx < len(sections):
+        other = sections[swap_idx]
+        section.order, other.order = other.order, section.order
+        section.save(update_fields=['order'])
+        other.save(update_fields=['order'])
+
+    return JsonResponse({'ok': True})
 
 
 @require_verified
@@ -325,8 +358,9 @@ class _DemoStore:
         self.tagline = tpl.example_tagline
         self.bio = tpl.example_bio
         self.logo = None
-        self.address = ''
-        self.hours = ''
+        self.address = 'Your business address'
+        self.hours = 'Mon–Sat, 9am–6pm'
+        self.phone = '2348012345678'
         self.whatsapp_url = '#'
         self._category_label = dict(TEMPLATE_CATEGORY_CHOICES).get(tpl.category, '')
 
@@ -351,6 +385,13 @@ class _DemoSocialLink:
     url = '#'
 
 
+class _DemoImage:
+    """Stands in for a real StoreImage in the template demo, so the gallery
+    section renders — as placeholder tiles, never a fabricated photo — to
+    show a visitor where their own photos will go, and how many fit."""
+    caption = ''
+
+
 def template_preview(request, slug):
     """Public, unauthenticated demo of a template filled with its own
     example copy — lets a visitor judge the real design before claiming it.
@@ -359,21 +400,27 @@ def template_preview(request, slug):
     demo_store = _DemoStore(tpl)
     sections = [
         _DemoSection('about'),
+        _DemoSection('team', body=tpl.example_team),
         _DemoSection('services', body=tpl.example_services),
+        _DemoSection('gallery'),
+        _DemoSection('hours_location'),
         _DemoSection('socials'),
         _DemoSection('contact'),
     ]
     use_template_url = f"{reverse('stores:builder_new')}?template={tpl.slug}"
+    from billing.models import Plan
+    image_limit = Plan.objects.filter(slug='starter').values_list('image_limit', flat=True).first() or 10
     # ?clean=1 hides the demo banner/watermark — used only by our own
     # screenshot tooling to generate the gallery thumbnail image.
     return render(request, f'store_templates/{tpl.layout_key}.html', {
         'store': demo_store,
         'sections': sections,
-        'images': [],
+        'images': [_DemoImage() for _ in range(min(6, image_limit))],
         'social_links': [_DemoSocialLink()],
         'is_template_demo': not request.GET.get('clean'),
         'use_template_url': use_template_url,
         'template': tpl,
+        'image_limit': image_limit,
     })
 
 
@@ -399,24 +446,72 @@ def preview_store(request, token):
     })
 
 
+def _multi_page_urls(store):
+    """The three real page URLs for a multi-page (Growth tier) template,
+    so each page's nav can link to the others."""
+    return {
+        'home_url': reverse('stores:public_store', args=[store.slug]),
+        'services_url': reverse('stores:public_store_page', args=[store.slug, 'services']),
+        'about_url': reverse('stores:public_store_page', args=[store.slug, 'about']),
+    }
+
+
+def _not_live_response(request, store):
+    """A response to send back if this store isn't publicly viewable right
+    now, or None if it's fine to render."""
+    if store.is_live:
+        return None
+    sub = store.subscription_or_none
+    if sub and sub.status == sub.PAST_DUE and not sub.is_live:
+        return render(request, 'stores/store_paused.html', {'store': store}, status=200)
+    if not store.is_published:
+        return render(request, 'stores/store_not_live.html', {'store': store}, status=200)
+    return render(request, 'stores/store_paused.html', {'store': store}, status=200)
+
+
 def public_store(request, slug):
     store = get_object_or_404(Store, slug=slug)
-
-    if not store.is_live:
-        sub = store.subscription_or_none
-        if sub and sub.status == sub.PAST_DUE and not sub.is_live:
-            return render(request, 'stores/store_paused.html', {'store': store}, status=200)
-        if not store.is_published:
-            return render(request, 'stores/store_not_live.html', {'store': store}, status=200)
-        return render(request, 'stores/store_paused.html', {'store': store}, status=200)
+    not_live = _not_live_response(request, store)
+    if not_live:
+        return not_live
 
     # Tag the request so the visit-counting middleware records this hit.
     request._store_for_visit_count = store
 
     sections = store.sections.filter(is_enabled=True).order_by('order')
-    return render(request, _store_template_name(store), {
+    is_multi = bool(store.template and store.template.tier == 'multi')
+    context = {
         'store': store,
         'sections': sections,
         'images': store.images.all(),
         'social_links': store.social_links.all(),
-    })
+    }
+    if is_multi:
+        context.update(_multi_page_urls(store))
+        template_name = f'store_templates/{store.template.layout_key}_home.html'
+    else:
+        template_name = _store_template_name(store)
+    return render(request, template_name, context)
+
+
+def public_store_page(request, slug, page):
+    if page not in ('services', 'about'):
+        raise Http404
+    store = get_object_or_404(Store, slug=slug)
+    if not store.template or store.template.tier != 'multi':
+        raise Http404
+    not_live = _not_live_response(request, store)
+    if not_live:
+        return not_live
+
+    request._store_for_visit_count = store
+
+    sections = store.sections.filter(is_enabled=True).order_by('order')
+    context = {
+        'store': store,
+        'sections': sections,
+        'images': store.images.all(),
+        'social_links': store.social_links.all(),
+    }
+    context.update(_multi_page_urls(store))
+    return render(request, f'store_templates/{store.template.layout_key}_{page}.html', context)

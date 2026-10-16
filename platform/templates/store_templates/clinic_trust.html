@@ -1,5 +1,5 @@
 {% load static store_extras %}<!doctype html>
-<html lang="en"{% if is_editor %} data-editor data-save-field-url="{% url 'stores:editor_save_field' store.slug %}" data-save-social-url="{% url 'stores:editor_save_social' store.slug %}" data-upload-logo-url="{% url 'stores:editor_upload_logo' store.slug %}" data-add-image-url="{% url 'stores:editor_add_image' store.slug %}" data-toggle-section-url-template="{{ toggle_section_url_tpl }}" data-delete-image-url-template="{{ delete_image_url_tpl }}"{% endif %}>
+<html lang="en"{% if is_editor %} data-editor data-save-field-url="{% url 'stores:editor_save_field' store.slug %}" data-save-social-url="{% url 'stores:editor_save_social' store.slug %}" data-upload-logo-url="{% url 'stores:editor_upload_logo' store.slug %}" data-add-image-url="{% url 'stores:editor_add_image' store.slug %}" data-toggle-section-url-template="{{ toggle_section_url_tpl }}" data-delete-image-url-template="{{ delete_image_url_tpl }}" data-move-section-up-url-template="{{ move_section_up_url_tpl }}" data-move-section-down-url-template="{{ move_section_down_url_tpl }}"{% endif %}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -70,150 +70,19 @@
 
 {% for section in sections %}
   {% if section.section_type == 'about' %}
-    <section class="ht-section{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}" id="about"{% if is_editor %} data-section-wrap{% endif %}>
-      <div class="container">
-        <div class="ht-section-head" style="display:flex;align-items:center;justify-content:space-between">
-          <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
-        </div>
-        <div class="ht-about-grid">
-          <div class="ht-about-body">
-            {% if is_editor %}
-              <p style="white-space:pre-line" data-editable-field="bio" data-placeholder="Write a sentence or two about your practice's story and approach to care" contenteditable="true">{{ store.bio }}</p>
-            {% else %}
-              <p>{{ section.body|default:store.bio|linebreaksbr }}</p>
-            {% endif %}
-          </div>
-          {% if store.tagline or is_editor %}
-          <div class="ht-quote-box">
-            <svg class="ht-quote-mark ht-icon" viewBox="0 0 24 24" width="26" height="26"><path d="M7 7h4v4c0 3-2 5-5 5v-2c1.5 0 2.5-1 2.8-2.3H7V7Zm8 0h4v4c0 3-2 5-5 5v-2c1.5 0 2.5-1 2.8-2.3H15V7Z" fill="currentColor" stroke="none"/></svg>
-            <p{% if is_editor %} data-editable-field="tagline" data-singleline contenteditable="true"{% endif %}>{{ store.tagline }}</p>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </section>
+    {% include "store_templates/_ct_section_about.html" %}
+  {% elif section.section_type == 'team' and section.body or section.section_type == 'team' and is_editor %}
+    {% include "store_templates/_ct_section_team.html" %}
   {% elif section.section_type == 'services' %}
-    <section class="ht-section ht-services{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}" id="services"{% if is_editor %} data-section-wrap{% endif %}>
-      <div class="container" data-services-root{% if is_editor %} data-services-editor{% endif %}>
-        <div class="ht-section-head" style="display:flex;align-items:center;justify-content:space-between">
-          <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
-        </div>
-        {% if not is_editor %}
-          {% with tags=section.body|service_tags %}
-            {% if tags %}
-            <div class="store-pills">
-              <button type="button" class="store-pill is-active" data-tag="all">All</button>
-              {% for tag in tags %}<button type="button" class="store-pill" data-tag="{{ tag }}">{{ tag }}</button>{% endfor %}
-            </div>
-            {% endif %}
-          {% endwith %}
-        {% endif %}
-        <div class="store-services-grid">
-          {% for item in section.body|parse_services %}
-            <div class="store-service-card" data-tag="{{ item.tag }}" data-search-text="{{ item.title }} {{ item.subtitle }}"{% if is_editor %} data-service-card{% endif %}>
-              <span class="ht-service-icon"><svg class="ht-icon" viewBox="0 0 24 24"><path d="M12 6v12M6 12h12" stroke-linecap="round"/></svg></span>
-              <div style="flex:1;min-width:0">
-                {% if is_editor %}<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove service">&times;</button>{% endif %}
-                <div class="store-service-card-title"{% if is_editor %} data-service-title contenteditable="true"{% endif %}>{{ item.title }}</div>
-                {% if item.subtitle or is_editor %}<div class="store-service-card-sub"{% if is_editor %} data-service-sub contenteditable="true"{% endif %}>{{ item.subtitle }}</div>{% endif %}
-              </div>
-            </div>
-          {% endfor %}
-          {% if is_editor %}<div class="service-add-tile" data-service-add>+ Add service</div>{% endif %}
-        </div>
-        {% if not is_editor %}<p class="store-empty-note">No matching services found.</p>{% endif %}
-      </div>
-    </section>
+    {% include "store_templates/_ct_section_services.html" %}
   {% elif section.section_type == 'gallery' and images or section.section_type == 'gallery' and is_editor %}
-    <section class="ht-section{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}" id="gallery"{% if is_editor %} data-section-wrap{% endif %}>
-      <div class="container">
-        <div class="ht-section-head" style="display:flex;align-items:center;justify-content:space-between">
-          <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
-        </div>
-        <div class="ht-gallery">
-          {% for image in images %}
-            {% if is_editor %}
-              <div class="gallery-item">
-                <button type="button" class="gallery-delete-btn" data-delete-image="{{ image.id }}" aria-label="Remove photo">&times;</button>
-                <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
-              </div>
-            {% else %}
-              <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
-            {% endif %}
-          {% endfor %}
-          {% if is_editor %}<div class="gallery-add-tile" data-editable-image="gallery">+</div>{% endif %}
-        </div>
-      </div>
-    </section>
+    {% include "store_templates/_ct_section_gallery.html" %}
   {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours or section.section_type == 'hours_location' and is_editor %}
-    <section class="ht-section{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
-      <div class="container">
-        <div class="ht-section-head" style="display:flex;align-items:center;justify-content:space-between">
-          <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
-        </div>
-        <div class="ht-hours-band">
-          <div class="ht-hours-grid">
-            <div class="ht-hours-cell">
-              <span class="ht-hours-cell-label">Location</span>
-              {% if is_editor %}
-                <p data-editable-field="address" data-singleline data-placeholder="Add an address" contenteditable="true">{{ store.address }}</p>
-              {% else %}
-                <p>{{ store.address }}</p>
-              {% endif %}
-            </div>
-            <div class="ht-hours-cell">
-              <span class="ht-hours-cell-label">Hours</span>
-              {% if is_editor %}
-                <p data-editable-field="hours" data-singleline data-placeholder="Add your hours" contenteditable="true">{{ store.hours }}</p>
-              {% else %}
-                <p>{{ store.hours }}</p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    {% include "store_templates/_ct_section_hours_location.html" %}
   {% elif section.section_type == 'socials' and social_links or section.section_type == 'socials' and is_editor %}
-    <section class="ht-section{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
-      <div class="container">
-        <div class="ht-section-head" style="display:flex;align-items:center;justify-content:space-between">
-          <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
-        </div>
-        {% if is_editor %}
-          <div>
-            {% for row in editor_social_rows %}
-              <div class="editor-social-row">
-                <span class="editor-social-label">{{ row.label }}</span>
-                <span data-social-field="{{ row.platform }}" contenteditable="true">{{ row.url }}</span>
-              </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <div class="ht-socials">{% for link in social_links %}<a href="{{ link.url }}" target="_blank" rel="noopener" class="ht-social-btn">{{ link.get_platform_display }}</a>{% endfor %}</div>
-        {% endif %}
-      </div>
-    </section>
+    {% include "store_templates/_ct_section_socials.html" %}
   {% elif section.section_type == 'contact' %}
-    <section class="ht-section ht-contact{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}" id="contact"{% if is_editor %} data-section-wrap{% endif %}>
-      <div class="container">
-        <div class="ht-section-head" style="justify-content:center">
-          <h2>{{ section.get_heading }}</h2>
-          {% if is_editor %}<button type="button" class="section-toggle-btn" data-toggle-section="{{ section.id }}">{% if section.is_enabled %}Hide section{% else %}Show section{% endif %}</button>{% endif %}
-        </div>
-        <p>Message us on WhatsApp to book an appointment or ask a question.</p>
-        {% if store.whatsapp_url %}
-          <a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="ht-cta">
-            <svg class="ht-icon" viewBox="0 0 24 24" stroke="#fff"><path d="M12 21a9 9 0 1 0-7.8-4.5L3 21l4.6-1.2A9 9 0 0 0 12 21Z" stroke-linejoin="round"/></svg>
-            Book on WhatsApp
-          </a>
-        {% endif %}
-      </div>
-    </section>
+    {% include "store_templates/_ct_section_contact.html" %}
   {% endif %}
 {% endfor %}
 

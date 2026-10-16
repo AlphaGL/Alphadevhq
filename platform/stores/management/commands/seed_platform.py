@@ -27,6 +27,35 @@ class Command(BaseCommand):
                     'Minor procedures — outpatient [Procedures]\n'
                     'Family health plans — monthly [Plans]'
                 ),
+                example_team=(
+                    'Dr. Amaka Obi — Family Medicine\n'
+                    'Dr. Chidi Nwosu — Paediatrics\n'
+                    'Dr. Ifeoma Eze — Internal Medicine'
+                ),
+            ),
+            dict(
+                name='Healthcare & Clinics — Multi-page', slug='clinic-trust-plus', category='healthcare', tier='multi',
+                layout_key='clinic_trust', accent_color='#0F5C56',
+                description='The Healthcare & Clinics design, split across Home, Services and About/Contact pages.',
+                order=0,
+                example_tagline='Trusted diagnostic and family care, close to home',
+                example_bio=(
+                    'For over a decade we have combined modern equipment with a calm, unhurried '
+                    'approach to care. Every visit starts with listening, not a rushed ten-minute slot. '
+                    'Replace this with your own story — how the practice started and what patients can '
+                    'expect when they walk in.'
+                ),
+                example_services=(
+                    'General consultations — walk-in or by appointment [Consultations]\n'
+                    'Lab diagnostics and screening — same-day results [Diagnostics]\n'
+                    'Minor procedures — outpatient [Procedures]\n'
+                    'Family health plans — monthly [Plans]'
+                ),
+                example_team=(
+                    'Dr. Amaka Obi — Family Medicine\n'
+                    'Dr. Chidi Nwosu — Paediatrics\n'
+                    'Dr. Ifeoma Eze — Internal Medicine'
+                ),
             ),
             dict(
                 name='Business & Professional', slug='business-pro', category='business', tier='single',

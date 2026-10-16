@@ -1,0 +1,28 @@
+<section class="ht-section{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}" id="hours-location"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="container">
+    <div class="ht-section-head" style="display:flex;align-items:center;justify-content:space-between">
+      <h2>{{ section.get_heading }}</h2>
+      {% include "store_templates/_section_controls.html" %}
+    </div>
+    <div class="ht-hours-band">
+      <div class="ht-hours-grid">
+        <div class="ht-hours-cell">
+          <span class="ht-hours-cell-label">Location</span>
+          {% if is_editor %}
+            <p data-editable-field="address" data-singleline data-placeholder="Add an address" contenteditable="true">{{ store.address }}</p>
+          {% else %}
+            <p>{{ store.address }}</p>
+          {% endif %}
+        </div>
+        <div class="ht-hours-cell">
+          <span class="ht-hours-cell-label">Hours</span>
+          {% if is_editor %}
+            <p data-editable-field="hours" data-singleline data-placeholder="Add your hours" contenteditable="true">{{ store.hours }}</p>
+          {% else %}
+            <p>{{ store.hours }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
