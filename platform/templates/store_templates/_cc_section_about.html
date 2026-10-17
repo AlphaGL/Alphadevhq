@@ -1,0 +1,43 @@
+<section id="about" class="section-padding bg-slate-50{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <span class="section-tag"><i data-lucide="heart-handshake" class="w-3.5 h-3.5"></i>About Us</span>
+          {% include "store_templates/_section_controls.html" %}
+        </div>
+        <h2 class="font-heading font-bold text-3xl lg:text-4xl text-slate-900 mb-5">{{ section.get_heading }}</h2>
+        {% if is_editor %}
+          <p class="text-slate-600 leading-relaxed mb-6" style="white-space:pre-line" data-editable-field="bio" data-placeholder="Write a sentence or two about your practice's story and approach to care" contenteditable="true">{{ store.bio }}</p>
+        {% else %}
+          <p class="text-slate-600 leading-relaxed mb-6">{{ section.body|default:store.bio|linebreaksbr }}</p>
+        {% endif %}
+        <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary-dark inline-flex">
+          <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+          Book on WhatsApp
+        </a>
+      </div>
+      {% if store.tagline or is_editor %}
+      <div class="relative">
+        <div class="bg-gradient-to-br from-red-600 to-slate-800 rounded-3xl p-1 shadow-2xl">
+          <div class="bg-white rounded-3xl p-10">
+            <svg class="w-8 h-8 text-red-600 mb-4" viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h4v4c0 3-2 5-5 5v-2c1.5 0 2.5-1 2.8-2.3H7V7Zm8 0h4v4c0 3-2 5-5 5v-2c1.5 0 2.5-1 2.8-2.3H15V7Z"/></svg>
+            <p class="font-heading font-semibold text-xl text-slate-800 leading-snug"{% if is_editor %} data-editable-field="tagline" data-singleline contenteditable="true"{% endif %}>{{ store.tagline }}</p>
+          </div>
+        </div>
+        <div class="absolute -bottom-5 -right-4 bg-white rounded-xl p-4 shadow-xl border border-gray-100">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+              <i data-lucide="shield-check" class="w-5 h-5 text-red-600"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-slate-800">Trusted Care</div>
+              <div class="text-xs text-slate-500">{{ store.get_category_display }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>

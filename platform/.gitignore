@@ -25,3 +25,7 @@ media/
 # OS / editor
 .DS_Store
 .vscode/
+
+# Raw third-party reference templates — source material we build fresh
+# Django templates from, never deployed or committed as-is.
+_reference_templates/

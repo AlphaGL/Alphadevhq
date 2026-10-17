@@ -1,0 +1,47 @@
+<div class="topbar py-2 text-white text-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+        <strong class="text-red-400">Need us urgently?</strong>
+        <a href="{{ store.whatsapp_url }}" target="_blank" rel="noopener" class="hover:text-red-400 transition-colors">{{ store.phone }}</a>
+      </div>
+      <div class="flex items-center gap-2 text-slate-400 text-xs">
+        <span>{{ store.hours }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav id="navbar" class="sticky top-0 z-50 bg-transparent transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 lg:h-18">
+      <a href="{{ nav_pages.0.url }}" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 bg-red-600 rounded-lg flex items-center justify-center shadow-lg">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+        </div>
+        <div class="font-heading font-extrabold text-lg leading-tight break-words min-w-0">{{ store.business_name }}</div>
+      </a>
+      <div class="hidden lg:flex items-center gap-8">
+        {% for p in nav_pages %}
+          <a href="{{ p.url }}" class="nav-link text-sm{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
+        {% endfor %}
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="hidden lg:flex btn-primary text-sm py-2.5 px-5">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          Book on WhatsApp
+        </a>
+        <button type="button" class="store-nav-toggle lg:hidden p-2" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="store-nav-links hidden flex-col gap-1 pb-4">
+      {% for p in nav_pages %}
+        <a href="{{ p.url }}" class="nav-link py-2.5 text-sm font-medium{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
+      {% endfor %}
+      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary mt-3 justify-center">Book on WhatsApp</a>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,24 @@
+<section id="socials" class="section-padding bg-slate-50{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="flex items-center justify-center gap-3 mb-6">
+      <span class="section-tag"><i data-lucide="share-2" class="w-3.5 h-3.5"></i>Follow Us</span>
+      {% include "store_templates/_section_controls.html" %}
+    </div>
+    {% if is_editor %}
+      <div class="max-w-md mx-auto text-left">
+        {% for row in editor_social_rows %}
+          <div class="editor-social-row">
+            <span class="editor-social-label">{{ row.label }}</span>
+            <span data-social-field="{{ row.platform }}" contenteditable="true">{{ row.url }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="flex flex-wrap gap-3 justify-center">
+        {% for link in social_links %}
+          <a href="{{ link.url }}" target="_blank" rel="noopener" class="btn-outline-dark">{{ link.get_platform_display }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>

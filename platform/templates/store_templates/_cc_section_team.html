@@ -1,0 +1,24 @@
+{% load store_extras %}<section id="team" class="section-padding bg-slate-50{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-services-root{% if is_editor %} data-services-editor data-services-field="team_body"{% endif %}>
+    <div class="text-center mb-12">
+      <span class="section-tag mb-4"><i data-lucide="users" class="w-3.5 h-3.5"></i>Our Team</span>
+      <div class="flex items-center justify-center gap-3 mt-3">
+        <h2 class="font-heading font-bold text-3xl lg:text-4xl text-slate-900">{{ section.get_heading }}</h2>
+        {% include "store_templates/_section_controls.html" %}
+      </div>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 store-team-grid">
+      {% for item in section.body|parse_services %}
+        <div class="store-team-card"{% if is_editor %} data-service-card{% endif %}>
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+            <i data-lucide="stethoscope" class="w-6 h-6 text-red-600"></i>
+          </div>
+          {% if is_editor %}<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove team member">&times;</button>{% endif %}
+          <h3 class="font-heading font-bold text-xl text-slate-800 mb-1 store-team-card-title"{% if is_editor %} data-service-title contenteditable="true"{% endif %}>{{ item.title }}</h3>
+          {% if item.subtitle or is_editor %}<p class="text-slate-500 text-sm leading-relaxed store-team-card-sub"{% if is_editor %} data-service-sub contenteditable="true"{% endif %}>{{ item.subtitle }}</p>{% endif %}
+        </div>
+      {% endfor %}
+      {% if is_editor %}<div class="service-add-tile" data-service-add>+ Add team member</div>{% endif %}
+    </div>
+  </div>
+</section>

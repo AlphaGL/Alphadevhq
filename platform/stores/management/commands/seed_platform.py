@@ -10,11 +10,11 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         templates = [
             dict(
-                name='Healthcare & Clinics', slug='clinic-trust', category='medical', tier='single',
-                layout_key='clinic_trust', accent_color='#0F5C56',
-                description='Calm, credible layout for clinics, hospitals and private practices.',
+                name='Healthcare & Clinics', slug='cardiocare', category='medical', tier='single',
+                layout_key='cardiocare', accent_color='#DC2626',
+                description='Bold, animated layout for clinics, hospitals and specialist practices.',
                 order=0,
-                example_tagline='Trusted diagnostic and family care, close to home',
+                example_tagline='Expert, compassionate care for every patient, every time',
                 example_bio=(
                     'For over a decade we have combined modern equipment with a calm, unhurried '
                     'approach to care. Every visit starts with listening, not a rushed ten-minute slot. '

@@ -1,0 +1,35 @@
+{% load store_extras %}<section id="services" class="section-padding bg-white{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-services-root{% if is_editor %} data-services-editor{% endif %}>
+    <div class="text-center mb-12">
+      <span class="section-tag mb-4"><i data-lucide="heart-pulse" class="w-3.5 h-3.5"></i>Our Services</span>
+      <div class="flex items-center justify-center gap-3 mt-3">
+        <h2 class="font-heading font-bold text-3xl lg:text-4xl text-slate-900">{{ section.get_heading }}</h2>
+        {% include "store_templates/_section_controls.html" %}
+      </div>
+    </div>
+    {% if not is_editor %}
+      {% with tags=section.body|service_tags %}
+        {% if tags %}
+        <div class="flex flex-wrap gap-2 justify-center mb-10">
+          <button type="button" class="store-pill is-active" data-tag="all">All</button>
+          {% for tag in tags %}<button type="button" class="store-pill" data-tag="{{ tag }}">{{ tag }}</button>{% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 store-services-grid">
+      {% for item in section.body|parse_services %}
+        <div class="store-service-card group" data-tag="{{ item.tag }}" data-search-text="{{ item.title }} {{ item.subtitle }}"{% if is_editor %} data-service-card{% endif %}>
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-red-600 transition-colors">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" class="group-hover:stroke-white transition-colors"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+          </div>
+          {% if is_editor %}<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove service">&times;</button>{% endif %}
+          <h3 class="font-heading font-semibold text-lg text-slate-800 mb-2 store-service-card-title"{% if is_editor %} data-service-title contenteditable="true"{% endif %}>{{ item.title }}</h3>
+          {% if item.subtitle or is_editor %}<p class="text-slate-500 text-sm leading-relaxed store-service-card-sub"{% if is_editor %} data-service-sub contenteditable="true"{% endif %}>{{ item.subtitle }}</p>{% endif %}
+        </div>
+      {% endfor %}
+      {% if is_editor %}<div class="service-add-tile" data-service-add>+ Add service</div>{% endif %}
+    </div>
+    {% if not is_editor %}<p class="store-empty-note text-center text-slate-500 mt-6">No matching services found.</p>{% endif %}
+  </div>
+</section>

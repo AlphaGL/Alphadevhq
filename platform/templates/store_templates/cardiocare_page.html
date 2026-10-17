@@ -1,0 +1,111 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.is_home %}{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}{% else %}{{ page.label }} — {{ store.business_name }}{% endif %}</title>
+<meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+<link rel="stylesheet" href="{% static 'css/store-common.css' %}">
+<link rel="stylesheet" href="{% static 'css/store_templates/cardiocare.css' %}">
+<style>body{font-family:Inter,sans-serif}.font-heading,h1,h2,h3,h4{font-family:Outfit,sans-serif}</style>
+</head>
+<body>
+{% include "store_templates/_preview_watermark.html" %}
+{% include "store_templates/_cc_nav_multi.html" %}
+
+{% if page.is_home %}
+<header id="home" class="hero-section flex items-center relative pt-4">
+  <div class="absolute top-20 right-16 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-40 left-10 w-56 h-56 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-28 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <span class="hero-badge mb-6"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i>{{ store.get_category_display }}</span>
+        <h1 class="font-heading font-extrabold text-4xl lg:text-5xl text-white leading-tight mb-6 mt-4 break-words">{{ store.business_name }}</h1>
+        {% if store.tagline %}<p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg">{{ store.tagline }}</p>{% endif %}
+        <div class="flex flex-wrap gap-4">
+          <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary text-base py-3.5 px-7">
+            <i data-lucide="calendar-plus" class="w-5 h-5"></i>Book on WhatsApp
+          </a>
+          <a href="{{ nav_pages.1.url }}" class="btn-outline text-base py-3.5 px-7">
+            <i data-lucide="compass" class="w-5 h-5"></i>Explore Services
+          </a>
+        </div>
+      </div>
+      <div class="hidden lg:flex justify-center relative">
+        <svg width="280" height="280" viewBox="0 0 84 84" fill="none">
+          <path d="M36 62s-28-18-28-36a16 16 0 0132 0 16 16 0 0132 0c0 18-28 36-28 36z" fill="#DC2626" opacity="0.9"/>
+        </svg>
+        <svg class="absolute bottom-6 w-64" viewBox="0 0 260 60">
+          <path fill="none" stroke="#fff" stroke-width="2.5" opacity="0.5" d="M0,30 L40,30 L50,30 L55,10 L60,50 L65,5 L72,55 L78,30 L120,30 L130,30 L135,10 L140,50 L145,5 L152,55 L158,30 L200,30 L210,30 L215,10 L220,50 L225,5 L232,55 L238,30 L260,30" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+{% if store.phone %}
+<div class="bg-red-600 py-4">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 text-white">
+        <span class="w-3 h-3 bg-white rounded-full animate-pulse"></span>
+        <span class="font-heading font-semibold text-base">Need urgent care?</span>
+        <span class="text-red-200 text-sm hidden md:block">Reach us any time via WhatsApp.</span>
+      </div>
+      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="bg-white text-red-600 font-heading font-bold px-6 py-2.5 rounded-lg hover:bg-red-50 transition-all text-sm whitespace-nowrap flex items-center gap-2">
+        <i data-lucide="phone-call" class="w-4 h-4"></i>Message Us Now
+      </a>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% else %}
+<header class="hero-section flex items-center" style="min-height:40vh">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+    <span class="hero-badge mb-4"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i>{{ store.get_category_display }}</span>
+    <h1 class="font-heading font-extrabold text-3xl lg:text-4xl text-white leading-tight mt-4">{{ page.label }}</h1>
+  </div>
+</header>
+{% endif %}
+
+{% for section in sections %}
+  {% if section.section_type == 'about' %}
+    {% include "store_templates/_cc_section_about.html" %}
+  {% elif section.section_type == 'services' %}
+    {% include "store_templates/_cc_section_services.html" %}
+  {% elif section.section_type == 'team' and section.body %}
+    {% include "store_templates/_cc_section_team.html" %}
+  {% elif section.section_type == 'gallery' and images %}
+    {% include "store_templates/_cc_section_gallery.html" %}
+  {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours %}
+    {% include "store_templates/_cc_section_hours_location.html" %}
+  {% elif section.section_type == 'socials' and social_links %}
+    {% include "store_templates/_cc_section_socials.html" %}
+  {% elif section.section_type == 'contact' %}
+    {% include "store_templates/_cc_section_contact.html" %}
+  {% endif %}
+{% endfor %}
+
+<footer class="text-white py-14">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="font-heading font-bold text-xl mb-2">{{ store.business_name }}</div>
+    <div class="text-slate-400 text-sm">Built with <a href="{% url 'stores:store_landing' %}" class="text-red-400">Alpha Dev</a></div>
+  </div>
+</footer>
+
+<script src="{% static 'js/store-common.js' %}" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  if (window.lucide) lucide.createIcons();
+  if (window.AOS) AOS.init({ once: true, duration: 600 });
+});
+</script>
+</body>
+</html>

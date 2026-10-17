@@ -1,0 +1,35 @@
+<section id="hours-location" class="section-padding bg-slate-50{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <span class="section-tag mb-4"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i>Visit Us</span>
+      <div class="flex items-center justify-center gap-3 mt-3">
+        <h2 class="font-heading font-bold text-3xl lg:text-4xl text-slate-900">{{ section.get_heading }}</h2>
+        {% include "store_templates/_section_controls.html" %}
+      </div>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      <div class="store-service-card text-center">
+        <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="map-pin" class="w-7 h-7 text-blue-600"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-base text-slate-800 mb-2">Location</h3>
+        {% if is_editor %}
+          <p class="text-slate-600 text-sm" data-editable-field="address" data-singleline data-placeholder="Add an address" contenteditable="true">{{ store.address }}</p>
+        {% else %}
+          <p class="text-slate-600 text-sm">{{ store.address }}</p>
+        {% endif %}
+      </div>
+      <div class="store-service-card text-center">
+        <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="clock" class="w-7 h-7 text-green-600"></i>
+        </div>
+        <h3 class="font-heading font-semibold text-base text-slate-800 mb-2">Working Hours</h3>
+        {% if is_editor %}
+          <p class="text-slate-600 text-sm" data-editable-field="hours" data-singleline data-placeholder="Add your hours" contenteditable="true">{{ store.hours }}</p>
+        {% else %}
+          <p class="text-slate-600 text-sm">{{ store.hours }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
