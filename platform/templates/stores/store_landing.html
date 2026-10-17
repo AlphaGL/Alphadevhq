@@ -93,18 +93,14 @@
 })();
 </script>
 
-<div class="platform-wide" style="margin-top:70px">
-  <h2 class="section-title" style="text-align:center">Plans</h2>
-  <div class="plan-grid">
+<div class="platform-narrow" style="margin-top:70px;text-align:center">
+  <h2 class="section-title">Plans</h2>
+  <p class="platform-sub">Pick a template and start designing for free — pay only when you're ready to publish.</p>
+  <div class="plan-teaser-row">
     {% for plan in plans %}
-      <div class="platform-card glass">
-        <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">{{ plan.name }}</h3>
-        <p class="platform-sub">{{ plan.description }}</p>
-        <div class="plan-price">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
-        <ul class="plan-features">
-          {% for f in plan.features %}<li>&#8226; {{ f }}</li>{% endfor %}
-        </ul>
-        <a href="{% url 'accounts:signup' %}" class="btn btn-ghost btn-block">Get started</a>
+      <div class="plan-teaser-chip">
+        <strong>{{ plan.name }}</strong>
+        <span>&#8358;{{ plan.price|floatformat:0 }}<small>/mo</small></span>
       </div>
     {% endfor %}
   </div>
