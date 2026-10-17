@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}</title>
+<title>{% if page.is_home %}{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}{% else %}{{ page.label }} — {{ store.business_name }}{% endif %}</title>
 <meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
 <link rel="icon" href="{% static 'favicon.ico' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,8 +13,9 @@
 </head>
 <body>
 {% include "store_templates/_preview_watermark.html" %}
-{% include "store_templates/_nav_multi.html" with page="home" cta_label="Book on WhatsApp" %}
+{% include "store_templates/_nav_multi.html" with nav_pages=nav_pages current_slug=page.slug cta_label="Book on WhatsApp" %}
 
+{% if page.is_home %}
 <header class="ht-hero" id="top">
   <div class="container">
     <span class="ht-eyebrow">{{ store.get_category_display }}</span>
@@ -49,23 +50,46 @@
   </div>
 </div>
 {% endif %}
+{% else %}
+<header class="ht-hero" id="top" style="padding-bottom:28px">
+  <div class="container">
+    <span class="ht-eyebrow">{{ store.get_category_display }}</span>
+    <h1 class="ht-name" style="font-size:clamp(28px,5vw,44px)">{{ page.label }}</h1>
+  </div>
+</header>
+{% endif %}
 
 {% for section in sections %}
-  {% if section.section_type == 'team' and section.body %}
+  {% if section.section_type == 'about' %}
+    {% include "store_templates/_ct_section_about.html" %}
+  {% elif section.section_type == 'team' and section.body %}
     {% include "store_templates/_ct_section_team.html" %}
+  {% elif section.section_type == 'services' %}
+    {% include "store_templates/_ct_section_services.html" %}
+  {% elif section.section_type == 'gallery' and images %}
+    {% include "store_templates/_ct_section_gallery.html" %}
+  {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours %}
+    {% include "store_templates/_ct_section_hours_location.html" %}
+  {% elif section.section_type == 'socials' and social_links %}
+    {% include "store_templates/_ct_section_socials.html" %}
+  {% elif section.section_type == 'contact' %}
+    {% include "store_templates/_ct_section_contact.html" %}
   {% endif %}
 {% endfor %}
 
+{% if page.is_home %}
 <section class="ht-section">
   <div class="container" style="text-align:center">
     <h2>Learn more</h2>
     <p style="color:var(--ink-soft);margin-top:8px">See everything we offer, or read more about our practice.</p>
     <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:22px">
-      <a href="{{ services_url }}" class="ht-cta" style="background:transparent;color:var(--accent);border:1px solid var(--line)">Our Services</a>
-      <a href="{{ about_url }}" class="ht-cta" style="background:transparent;color:var(--accent);border:1px solid var(--line)">About &amp; Contact</a>
+      {% for p in nav_pages %}
+        {% if p.slug != page.slug %}<a href="{{ p.url }}" class="ht-cta" style="background:transparent;color:var(--accent);border:1px solid var(--line)">{{ p.label }}</a>{% endif %}
+      {% endfor %}
     </div>
   </div>
 </section>
+{% endif %}
 
 <footer class="ht-footer">
   <div class="container">Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a></div>

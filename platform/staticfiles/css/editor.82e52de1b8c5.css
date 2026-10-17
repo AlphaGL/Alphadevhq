@@ -38,6 +38,33 @@
 .editor-status.is-visible{ opacity: 1; }
 .editor-status.is-error{ color: #ff8a8a; }
 
+.editor-upgrade-banner{
+  position: sticky;
+  top: 45px;
+  z-index: 299;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 10px 20px;
+  background: #17754f;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+}
+.editor-upgrade-banner strong{ font-weight: 700; }
+.editor-upgrade-btn{
+  flex: none;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: #fff;
+  color: #0b0b0c;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
 /* Editable text: dashed outline on hover, solid on focus, so it's obvious
    what's clickable without looking like permanently-broken form fields. */
 [data-editor] [contenteditable]{

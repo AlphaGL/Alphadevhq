@@ -35,7 +35,7 @@ urlpatterns = [
     path('preview/<str:token>/', views.preview_store, name='preview_store'),
 
     # Extra pages for multi-page (Growth tier) templates only.
-    path('<slug:slug>/<str:page>/', views.public_store_page, name='public_store_page'),
+    path('<slug:slug>/<str:page_slug>/', views.public_store_page, name='public_store_page'),
 
     # Catch-all public store page — must stay last.
     path('<slug:slug>/', views.public_store, name='public_store'),

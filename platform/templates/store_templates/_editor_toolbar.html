@@ -8,5 +8,11 @@
     <a href="{% url 'stores:dashboard' store.slug %}" class="editor-primary">Done</a>
   </div>
 </div>
+{% if page_upgrade %}
+<div class="editor-upgrade-banner">
+  <span>Your site is currently <strong>{{ page_upgrade.current_summary }}</strong>. Upgrade to <strong>{{ page_upgrade.plan.name }}</strong> (&#8358;{{ page_upgrade.plan.price|floatformat:0 }}/month) to unlock {{ page_upgrade.next_summary }}.</span>
+  <a href="{% url 'billing:choose_plan' store.slug %}" class="editor-upgrade-btn">Upgrade &rarr;</a>
+</div>
+{% endif %}
 {% csrf_token %}
 <script src="{% static 'js/editor.js' %}" defer></script>

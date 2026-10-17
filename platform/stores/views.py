@@ -220,6 +220,7 @@ def builder_edit(request, store_slug):
     move_section_down_url_tpl = reverse(
         'stores:editor_move_section', args=[store.slug, 999999999, 'down'],
     ).replace('999999999', '__ID__')
+    from . import page_plans
     return render(request, _store_template_name(store), {
         'store': store,
         'sections': store.sections.all(),
@@ -232,6 +233,7 @@ def builder_edit(request, store_slug):
         'move_section_up_url_tpl': move_section_up_url_tpl,
         'move_section_down_url_tpl': move_section_down_url_tpl,
         'delete_image_url_tpl': delete_image_url_tpl,
+        'page_upgrade': page_plans.next_page_upgrade(store),
     })
 
 
@@ -468,16 +470,6 @@ def preview_store(request, token):
     })
 
 
-def _multi_page_urls(store):
-    """The three real page URLs for a multi-page (Growth tier) template,
-    so each page's nav can link to the others."""
-    return {
-        'home_url': reverse('stores:public_store', args=[store.slug]),
-        'services_url': reverse('stores:public_store_page', args=[store.slug, 'services']),
-        'about_url': reverse('stores:public_store_page', args=[store.slug, 'about']),
-    }
-
-
 def _not_live_response(request, store):
     """A response to send back if this store isn't publicly viewable right
     now, or None if it's fine to render."""
@@ -491,6 +483,30 @@ def _not_live_response(request, store):
     return render(request, 'stores/store_paused.html', {'store': store}, status=200)
 
 
+def _multi_page_template_name(store):
+    """The shared multi-page shell for this store's template, or None if
+    that template hasn't built one yet (falls back to the single page)."""
+    from django.template import TemplateDoesNotExist
+    from django.template.loader import get_template
+    name = f'store_templates/{store.template.layout_key}_page.html'
+    try:
+        get_template(name)
+    except TemplateDoesNotExist:
+        return None
+    return name
+
+
+def _nav_pages_for(store, plan):
+    pages = []
+    for i, p in enumerate(plan):
+        url = (
+            reverse('stores:public_store', args=[store.slug]) if i == 0
+            else reverse('stores:public_store_page', args=[store.slug, p['slug']])
+        )
+        pages.append({**p, 'url': url})
+    return pages
+
+
 def public_store(request, slug):
     store = get_object_or_404(Store, slug=slug)
     not_live = _not_live_response(request, store)
@@ -500,40 +516,49 @@ def public_store(request, slug):
     # Tag the request so the visit-counting middleware records this hit.
     request._store_for_visit_count = store
 
-    sections = store.sections.filter(is_enabled=True).order_by('order')
-    is_multi = bool(store.template and store.template.tier == 'multi')
-    context = {
-        'store': store,
-        'sections': sections,
-        'images': store.images.all(),
-        'social_links': store.social_links.all(),
-    }
-    if is_multi:
-        context.update(_multi_page_urls(store))
-        template_name = f'store_templates/{store.template.layout_key}_home.html'
-    else:
-        template_name = _store_template_name(store)
-    return render(request, template_name, context)
+    from . import page_plans
+    all_sections = store.sections.filter(is_enabled=True).order_by('order')
+    plan = page_plans.page_plan_for(store.page_limit)
+    template_name = _multi_page_template_name(store) if plan else None
+
+    context = {'store': store, 'images': store.images.all(), 'social_links': store.social_links.all()}
+    if template_name:
+        home = plan[0]
+        context['sections'] = all_sections.filter(section_type__in=home['section_types'])
+        context['nav_pages'] = _nav_pages_for(store, plan)
+        context['page'] = {**home, 'is_home': True}
+        return render(request, template_name, context)
+
+    context['sections'] = all_sections
+    return render(request, _store_template_name(store), context)
 
 
-def public_store_page(request, slug, page):
-    if page not in ('services', 'about'):
-        raise Http404
+def public_store_page(request, slug, page_slug):
     store = get_object_or_404(Store, slug=slug)
-    if not store.template or store.template.tier != 'multi':
+
+    from . import page_plans
+    plan = page_plans.page_plan_for(store.page_limit)
+    template_name = _multi_page_template_name(store) if plan else None
+    if not plan or not template_name:
         raise Http404
+    matches = [p for p in plan if p['slug'] == page_slug]
+    if not matches or page_slug == plan[0]['slug']:
+        raise Http404
+    page = matches[0]
+
     not_live = _not_live_response(request, store)
     if not_live:
         return not_live
 
     request._store_for_visit_count = store
 
-    sections = store.sections.filter(is_enabled=True).order_by('order')
+    all_sections = store.sections.filter(is_enabled=True).order_by('order')
     context = {
         'store': store,
-        'sections': sections,
         'images': store.images.all(),
         'social_links': store.social_links.all(),
+        'sections': all_sections.filter(section_type__in=page['section_types']),
+        'nav_pages': _nav_pages_for(store, plan),
+        'page': {**page, 'is_home': False},
     }
-    context.update(_multi_page_urls(store))
-    return render(request, f'store_templates/{store.template.layout_key}_{page}.html', context)
+    return render(request, template_name, context)
