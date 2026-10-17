@@ -1,0 +1,22 @@
+<section id="socials" class="container py-5 text-center{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+    <span class="ve-tag">Follow Us</span>
+    {% include "store_templates/_section_controls.html" %}
+  </div>
+  {% if is_editor %}
+    <div class="mx-auto text-start" style="max-width:420px">
+      {% for row in editor_social_rows %}
+        <div class="editor-social-row">
+          <span class="editor-social-label">{{ row.label }}</span>
+          <span data-social-field="{{ row.platform }}" contenteditable="true">{{ row.url }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="d-flex flex-wrap gap-2 justify-content-center">
+      {% for link in social_links %}
+        <a href="{{ link.url }}" target="_blank" rel="noopener" class="ve-btn-ghost">{{ link.get_platform_display }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>

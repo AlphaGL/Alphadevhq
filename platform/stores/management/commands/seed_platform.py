@@ -102,6 +102,29 @@ class Command(BaseCommand):
                     'Tope Adeyemi — Client Success'
                 ),
             ),
+            dict(
+                name='VaultEdge', slug='vaultedge', category='business', tier='single',
+                layout_key='business+professional/vaultedge/vaultedge', accent_color='#D4A017',
+                description='Polished navy & gold corporate layout for consultants and professional firms.',
+                order=4,
+                example_tagline='Confident, professional service you can rely on',
+                example_bio=(
+                    'We combine deep expertise with a client-first approach to deliver outcomes that '
+                    'consistently exceed expectations — all while keeping your interests first. Replace '
+                    'this with your own story and what makes your business the right choice.'
+                ),
+                example_services=(
+                    'Strategic planning — tailored to your goals [Popular]\n'
+                    'Advisory & consulting — ongoing or one-off [Popular]\n'
+                    'Risk & compliance review [Specialist]\n'
+                    'Flexible retainers for returning clients [Plans]'
+                ),
+                example_team=(
+                    'Alex Morgan — Managing Partner\n'
+                    'Sarah Patel — Senior Advisor\n'
+                    'James Liu — Client Relations'
+                ),
+            ),
         ]
         for data in templates:
             StoreTemplate.objects.update_or_create(slug=data['slug'], defaults=data)

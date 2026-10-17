@@ -1,0 +1,23 @@
+<nav class="navbar ve-navbar fixed-top py-3 navbar-expand-lg">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="{{ nav_pages.0.url }}" class="d-flex align-items-center gap-2 text-decoration-none" style="min-width:0">
+      <span class="ve-logo-icon flex-shrink-0">{{ store.business_name|slice:":1"|upper }}</span>
+      <span class="fw-bold m-0 ve-brand text-break">{{ store.business_name }}</span>
+    </a>
+    <ul class="nav d-none d-lg-flex gap-1">
+      {% for p in nav_pages %}
+        <li class="nav-item"><a class="nav-link ve-nav-link{% if p.slug == current_slug %} is-current{% endif %}" href="{{ p.url }}">{{ p.label }}</a></li>
+      {% endfor %}
+    </ul>
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="ve-btn px-4 d-none d-lg-block">Get Started</a>
+    <button type="button" class="store-nav-toggle d-lg-none" aria-label="Menu">
+      <i class="bi bi-list fs-1"></i>
+    </button>
+  </div>
+  <div class="store-nav-links d-none flex-column gap-2 px-4 pt-3" style="background:var(--ve-dark)">
+    {% for p in nav_pages %}
+      <a href="{{ p.url }}" class="ve-nav-link{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
+    {% endfor %}
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="ve-btn text-center mb-3">Get Started</a>
+  </div>
+</nav>

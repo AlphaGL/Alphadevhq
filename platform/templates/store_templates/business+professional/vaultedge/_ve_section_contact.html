@@ -1,0 +1,16 @@
+<section id="contact" class="container py-5{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="ve-cta-box text-center">
+    <div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+      <span class="ve-tag" style="color:#f3d78a">Contact Us</span>
+      {% include "store_templates/_section_controls.html" %}
+    </div>
+    <h2 class="fw-bold mb-3">{{ section.get_heading }}</h2>
+    <p class="mb-3" style="opacity:.85">Ready to get started? Reach out and we'll take it from there.</p>
+    {% if is_editor %}
+      <span class="fw-bold fs-5 d-block mb-4" data-editable-field="phone" data-singleline data-placeholder="2348012345678" contenteditable="true">{{ store.phone }}</span>
+    {% endif %}
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="ve-btn px-4">
+      <i class="bi bi-whatsapp me-2"></i>Message Us on WhatsApp
+    </a>
+  </div>
+</section>
