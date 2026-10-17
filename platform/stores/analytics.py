@@ -124,6 +124,10 @@ def renewal_status(subscription):
     if not subscription:
         return None
     now = timezone.now()
+    if subscription.status == subscription.TRIALING and subscription.current_period_end:
+        days_left = (subscription.current_period_end - now).days
+        urgency = 'critical' if days_left <= 1 else 'warning'
+        return {'label': f'Free trial — {max(days_left, 0)} day{"s" if days_left != 1 else ""} left, pick a plan to stay live', 'urgency': urgency}
     if subscription.status == subscription.ACTIVE and subscription.current_period_end:
         days_left = (subscription.current_period_end - now).days
         urgency = 'critical' if days_left <= 3 else 'warning' if days_left <= 7 else 'ok'

@@ -45,7 +45,7 @@ class Subscription(models.Model):
     PAUSED = 'paused'
     CANCELLED = 'cancelled'
     STATUS_CHOICES = [
-        (TRIALING, 'Trialing (building, not yet live)'),
+        (TRIALING, 'Trialing (live for free, one-time, until the trial ends)'),
         (ACTIVE, 'Active'),
         (PAST_DUE, 'Past due (grace period)'),
         (PAUSED, 'Paused'),
@@ -58,6 +58,7 @@ class Subscription(models.Model):
     PERIOD_DAYS = {MONTHLY: 30, ANNUAL: 365}
 
     GRACE_DAYS = 5
+    TRIAL_DAYS = 7
 
     store = models.OneToOneField('stores.Store', on_delete=models.CASCADE, related_name='subscription')
     plan = models.ForeignKey(Plan, on_delete=models.PROTECT, related_name='subscriptions')
@@ -82,9 +83,18 @@ class Subscription(models.Model):
         """Whether the public store page should actually be reachable."""
         if self.status == self.ACTIVE:
             return True
+        if self.status == self.TRIALING:
+            return bool(self.current_period_end and timezone.now() < self.current_period_end)
         if self.status == self.PAST_DUE:
             return bool(self.grace_period_end and timezone.now() < self.grace_period_end)
         return False
+
+    @property
+    def trial_days_left(self):
+        if self.status != self.TRIALING or not self.current_period_end:
+            return 0
+        remaining = self.current_period_end - timezone.now()
+        return max(0, remaining.days + (1 if remaining.seconds > 0 else 0))
 
     def mark_past_due(self):
         self.status = self.PAST_DUE
@@ -94,6 +104,12 @@ class Subscription(models.Model):
     def mark_active(self, period_end):
         self.status = self.ACTIVE
         self.current_period_end = period_end
+        self.grace_period_end = None
+        self.save(update_fields=['status', 'current_period_end', 'grace_period_end'])
+
+    def start_trial(self):
+        self.status = self.TRIALING
+        self.current_period_end = timezone.now() + timezone.timedelta(days=self.TRIAL_DAYS)
         self.grace_period_end = None
         self.save(update_fields=['status', 'current_period_end', 'grace_period_end'])
 

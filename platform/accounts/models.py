@@ -15,6 +15,10 @@ class Profile(models.Model):
     otp_created_at = models.DateTimeField(null=True, blank=True)
     otp_attempts = models.PositiveIntegerField(default=0)
 
+    # One free live trial per account, not per store — stops someone from
+    # deleting and recreating a store to keep resetting it.
+    trial_used_at = models.DateTimeField(null=True, blank=True)
+
     def __str__(self):
         return f"{self.user.username} profile"
 

@@ -22,7 +22,44 @@ from .models import PaymentLog, Plan, Subscription
 def choose_plan(request, store_slug):
     store = get_object_or_404(Store, slug=store_slug, owner=request.user)
     plans = Plan.objects.all()
-    return render(request, 'billing/choose_plan.html', {'store': store, 'plans': plans})
+    trial_available = not request.user.profile.trial_used_at
+    return render(request, 'billing/choose_plan.html', {
+        'store': store, 'plans': plans, 'trial_available': trial_available,
+    })
+
+
+@login_required
+def start_trial(request, store_slug, plan_slug):
+    """One free live trial per account (not per store) — the Starter plan's
+    page/image limits apply, but no payment is taken and the store goes
+    live immediately for Subscription.TRIAL_DAYS."""
+    if request.method != 'POST':
+        return redirect('billing:choose_plan', store_slug=store_slug)
+
+    store = get_object_or_404(Store, slug=store_slug, owner=request.user)
+    profile = request.user.profile
+    if profile.trial_used_at:
+        messages.warning(request, "You've already used your free trial — pick a plan to publish this store.")
+        return redirect('billing:choose_plan', store_slug=store.slug)
+
+    plan = get_object_or_404(Plan, slug=plan_slug)
+    subscription, _ = Subscription.objects.get_or_create(store=store, defaults={'plan': plan})
+    subscription.plan = plan
+    subscription.save(update_fields=['plan'])
+    subscription.start_trial()
+
+    profile.trial_used_at = timezone.now()
+    profile.save(update_fields=['trial_used_at'])
+
+    store.is_published = True
+    store.save(update_fields=['is_published'])
+
+    messages.success(
+        request,
+        f"Your store is live for a free {Subscription.TRIAL_DAYS}-day trial. "
+        "Pick a plan before it ends to keep it live.",
+    )
+    return redirect('stores:dashboard', store_slug=store.slug)
 
 
 @login_required
