@@ -125,6 +125,29 @@ class Command(BaseCommand):
                     'James Liu — Client Relations'
                 ),
             ),
+            dict(
+                name='Northfield', slug='northfield', category='business', tier='single',
+                layout_key='business+professional/northfield/northfield', accent_color='#1F9D55',
+                description='Clean green & navy layout for consultants, agencies and professional services.',
+                order=5,
+                example_tagline='Practical, reliable service you can count on',
+                example_bio=(
+                    'We have worked with businesses across the region to deliver dependable, '
+                    'professional service without the runaround. Replace this with a sentence or two '
+                    'about what makes your business the right choice.'
+                ),
+                example_services=(
+                    'Consultation & planning — tailored to your needs [Popular]\n'
+                    'Ongoing support & maintenance [Popular]\n'
+                    'Project management [Specialist]\n'
+                    'Flexible retainers for returning clients [Plans]'
+                ),
+                example_team=(
+                    'Daniel Okoro — Founder\n'
+                    'Grace Umeh — Client Relations\n'
+                    'Femi Adewale — Operations'
+                ),
+            ),
         ]
         for data in templates:
             StoreTemplate.objects.update_or_create(slug=data['slug'], defaults=data)
