@@ -4,8 +4,9 @@ from django.utils import timezone
 
 class Plan(models.Model):
     STARTER = 'starter'
-    GROWTH = 'growth'
-    TIER_CHOICES = [(STARTER, 'Starter'), (GROWTH, 'Growth')]
+    BUSINESS = 'business'
+    PRO = 'pro'
+    TIER_CHOICES = [(STARTER, 'Starter'), (BUSINESS, 'Business'), (PRO, 'Pro')]
 
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)

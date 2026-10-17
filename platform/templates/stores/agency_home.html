@@ -385,7 +385,7 @@
           </div>
           <div class="contact-row">
             <span class="contact-row-icon"><svg><use href="#icon-whatsapp"></use></svg></span>
-            <span><span class="contact-row-caption">Built for</span><span class="contact-row-place">Clinics, salons, schools, services</span></span>
+            <span><span class="contact-row-caption">Built for</span><span class="contact-row-place">Clinics, consultants, shops, services</span></span>
           </div>
         </div>
       </div>
@@ -399,7 +399,7 @@
         <span class="eyebrow"><span class="dot"></span>Alpha Dev Stores &middot; self-serve templates</span>
         <h2 class="section-title">See what you'd actually get.</h2>
         <p class="section-sub">Real, working designs &mdash; not mockups. Pick one, preview it live, then make it yours.</p>
-        <p class="section-sub" style="margin-top:6px;font-size:13.5px;opacity:.75">These are the ready-made templates behind our &#8358;2,000&ndash;&#8358;3,500 self-serve builder &mdash; a starting point for a small business on a budget. Our custom web &amp; app development work is designed from scratch for each client, not from a template.</p>
+        <p class="section-sub" style="margin-top:6px;font-size:13.5px;opacity:.75">These are the ready-made templates behind our &#8358;2,000&ndash;&#8358;6,500 self-serve builder &mdash; a starting point for a small business on a budget. Our custom web &amp; app development work is designed from scratch for each client, not from a template.</p>
       </div>
 
       <div class="filter-row" data-reveal>
@@ -613,16 +613,13 @@
           </a>
         </div>
         <div class="stores-price-cards">
+          {% for plan in plans %}
           <div class="stores-price-card">
-            <h4>Starter</h4>
-            <div class="stores-price-amount">&#8358;2,000<small>/month</small></div>
-            <p>Single page, up to 10 images, your web address: alphadevhq.com/your-business</p>
+            <h4>{{ plan.name }}</h4>
+            <div class="stores-price-amount">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
+            <p>{{ plan.page_limit }} page{{ plan.page_limit|pluralize }}, up to {{ plan.image_limit }} images{% if plan.tier == 'pro' %}, priority support{% endif %}</p>
           </div>
-          <div class="stores-price-card">
-            <h4>Growth</h4>
-            <div class="stores-price-amount">&#8358;3,500<small>/month</small></div>
-            <p>Up to 3 pages, up to 20 images, priority support</p>
-          </div>
+          {% endfor %}
         </div>
       </div>
 

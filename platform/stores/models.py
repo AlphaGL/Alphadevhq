@@ -7,16 +7,17 @@ from django.utils.text import slugify
 
 
 TEMPLATE_CATEGORY_CHOICES = [
-    ('healthcare', 'Healthcare & Clinics'),
     ('business', 'Business & Professional'),
-    ('salon', 'Salon & Beauty'),
-    ('bakery', 'Bakery & Food'),
-    ('portfolio', 'Portfolio & Creative'),
+    ('ecommerce', 'E-commerce & Retail'),
+    ('medical', 'Medical & Healthcare'),
 ]
 
+# Vestigial since page count now comes from the store's plan (see
+# Store.page_limit) rather than a separate catalog entry per tier — kept
+# only so existing StoreTemplate rows don't need a data migration.
 TEMPLATE_TIER_CHOICES = [
-    ('single', 'Single page (Starter)'),
-    ('multi', 'Multi page (Growth)'),
+    ('single', 'Single page'),
+    ('multi', 'Multi page'),
 ]
 
 
