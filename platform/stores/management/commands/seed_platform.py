@@ -80,9 +80,9 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
-                name='Business & Professional', slug='business-pro', category='business', tier='single',
-                layout_key='business_pro', accent_color='#0B2E4F',
-                description='Clean, trustworthy layout for consultants and professional services.',
+                name='Monoline', slug='monoline', category='business', tier='single',
+                layout_key='business+professional/monoline/monoline', accent_color='#FFAA17',
+                description='Modern navy & orange agency layout for consultants and professional services.',
                 order=3,
                 example_tagline='Trusted, professional service you can count on',
                 example_bio=(
@@ -95,6 +95,11 @@ class Command(BaseCommand):
                     'Your second service — short description [Popular]\n'
                     'Your third service — short description [Specialist]\n'
                     'Flexible plans for returning clients [Plans]'
+                ),
+                example_team=(
+                    'Chidi Okafor — Founder & Lead Consultant\n'
+                    'Amara Bello — Operations\n'
+                    'Tope Adeyemi — Client Success'
                 ),
             ),
         ]

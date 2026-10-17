@@ -1,0 +1,65 @@
+:root {
+  --mn-dark: #1b2032;
+  --mn-accent: #ffaa17;
+}
+body { background: #fff; font-family: "Poppins", Arial, sans-serif; color: #444; }
+h1, h2, h3, h4, h5, .mn-brand { font-family: "Poppins", Arial, sans-serif; color: var(--mn-dark); }
+
+.mn-btn { background: var(--mn-accent); color: #fff; border: 2px solid var(--mn-accent); border-radius: 30px; padding: 10px 28px; font-weight: 600; transition: .25s; display: inline-block; text-decoration: none; }
+.mn-btn:hover { background: #e59710; border-color: #e59710; color: #fff; transform: translateY(-2px); }
+.mn-btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); border-radius: 30px; padding: 10px 28px; font-weight: 600; transition: .25s; display: inline-block; text-decoration: none; }
+.mn-btn-outline:hover { background: var(--mn-accent); border-color: var(--mn-accent); color: #fff; transform: translateY(-2px); }
+
+/* nav */
+.mn-navbar { background: #fff; box-shadow: 0 2px 16px rgba(27,32,50,.06); }
+.mn-nav-link { color: var(--mn-dark); font-weight: 500; }
+.mn-brand { color: var(--mn-dark); font-weight: 800; }
+
+/* hero */
+.mn-hero { background: linear-gradient(135deg, var(--mn-dark) 0%, #2b3252 100%); color: #fff; padding-top: 150px; padding-bottom: 90px; text-align: center; }
+.mn-hero-title { font-weight: 800; font-size: clamp(28px, 6vw, 44px); color: #fff; max-width: 760px; margin: 0 auto; }
+.mn-hero-text { color: rgba(255,255,255,.8); font-size: 16px; max-width: 560px; margin: 16px auto 0; }
+.mn-hero-inner { padding-top: 120px; padding-bottom: 60px; }
+
+/* feature row (fixed, decorative) */
+.mn-feature { text-align: center; padding: 20px; }
+.mn-feature i { font-size: 34px; color: var(--mn-accent); margin-bottom: 12px; }
+.mn-feature h5 { font-weight: 700; }
+.mn-feature p { color: #6b7280; font-size: .9rem; }
+
+.mn-tag { color: var(--mn-accent); font-weight: 700; letter-spacing: .5px; font-size: 13px; text-transform: uppercase; }
+
+.mn-why-list { list-style: none; padding: 0; margin-top: 12px; }
+.mn-why-list li { font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: #444; }
+.mn-why-list i { color: var(--mn-accent); font-size: 18px; }
+
+.mn-gallery-tile { border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; background: #f3f4f6; position: relative; }
+.mn-gallery-tile img { width: 100%; height: 100%; object-fit: cover; }
+
+.mn-avatar { width: 84px; height: 84px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: var(--mn-dark); }
+
+.mn-appointment-box { border-radius: 16px; background: linear-gradient(135deg, var(--mn-dark), #2b3252); padding: clamp(22px, 5vw, 44px); color: #fff; }
+
+.mn-footer { background: var(--mn-dark); color: rgba(255,255,255,.75); }
+.mn-footer a { color: #fff; }
+
+/* shared editable-card hooks restyled to match this theme */
+.store-service-card { position: relative; background: #fff; border: 1px solid #edeef2; border-radius: 14px; padding: 28px; transition: .2s; }
+.store-service-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(27,32,50,.08); }
+.store-service-card-title { font-weight: 700; font-size: 17px; color: var(--mn-dark); margin-top: 6px; }
+.store-service-card-sub { color: #6b7280; font-size: .9rem; margin-top: 4px; }
+.store-service-card.is-hidden { display: none; }
+
+.store-team-card { position: relative; background: #fff; border: 1px solid #edeef2; border-radius: 14px; padding: 24px; text-align: center; transition: .2s; }
+.store-team-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(27,32,50,.08); }
+.store-team-card-title { font-weight: 700; font-size: 17px; color: var(--mn-dark); }
+.store-team-card-sub { color: #6b7280; font-size: .9rem; margin-top: 2px; }
+
+.store-pill { display: inline-flex; align-items: center; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid #e5e7eb; color: #6b7280; background: #fff; cursor: pointer; }
+.store-pill.is-active { background: var(--mn-dark); color: #fff; border-color: var(--mn-dark); }
+.store-empty-note { display: none; }
+.store-empty-note.is-visible { display: block; }
+
+.store-nav-links a.is-current { color: var(--mn-accent) !important; }
+.store-nav-links.is-open { display: flex !important; }
+.store-nav-toggle { background: none; border: none; cursor: pointer; color: var(--mn-dark); }
