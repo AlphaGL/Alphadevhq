@@ -1,9 +1,9 @@
-{% load static store_extras %}<!doctype html>
-<html lang="en"{% if is_editor %} data-editor data-save-field-url="{% url 'stores:editor_save_field' store.slug %}" data-save-social-url="{% url 'stores:editor_save_social' store.slug %}" data-upload-logo-url="{% url 'stores:editor_upload_logo' store.slug %}" data-add-image-url="{% url 'stores:editor_add_image' store.slug %}" data-toggle-section-url-template="{{ toggle_section_url_tpl }}" data-delete-image-url-template="{{ delete_image_url_tpl }}" data-move-section-up-url-template="{{ move_section_up_url_tpl }}" data-move-section-down-url-template="{{ move_section_down_url_tpl }}"{% endif %}>
+{% load static %}<!doctype html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}</title>
+<title>{% if page.is_home %}{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}{% else %}{{ page.label }} — {{ store.business_name }}{% endif %}</title>
 <meta name="description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">
 <link rel="icon" href="{% static 'favicon.ico' %}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,17 +13,14 @@
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
 <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 <link rel="stylesheet" href="{% static 'css/store-common.css' %}">
-<link rel="stylesheet" href="{% static 'css/store_templates/cardiocare.css' %}">
+<link rel="stylesheet" href="{% static 'css/store_templates/medical+healthcare/cardiocare/cardiocare.css' %}">
 <style>body{font-family:Inter,sans-serif}.font-heading,h1,h2,h3,h4{font-family:Outfit,sans-serif}</style>
 </head>
 <body>
-{% if is_editor %}
-  {% include "store_templates/_editor_toolbar.html" %}
-{% else %}
-  {% include "store_templates/_preview_watermark.html" %}
-{% endif %}
-{% include "store_templates/_cc_nav.html" %}
+{% include "store_templates/_preview_watermark.html" %}
+{% include "store_templates/medical+healthcare/cardiocare/_cc_nav_multi.html" %}
 
+{% if page.is_home %}
 <header id="home" class="hero-section flex items-center relative pt-4">
   <div class="absolute top-20 right-16 w-72 h-72 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
   <div class="absolute bottom-40 left-10 w-56 h-56 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -31,15 +28,13 @@
     <div class="grid lg:grid-cols-2 gap-12 items-center">
       <div>
         <span class="hero-badge mb-6"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i>{{ store.get_category_display }}</span>
-        <h1 class="font-heading font-extrabold text-4xl lg:text-5xl text-white leading-tight mb-6 mt-4 break-words"{% if is_editor %} data-editable-field="business_name" data-singleline contenteditable="true"{% endif %}>{{ store.business_name }}</h1>
-        {% if store.tagline or is_editor %}
-          <p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg"{% if is_editor %} data-editable-field="tagline" data-placeholder="A short, reassuring line about your practice" contenteditable="true"{% endif %}>{{ store.tagline }}</p>
-        {% endif %}
+        <h1 class="font-heading font-extrabold text-4xl lg:text-5xl text-white leading-tight mb-6 mt-4 break-words">{{ store.business_name }}</h1>
+        {% if store.tagline %}<p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg">{{ store.tagline }}</p>{% endif %}
         <div class="flex flex-wrap gap-4">
           <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary text-base py-3.5 px-7">
             <i data-lucide="calendar-plus" class="w-5 h-5"></i>Book on WhatsApp
           </a>
-          <a href="#services" class="btn-outline text-base py-3.5 px-7">
+          <a href="{{ nav_pages.1.url }}" class="btn-outline text-base py-3.5 px-7">
             <i data-lucide="compass" class="w-5 h-5"></i>Explore Services
           </a>
         </div>
@@ -55,8 +50,7 @@
     </div>
   </div>
 </header>
-
-{% if store.phone or is_editor %}
+{% if store.phone %}
 <div class="bg-red-600 py-4">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -72,22 +66,30 @@
   </div>
 </div>
 {% endif %}
+{% else %}
+<header class="hero-section flex items-center" style="min-height:40vh">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+    <span class="hero-badge mb-4"><i data-lucide="shield-check" class="w-3.5 h-3.5"></i>{{ store.get_category_display }}</span>
+    <h1 class="font-heading font-extrabold text-3xl lg:text-4xl text-white leading-tight mt-4">{{ page.label }}</h1>
+  </div>
+</header>
+{% endif %}
 
 {% for section in sections %}
   {% if section.section_type == 'about' %}
-    {% include "store_templates/_cc_section_about.html" %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_about.html" %}
   {% elif section.section_type == 'services' %}
-    {% include "store_templates/_cc_section_services.html" %}
-  {% elif section.section_type == 'team' and section.body or section.section_type == 'team' and is_editor %}
-    {% include "store_templates/_cc_section_team.html" %}
-  {% elif section.section_type == 'gallery' and images or section.section_type == 'gallery' and is_editor %}
-    {% include "store_templates/_cc_section_gallery.html" %}
-  {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours or section.section_type == 'hours_location' and is_editor %}
-    {% include "store_templates/_cc_section_hours_location.html" %}
-  {% elif section.section_type == 'socials' and social_links or section.section_type == 'socials' and is_editor %}
-    {% include "store_templates/_cc_section_socials.html" %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_services.html" %}
+  {% elif section.section_type == 'team' and section.body %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_team.html" %}
+  {% elif section.section_type == 'gallery' and images %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_gallery.html" %}
+  {% elif section.section_type == 'hours_location' and store.address or section.section_type == 'hours_location' and store.hours %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_hours_location.html" %}
+  {% elif section.section_type == 'socials' and social_links %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_socials.html" %}
   {% elif section.section_type == 'contact' %}
-    {% include "store_templates/_cc_section_contact.html" %}
+    {% include "store_templates/medical+healthcare/cardiocare/_cc_section_contact.html" %}
   {% endif %}
 {% endfor %}
 

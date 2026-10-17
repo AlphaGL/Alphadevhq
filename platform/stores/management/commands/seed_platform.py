@@ -11,7 +11,7 @@ class Command(BaseCommand):
         templates = [
             dict(
                 name='Healthcare & Clinics', slug='cardiocare', category='medical', tier='single',
-                layout_key='cardiocare', accent_color='#DC2626',
+                layout_key='medical+healthcare/cardiocare/cardiocare', accent_color='#DC2626',
                 description='Bold, animated layout for clinics, hospitals and specialist practices.',
                 order=0,
                 example_tagline='Expert, compassionate care for every patient, every time',
