@@ -1,0 +1,33 @@
+<section id="hours-location" class="container py-5{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="text-center mb-4">
+    <span class="lm-tag">Visit Us</span>
+    <div class="d-flex align-items-center justify-content-center gap-3 mt-2">
+      <h2 class="m-0">{{ section.get_heading }}</h2>
+      {% include "store_templates/_section_controls.html" %}
+    </div>
+  </div>
+  <div class="row g-4 justify-content-center">
+    <div class="col-md-5">
+      <div class="store-service-card">
+        <i class="bi bi-geo-alt" style="font-size:26px;color:var(--lm-primary)"></i>
+        <h5 class="mt-2">Location</h5>
+        {% if is_editor %}
+          <p data-editable-field="address" data-singleline data-placeholder="Add an address" contenteditable="true">{{ store.address }}</p>
+        {% else %}
+          <p>{{ store.address }}</p>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="store-service-card">
+        <i class="bi bi-clock" style="font-size:26px;color:var(--lm-primary)"></i>
+        <h5 class="mt-2">Working Hours</h5>
+        {% if is_editor %}
+          <p data-editable-field="hours" data-singleline data-placeholder="Add your hours" contenteditable="true">{{ store.hours }}</p>
+        {% else %}
+          <p>{{ store.hours }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

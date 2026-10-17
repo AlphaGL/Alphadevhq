@@ -170,6 +170,27 @@ class Command(BaseCommand):
                     'Chiamaka Eze — Customer Support'
                 ),
             ),
+            dict(
+                name='Loom', slug='loom', category='ecommerce', tier='single',
+                layout_key='ecommerce/loom/loom', accent_color='#8C907E',
+                description='Minimal sage & cream layout for fashion and boutique shops.',
+                order=7,
+                example_tagline='Thoughtfully chosen pieces, made to last',
+                example_bio=(
+                    'We curate a small, considered collection — pieces we would wear ourselves. '
+                    'Replace this with your own story — what you sell and why customers should shop with you.'
+                ),
+                example_services=(
+                    'Linen Wrap Dress — ₦32,000 [Dresses]\n'
+                    'Cotton Tee — ₦9,500 [Tops]\n'
+                    'Woven Tote Bag — ₦18,000 [Accessories]\n'
+                    'Silk Scarf — ₦14,000 [Accessories]'
+                ),
+                example_team=(
+                    'Ngozi Adeyemi — Founder & Buyer\n'
+                    'Bisi Fashola — Customer Care'
+                ),
+            ),
         ]
         for data in templates:
             StoreTemplate.objects.update_or_create(slug=data['slug'], defaults=data)
