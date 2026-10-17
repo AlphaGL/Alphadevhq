@@ -72,24 +72,34 @@
   var grid = document.getElementById('categoryGrid');
   if (!grid) return;
   var panels = document.querySelectorAll('.templates-panel');
-  grid.addEventListener('click', function(e){
-    var card = e.target.closest('.category-card');
-    if (!card) return;
-    var cat = card.getAttribute('data-category');
+
+  function showCategory(cat, scroll){
     grid.classList.add('is-hidden');
     panels.forEach(function(p){
       p.classList.toggle('is-hidden', p.getAttribute('data-category-panel') !== cat);
     });
-    grid.closest('.platform-wide').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (scroll) grid.closest('.platform-wide').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function showGrid(scroll){
+    panels.forEach(function(p){ p.classList.add('is-hidden'); });
+    grid.classList.remove('is-hidden');
+    if (scroll) grid.closest('.platform-wide').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  grid.addEventListener('click', function(e){
+    var card = e.target.closest('.category-card');
+    if (!card) return;
+    showCategory(card.getAttribute('data-category'), true);
   });
   panels.forEach(function(p){
-    var back = p.querySelector('[data-back-to-categories]');
-    back.addEventListener('click', function(){
-      panels.forEach(function(pp){ pp.classList.add('is-hidden'); });
-      grid.classList.remove('is-hidden');
-      grid.closest('.platform-wide').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    p.querySelector('[data-back-to-categories]').addEventListener('click', function(){ showGrid(true); });
   });
+
+  var requested = new URLSearchParams(window.location.search).get('category');
+  if (requested && document.querySelector('.templates-panel[data-category-panel="' + requested + '"]')) {
+    showCategory(requested, false);
+    grid.closest('.platform-wide').scrollIntoView({ behavior: 'auto', block: 'start' });
+  }
 })();
 </script>
 

@@ -24,10 +24,19 @@ def make_preview_token(store):
 
 def agency_home(request):
     """The real homepage — the full Alpha Dev agency marketing site."""
+    import itertools
     from billing.models import Plan
-    templates = StoreTemplate.objects.filter(is_active=True, tier='single').order_by('order')
+    templates = StoreTemplate.objects.filter(is_active=True, tier='single').order_by('category', 'order')
+    grouped_templates = [
+        (category, dict(TEMPLATE_CATEGORY_CHOICES).get(category, category), list(group))
+        for category, group in itertools.groupby(templates, key=lambda t: t.category)
+    ]
     plans = Plan.objects.all()
-    return render(request, 'stores/agency_home.html', {'templates': templates, 'plans': plans})
+    return render(request, 'stores/agency_home.html', {
+        'templates': templates,
+        'grouped_templates': grouped_templates,
+        'plans': plans,
+    })
 
 
 def privacy_policy(request):
