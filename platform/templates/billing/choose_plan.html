@@ -5,21 +5,49 @@
   <h1 class="platform-title" style="text-align:center">Go live</h1>
   <p class="platform-sub" style="text-align:center">Your store is built. Pick a plan to publish it at <strong>alphadevhq.com{{ store.get_public_url }}</strong></p>
 
+  <div class="cycle-toggle" id="cycleToggle">
+    <button type="button" class="cycle-toggle-btn is-active" data-cycle-option="monthly">Monthly</button>
+    <button type="button" class="cycle-toggle-btn" data-cycle-option="annual">Annual <span class="cycle-toggle-badge">2 months free</span></button>
+  </div>
+
   <div class="plan-grid">
     {% for plan in plans %}
-      <div class="platform-card glass">
+      <div class="platform-card glass{% if plan.tier == 'business' %} is-popular{% endif %}">
+        {% if plan.tier == 'business' %}<span class="plan-popular-badge">Most popular</span>{% endif %}
         <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">{{ plan.name }}</h3>
         <p class="platform-sub">{{ plan.description }}</p>
-        <div class="plan-price">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
+        <div class="plan-price">
+          <span class="price-monthly">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></span>
+          <span class="price-annual" hidden>&#8358;{{ plan.annual_price|floatformat:0 }}<small>/year</small></span>
+        </div>
+        <p class="plan-price-sub price-annual" hidden>&#8358;{{ plan.annual_monthly_equivalent|floatformat:0 }}/month, billed once a year</p>
         <ul class="plan-features">
           {% for f in plan.features %}<li>&#8226; {{ f }}</li>{% endfor %}
         </ul>
-        <form method="post" action="{% url 'billing:checkout' store.slug plan.slug %}">
+        <form method="post" action="{% url 'billing:checkout' store.slug plan.slug %}" class="plan-checkout-form">
           {% csrf_token %}
+          <input type="hidden" name="cycle" value="monthly" class="plan-cycle-input">
           <button type="submit" class="btn btn-primary btn-block">Choose {{ plan.name }}</button>
         </form>
       </div>
     {% endfor %}
   </div>
 </div>
+
+<script>
+(function(){
+  var toggle = document.getElementById('cycleToggle');
+  if (!toggle) return;
+  var buttons = toggle.querySelectorAll('[data-cycle-option]');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var cycle = btn.getAttribute('data-cycle-option');
+      buttons.forEach(function(b){ b.classList.toggle('is-active', b === btn); });
+      document.querySelectorAll('.price-monthly').forEach(function(el){ el.hidden = cycle !== 'monthly'; });
+      document.querySelectorAll('.price-annual').forEach(function(el){ el.hidden = cycle !== 'annual'; });
+      document.querySelectorAll('.plan-cycle-input').forEach(function(input){ input.value = cycle; });
+    });
+  });
+})();
+</script>
 {% endblock %}

@@ -30,30 +30,36 @@ def checkout(request, store_slug, plan_slug):
     store = get_object_or_404(Store, slug=store_slug, owner=request.user)
     plan = get_object_or_404(Plan, slug=plan_slug)
 
+    cycle = request.POST.get('cycle', Subscription.MONTHLY)
+    if cycle not in Subscription.PERIOD_DAYS:
+        cycle = Subscription.MONTHLY
+    amount = plan.annual_price if cycle == Subscription.ANNUAL else plan.price
+
     subscription, _ = Subscription.objects.get_or_create(
-        store=store, defaults={'plan': plan, 'status': Subscription.TRIALING},
+        store=store, defaults={'plan': plan, 'status': Subscription.TRIALING, 'billing_cycle': cycle},
     )
     subscription.plan = plan
-    subscription.save(update_fields=['plan'])
+    subscription.billing_cycle = cycle
+    subscription.save(update_fields=['plan', 'billing_cycle'])
 
-    reference = f"alphadev-{store.slug}-{uuid.uuid4().hex[:10]}"
+    reference = f"alphadev-{store.slug}-{cycle}-{uuid.uuid4().hex[:10]}"
 
     if not settings.PAYSTACK_SECRET_KEY:
         # Demo mode — no live Paystack key configured yet. Simulate the
         # checkout with a real two-step confirm screen instead of a live
         # charge, so the publish flow can be tested end to end.
         PaymentLog.objects.create(
-            subscription=subscription, reference=reference, amount=plan.price, raw_response={'demo': True},
+            subscription=subscription, reference=reference, amount=amount, billing_cycle=cycle, raw_response={'demo': True},
         )
         return redirect('billing:demo_confirm', store_slug=store.slug)
 
     callback_url = request.build_absolute_uri(reverse('billing:payment_callback'))
 
     result = paystack.initialize_transaction(
-        email=request.user.email, amount_naira=plan.price, reference=reference, callback_url=callback_url,
+        email=request.user.email, amount_naira=amount, reference=reference, callback_url=callback_url,
     )
 
-    PaymentLog.objects.create(subscription=subscription, reference=reference, amount=plan.price, raw_response=result)
+    PaymentLog.objects.create(subscription=subscription, reference=reference, amount=amount, billing_cycle=cycle, raw_response=result)
 
     if not result.get('status'):
         messages.warning(
@@ -87,7 +93,8 @@ def demo_confirm(request, store_slug):
         log.status = 'success'
         log.save(update_fields=['status'])
 
-        subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=30))
+        days = Subscription.PERIOD_DAYS[log.billing_cycle]
+        subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=days))
 
         store.is_published = True
         store.save(update_fields=['is_published'])
@@ -110,7 +117,8 @@ def payment_callback(request):
         log.save(update_fields=['status', 'raw_response'])
 
         subscription = log.subscription
-        subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=30))
+        days = Subscription.PERIOD_DAYS[log.billing_cycle]
+        subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=days))
 
         store = subscription.store
         store.is_published = True
@@ -153,7 +161,8 @@ def paystack_webhook(request):
             log.status = 'success'
             log.raw_response = event
             log.save(update_fields=['status', 'raw_response'])
-            log.subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=30))
+            days = Subscription.PERIOD_DAYS[log.billing_cycle]
+            log.subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=days))
 
     elif event_type in ('subscription.disable', 'invoice.payment_failed'):
         sub_code = data.get('subscription_code', '')

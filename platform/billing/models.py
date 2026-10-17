@@ -24,6 +24,19 @@ class Plan(models.Model):
     def __str__(self):
         return f"{self.name} (NGN {self.price:,.0f}/mo)"
 
+    # Annual = 10x the monthly price ("2 months free") — the standard SaaS
+    # annual-discount convention. Derived from price rather than stored, so
+    # it always stays in sync if the monthly price ever changes.
+    ANNUAL_MONTHS = 10
+
+    @property
+    def annual_price(self):
+        return self.price * self.ANNUAL_MONTHS
+
+    @property
+    def annual_monthly_equivalent(self):
+        return self.annual_price / 12
+
 
 class Subscription(models.Model):
     TRIALING = 'trialing'
@@ -39,11 +52,17 @@ class Subscription(models.Model):
         (CANCELLED, 'Cancelled'),
     ]
 
+    MONTHLY = 'monthly'
+    ANNUAL = 'annual'
+    BILLING_CYCLE_CHOICES = [(MONTHLY, 'Monthly'), (ANNUAL, 'Annual')]
+    PERIOD_DAYS = {MONTHLY: 30, ANNUAL: 365}
+
     GRACE_DAYS = 5
 
     store = models.OneToOneField('stores.Store', on_delete=models.CASCADE, related_name='subscription')
     plan = models.ForeignKey(Plan, on_delete=models.PROTECT, related_name='subscriptions')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=TRIALING)
+    billing_cycle = models.CharField(max_length=10, choices=BILLING_CYCLE_CHOICES, default=MONTHLY)
 
     paystack_customer_code = models.CharField(max_length=100, blank=True)
     paystack_subscription_code = models.CharField(max_length=100, blank=True)
@@ -83,6 +102,7 @@ class PaymentLog(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE, related_name='payments')
     reference = models.CharField(max_length=100, unique=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    billing_cycle = models.CharField(max_length=10, choices=Subscription.BILLING_CYCLE_CHOICES, default=Subscription.MONTHLY)
     status = models.CharField(max_length=20, default='pending')
     raw_response = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -17,7 +17,7 @@
     </div>
     <div style="display:flex;justify-content:space-between;padding:10px 0">
       <span class="platform-sub">Amount</span>
-      <strong>&#8358;{{ plan.price|floatformat:0 }}/month</strong>
+      <strong>&#8358;{{ log.amount|floatformat:0 }}{% if log.billing_cycle == 'annual' %}/year{% else %}/month{% endif %}</strong>
     </div>
   </div>
 
