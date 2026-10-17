@@ -191,6 +191,28 @@ class Command(BaseCommand):
                     'Bisi Fashola — Customer Care'
                 ),
             ),
+            dict(
+                name='Birchwood', slug='birchwood', category='ecommerce', tier='single',
+                layout_key='ecommerce/birchwood/birchwood', accent_color='#3B5D50',
+                description='Warm forest-green & amber layout for furniture and home goods shops.',
+                order=8,
+                example_tagline='Furniture and decor built to live with, not around',
+                example_bio=(
+                    'We source and make pieces meant to last — honest materials, simple forms, built for '
+                    'everyday use. Replace this with your own story — what you sell and why customers '
+                    'should shop with you.'
+                ),
+                example_services=(
+                    'Oak Dining Chair — ₦45,000 [Seating]\n'
+                    'Linen Throw Pillow — ₦9,000 [Decor]\n'
+                    'Walnut Side Table — ₦68,000 [Tables]\n'
+                    'Woven Storage Basket — ₦15,000 [Storage]'
+                ),
+                example_team=(
+                    'Emeka Nwachukwu — Founder & Maker\n'
+                    'Funmi Alabi — Orders & Delivery'
+                ),
+            ),
         ]
         for data in templates:
             StoreTemplate.objects.update_or_create(slug=data['slug'], defaults=data)

@@ -1,0 +1,61 @@
+:root {
+  --bw-primary: #3b5d50;
+  --bw-accent: #f9bf29;
+  --bw-dark: #2f2f2f;
+  --bw-cream: #f3efe7;
+}
+body { background: #fff; font-family: "Inter", Arial, sans-serif; color: #6a6a6a; }
+h1, h2, h3, h4, h5, .bw-brand { font-family: "Fraunces", serif; color: var(--bw-dark); font-weight: 600; }
+
+.bw-btn { background: var(--bw-accent); color: var(--bw-dark); border: none; border-radius: 6px; padding: 12px 28px; font-weight: 700; transition: .25s; display: inline-block; text-decoration: none; }
+.bw-btn:hover { background: #e8ac15; transform: translateY(-2px); color: var(--bw-dark); }
+.bw-btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); border-radius: 6px; padding: 10px 26px; font-weight: 600; transition: .25s; display: inline-block; text-decoration: none; }
+.bw-btn-outline:hover { background: rgba(255,255,255,.12); transform: translateY(-2px); color: #fff; }
+
+/* nav */
+.bw-navbar { background: var(--bw-primary); }
+.bw-nav-link { color: rgba(255,255,255,.88); font-weight: 500; }
+.bw-brand { color: #fff; font-weight: 600; }
+
+/* hero */
+.bw-hero { background: var(--bw-primary); color: #fff; padding-top: 140px; padding-bottom: 70px; }
+.bw-hero-title { font-weight: 600; font-size: clamp(28px, 6vw, 46px); max-width: 640px; color: #fff; }
+.bw-hero-text { color: rgba(255,255,255,.82); font-size: 16px; max-width: 520px; margin-top: 14px; }
+.bw-hero-inner { padding-top: 120px; padding-bottom: 50px; }
+
+.bw-tag { color: var(--bw-accent); font-weight: 700; letter-spacing: .5px; font-size: 13px; text-transform: uppercase; }
+
+.bw-why-list { list-style: none; padding: 0; margin-top: 12px; }
+.bw-why-list li { font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: #555; }
+.bw-why-list i { color: var(--bw-primary); font-size: 18px; }
+
+.bw-gallery-tile { border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; background: var(--bw-cream); position: relative; }
+.bw-gallery-tile img { width: 100%; height: 100%; object-fit: cover; }
+
+.bw-avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--bw-cream); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: var(--bw-primary); }
+
+.bw-cta-box { border-radius: 14px; background: var(--bw-dark); padding: clamp(24px, 5vw, 46px); color: #fff; }
+
+.bw-footer { background: var(--bw-dark); color: rgba(255,255,255,.65); }
+.bw-footer a { color: #fff; }
+
+/* product cards */
+.store-service-card { position: relative; background: var(--bw-cream); border-radius: 10px; padding: 26px; transition: .2s; }
+.store-service-card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(47,47,47,.1); }
+.store-service-card-title { font-family: "Fraunces", serif; font-weight: 600; font-size: 17px; color: var(--bw-dark); margin-top: 8px; }
+.store-service-card-sub { color: var(--bw-primary); font-weight: 700; font-size: .95rem; margin-top: 4px; }
+.store-service-card.is-hidden { display: none; }
+
+.store-team-card { position: relative; background: var(--bw-cream); border-radius: 10px; padding: 24px; text-align: center; transition: .2s; }
+.store-team-card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(47,47,47,.1); }
+.store-team-card-title { font-family: "Fraunces", serif; font-weight: 600; font-size: 17px; color: var(--bw-dark); }
+.store-team-card-sub { color: #7a7a7a; font-size: .9rem; margin-top: 2px; }
+
+.store-pill { display: inline-flex; align-items: center; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid #e6e0d2; color: #7a7a7a; background: #fff; cursor: pointer; }
+.store-pill.is-active { background: var(--bw-primary); color: #fff; border-color: var(--bw-primary); }
+.store-empty-note { display: none; }
+.store-empty-note.is-visible { display: block; }
+
+.store-nav-links a.is-current { color: var(--bw-accent) !important; }
+.store-nav-links.is-open { display: flex !important; }
+.store-nav-toggle { background: none; border: none; cursor: pointer; color: #fff; }

@@ -1,0 +1,29 @@
+<nav class="navbar bw-navbar fixed-top py-3 navbar-expand-lg">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="#home" class="d-flex align-items-center gap-2 text-decoration-none" style="min-width:0">
+      <i class="bi bi-house-heart-fill bw-brand fs-4 flex-shrink-0" style="color:var(--bw-accent)"></i>
+      <span class="fw-bold m-0 bw-brand text-break"{% if is_editor %} data-editable-field="business_name" data-singleline contenteditable="true"{% endif %}>{{ store.business_name }}</span>
+    </a>
+    <ul class="nav d-none d-lg-flex gap-1">
+      <li class="nav-item"><a class="nav-link bw-nav-link" href="#home">Home</a></li>
+      <li class="nav-item"><a class="nav-link bw-nav-link" href="#about">About</a></li>
+      <li class="nav-item"><a class="nav-link bw-nav-link" href="#services">Shop</a></li>
+      <li class="nav-item"><a class="nav-link bw-nav-link" href="#team">Team</a></li>
+      <li class="nav-item"><a class="nav-link bw-nav-link" href="#gallery">Gallery</a></li>
+      <li class="nav-item"><a class="nav-link bw-nav-link" href="#contact">Contact</a></li>
+    </ul>
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="bw-btn px-4 d-none d-lg-block">Order Now</a>
+    <button type="button" class="store-nav-toggle d-lg-none" aria-label="Menu">
+      <i class="bi bi-list fs-1"></i>
+    </button>
+  </div>
+  <div class="store-nav-links d-none flex-column gap-2 px-4 pt-3" style="background:var(--bw-primary)">
+    <a href="#home" class="bw-nav-link">Home</a>
+    <a href="#about" class="bw-nav-link">About</a>
+    <a href="#services" class="bw-nav-link">Shop</a>
+    <a href="#team" class="bw-nav-link">Team</a>
+    <a href="#gallery" class="bw-nav-link">Gallery</a>
+    <a href="#contact" class="bw-nav-link">Contact</a>
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="bw-btn text-center mb-3">Order Now</a>
+  </div>
+</nav>
