@@ -17,27 +17,81 @@
   </div>
 </div>
 
-<div class="platform-wide" style="margin-top:70px">
+<div class="platform-wide" style="margin-top:70px" id="templatesSection">
   <h2 class="section-title" style="text-align:center">Pick a real template, not a blank page</h2>
-  <div class="template-grid" style="margin-top:28px">
-    {% for tpl in templates %}
-      <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card">
-        <div class="template-card-preview">
-          {% if tpl.preview_image %}
-            <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
-          {% else %}
-            <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
-          {% endif %}
-          <span class="template-card-preview-link">See full preview</span>
+
+  <div class="category-grid" id="categoryGrid" style="margin-top:28px">
+    {% for cat_value, cat_label, cat_templates in grouped_templates %}
+      <button type="button" class="category-card" data-category="{{ cat_value }}">
+        <div class="category-card-preview">
+          {% for tpl in cat_templates|slice:":3" %}
+            {% if tpl.preview_image %}
+              <img src="{{ tpl.preview_image.url }}" alt="">
+            {% else %}
+              <div class="category-card-preview-swatch" style="background:{{ tpl.accent_color }}"></div>
+            {% endif %}
+          {% endfor %}
         </div>
-        <div class="template-card-body">
-          <h4>{{ tpl.name }}</h4>
-          <p>{{ tpl.description }}</p>
+        <div class="category-card-body">
+          <h4>{{ cat_label }}</h4>
+          <p>{{ cat_templates|length }} template{{ cat_templates|length|pluralize }}</p>
         </div>
-      </a>
+        <span class="category-card-arrow">Browse &rarr;</span>
+      </button>
     {% endfor %}
   </div>
+
+  {% for cat_value, cat_label, cat_templates in grouped_templates %}
+    <div class="templates-panel is-hidden" data-category-panel="{{ cat_value }}">
+      <button type="button" class="back-link" data-back-to-categories>&larr; Back to categories</button>
+      <h3 class="templates-panel-title">{{ cat_label }}</h3>
+      <div class="template-grid" style="margin-top:20px">
+        {% for tpl in cat_templates %}
+          <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card">
+            <div class="template-card-preview">
+              {% if tpl.preview_image %}
+                <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
+              {% else %}
+                <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
+              {% endif %}
+              <span class="template-card-preview-link">See full preview</span>
+            </div>
+            <div class="template-card-body">
+              <h4>{{ tpl.name }}</h4>
+              <p>{{ tpl.description }}</p>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
 </div>
+
+<script>
+(function(){
+  var grid = document.getElementById('categoryGrid');
+  if (!grid) return;
+  var panels = document.querySelectorAll('.templates-panel');
+  grid.addEventListener('click', function(e){
+    var card = e.target.closest('.category-card');
+    if (!card) return;
+    var cat = card.getAttribute('data-category');
+    grid.classList.add('is-hidden');
+    panels.forEach(function(p){
+      p.classList.toggle('is-hidden', p.getAttribute('data-category-panel') !== cat);
+    });
+    grid.closest('.platform-wide').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  panels.forEach(function(p){
+    var back = p.querySelector('[data-back-to-categories]');
+    back.addEventListener('click', function(){
+      panels.forEach(function(pp){ pp.classList.add('is-hidden'); });
+      grid.classList.remove('is-hidden');
+      grid.closest('.platform-wide').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+})();
+</script>
 
 <div class="platform-wide" style="margin-top:70px">
   <h2 class="section-title" style="text-align:center">Plans</h2>

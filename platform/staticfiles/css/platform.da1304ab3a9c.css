@@ -132,6 +132,22 @@
 .theme-radio h4{ font-family: var(--font-display); font-size: 15px; font-weight: 650; }
 .theme-radio p{ margin-top: 4px; font-size: 13px; color: var(--ink-2); }
 
+#templatesSection{ scroll-margin-top: 96px; }
+.category-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 20px; max-width: 920px; margin-left: auto; margin-right: auto; }
+.category-card{ text-align: left; background: none; border: 1px solid var(--line-0); border-radius: var(--radius-lg); overflow: hidden; cursor: pointer; transition: border-color var(--dur-fast), transform var(--dur-fast); padding: 0; }
+.category-card:hover{ transform: translateY(-3px); border-color: var(--ink-1); }
+.category-card-preview{ display: flex; aspect-ratio: 16/9; background: var(--bg-2); }
+.category-card-preview img, .category-card-preview-swatch{ flex: 1 1 0; width: 0; height: 100%; object-fit: cover; object-position: top; }
+.category-card-body{ padding: 18px 20px 4px; }
+.category-card-body h4{ font-family: var(--font-display); font-size: 17px; font-weight: 650; }
+.category-card-body p{ margin-top: 4px; font-size: 13px; color: var(--ink-2); }
+.category-card-arrow{ display:block; padding: 10px 20px 20px; font-size: 13px; font-weight: 650; color: var(--ink-1); }
+
+.templates-panel.is-hidden, .category-grid.is-hidden{ display: none; }
+.back-link{ background: none; border: none; padding: 0; font-size: 13.5px; font-weight: 650; color: var(--ink-1); cursor: pointer; }
+.back-link:hover{ color: var(--ink-0); }
+.templates-panel-title{ font-family: var(--font-display); font-size: 20px; font-weight: 650; margin-top: 14px; }
+
 .template-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 18px; }
 .template-card{ position: relative; display: block; border: 1px solid var(--line-0); border-radius: 16px; overflow: hidden; cursor: pointer; transition: border-color var(--dur-fast), transform var(--dur-fast); }
 .template-card:hover{ transform: translateY(-3px); }

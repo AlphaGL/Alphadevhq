@@ -41,10 +41,19 @@ def terms(request):
 def store_landing(request):
     """Landing page for the Alpha Dev Stores product, reached from a CTA
     on the agency homepage. Leads with the slug-availability hook."""
+    import itertools
     templates = StoreTemplate.objects.filter(is_active=True, tier='single').order_by('category', 'order')
+    grouped_templates = [
+        (category, dict(TEMPLATE_CATEGORY_CHOICES).get(category, category), list(group))
+        for category, group in itertools.groupby(templates, key=lambda t: t.category)
+    ]
     from billing.models import Plan
     plans = Plan.objects.all()
-    return render(request, 'stores/store_landing.html', {'templates': templates, 'plans': plans})
+    return render(request, 'stores/store_landing.html', {
+        'templates': templates,
+        'grouped_templates': grouped_templates,
+        'plans': plans,
+    })
 
 
 def slug_check(request):
