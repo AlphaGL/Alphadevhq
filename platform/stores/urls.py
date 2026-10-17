@@ -34,6 +34,10 @@ urlpatterns = [
 
     path('preview/<str:token>/', views.preview_store, name='preview_store'),
 
+    # Must come before the catch-alls below — otherwise "<slug>/rate/" would
+    # match the multi-page pattern instead, with "rate" read as a page slug.
+    path('<slug:slug>/rate/', views.submit_rating, name='submit_rating'),
+
     # Extra pages for multi-page (Growth tier) templates only.
     path('<slug:slug>/<str:page_slug>/', views.public_store_page, name='public_store_page'),
 

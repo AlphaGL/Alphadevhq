@@ -80,6 +80,20 @@ class Store(models.Model):
     address = models.CharField(max_length=255, blank=True)
     hours = models.CharField(max_length=255, blank=True)
 
+    LISTING_PRODUCT = 'product'
+    LISTING_SERVICE = 'service'
+    LISTING_TYPE_CHOICES = [(LISTING_PRODUCT, 'Product — I sell physical/digital goods'), (LISTING_SERVICE, 'Service — I offer a service')]
+    listing_type = models.CharField(max_length=10, choices=LISTING_TYPE_CHOICES, default=LISTING_SERVICE)
+
+    latitude = models.FloatField(null=True, blank=True, help_text="Set from the owner's device location when they save their address")
+    longitude = models.FloatField(null=True, blank=True)
+
+    external_url = models.URLField(
+        blank=True,
+        help_text="For a custom-built site (not built on this platform) shown in Explore as portfolio/credibility — "
+                   "Explore links straight to this URL instead of an internal store page. Leave blank for a normal self-serve store.",
+    )
+
     has_customized_content = models.BooleanField(default=False, help_text="Owner has edited the example copy at least once")
     is_published = models.BooleanField(default=False, help_text="Owner has asked to go live (still gated by an active subscription)")
     is_approved = models.BooleanField(default=False, help_text="Passed Alpha Dev's quality check to appear in the public Explore directory")
@@ -106,6 +120,11 @@ class Store(models.Model):
 
     def get_public_url(self):
         return reverse('stores:public_store', kwargs={'slug': self.slug})
+
+    def get_display_url(self):
+        """Where an Explore card should link. External custom-built sites
+        (no template/subscription on this platform) link straight out."""
+        return self.external_url or self.get_public_url()
 
     @property
     def plan(self):
@@ -164,6 +183,36 @@ class Store(models.Model):
         from django.conf import settings as dj_settings
         cap = getattr(dj_settings, 'DAILY_VISIT_SOFT_CAP', 5000)
         return self.visits_today() >= cap * 0.8
+
+    @property
+    def total_views(self):
+        """Lifetime view count. On a list of stores, prefer annotating
+        Sum('daily_visits__count') instead — this hits the DB per call."""
+        return self.daily_visits.aggregate(total=models.Sum('count'))['total'] or 0
+
+    @property
+    def average_rating(self):
+        return self.ratings.aggregate(avg=models.Avg('stars'))['avg']
+
+    @property
+    def rating_count(self):
+        return self.ratings.count()
+
+    @property
+    def has_location(self):
+        return self.latitude is not None and self.longitude is not None
+
+    def distance_km_from(self, lat, lng):
+        """Great-circle distance in km, or None if this store has no pin."""
+        if not self.has_location or lat is None or lng is None:
+            return None
+        import math
+        r = 6371.0
+        phi1, phi2 = math.radians(self.latitude), math.radians(lat)
+        dphi = math.radians(lat - self.latitude)
+        dlambda = math.radians(lng - self.longitude)
+        a = math.sin(dphi / 2) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
+        return 2 * r * math.asin(math.sqrt(a))
 
 
 SECTION_TYPES = [
@@ -253,3 +302,21 @@ class DailyVisit(models.Model):
 
     def __str__(self):
         return f"{self.store.business_name} — {self.date}: {self.count}"
+
+
+class Rating(models.Model):
+    """A visitor-submitted star rating on a store's public page. Limited to
+    one per browser (via a signed session key, not a user account — most
+    visitors aren't signed in) to deter easy abuse without requiring login."""
+    store = models.ForeignKey(Store, on_delete=models.CASCADE, related_name='ratings')
+    stars = models.PositiveSmallIntegerField(choices=[(n, str(n)) for n in range(1, 6)])
+    comment = models.CharField(max_length=300, blank=True)
+    session_key = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('store', 'session_key')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.store.business_name} — {self.stars}★"

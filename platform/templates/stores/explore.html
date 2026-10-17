@@ -8,26 +8,49 @@
     <p class="platform-sub">Real stores built by real owners. Click through to see one, then reach out directly.</p>
   </div>
 
-  <div class="filter-row" style="justify-content:center;margin-top:28px">
-    <a href="{% url 'stores:explore' %}" class="filter-btn{% if not selected_category %} is-active{% endif %}">All</a>
+  <form method="get" class="explore-search" style="margin-top:28px">
+    {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+    {% if selected_type %}<input type="hidden" name="type" value="{{ selected_type }}">{% endif %}
+    <input type="hidden" name="lat" id="exploreLat" value="{{ request.GET.lat }}">
+    <input type="hidden" name="lng" id="exploreLng" value="{{ request.GET.lng }}">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by name or area (e.g. FUTO, Owerri)" class="explore-search-input">
+    <button type="submit" class="btn btn-ghost btn-sm">Search</button>
+    <button type="button" id="exploreNearMeBtn" class="btn btn-ghost btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M22 12h-3M5 12H2"/></svg>
+      Use my location
+    </button>
+    {% if has_visitor_location %}<span class="badge-pill">Sorted by distance from you</span>{% endif %}
+  </form>
+
+  <div class="filter-row" style="justify-content:center;margin-top:18px">
+    <a href="?{% if selected_type %}type={{ selected_type }}{% endif %}" class="filter-btn{% if not selected_category %} is-active{% endif %}">All</a>
     {% for value, label in categories %}
-      <a href="?category={{ value }}" class="filter-btn{% if selected_category == value %} is-active{% endif %}">{{ label }}</a>
+      <a href="?category={{ value }}{% if selected_type %}&type={{ selected_type }}{% endif %}" class="filter-btn{% if selected_category == value %} is-active{% endif %}">{{ label }}</a>
     {% endfor %}
+  </div>
+  <div class="filter-row" style="justify-content:center;margin-top:10px">
+    <a href="?{% if selected_category %}category={{ selected_category }}{% endif %}" class="filter-btn{% if not selected_type %} is-active{% endif %}">Products & Services</a>
+    <a href="?type=product{% if selected_category %}&category={{ selected_category }}{% endif %}" class="filter-btn{% if selected_type == 'product' %} is-active{% endif %}">Products</a>
+    <a href="?type=service{% if selected_category %}&category={{ selected_category }}{% endif %}" class="filter-btn{% if selected_type == 'service' %} is-active{% endif %}">Services</a>
   </div>
 
   {% if stores %}
     <div class="explore-grid">
       {% for store in stores %}
-        <a href="{{ store.get_public_url }}" class="explore-card glass">
-          {% if store.is_featured %}<span class="badge-pill explore-card-badge">Featured</span>{% endif %}
+        <a href="{{ store.get_display_url }}"{% if store.external_url %} target="_blank" rel="noopener"{% endif %} class="explore-card glass">
+          {% if store.is_featured %}<span class="badge-pill explore-card-badge">Featured</span>{% elif store.external_url %}<span class="badge-pill explore-card-badge">Built by Alpha Dev</span>{% endif %}
           {% if store.logo %}
             <img src="{{ store.logo.url }}" alt="" class="explore-card-logo">
           {% else %}
             <div class="explore-card-logo explore-card-logo-placeholder">{{ store.business_name|slice:":1" }}</div>
           {% endif %}
           <h3>{{ store.business_name }}</h3>
-          <p class="explore-card-category">{{ store.get_category_display }}</p>
+          <p class="explore-card-category">{{ store.get_category_display }} &middot; {{ store.get_listing_type_display }}</p>
           {% if store.tagline %}<p class="explore-card-tagline">{{ store.tagline }}</p>{% endif %}
+          <div class="explore-card-meta">
+            {% if store.rating_count %}<span>&#9733; {{ store.average_rating|floatformat:1 }} ({{ store.rating_count }})</span>{% endif %}
+            {% if store.distance_km != None %}<span>{% if store.distance_km < 1 %}&lt;1 km away{% else %}{{ store.distance_km|floatformat:0 }} km away{% endif %}</span>{% endif %}
+          </div>
         </a>
       {% endfor %}
     </div>
@@ -39,4 +62,25 @@
     </div>
   {% endif %}
 </div>
+
+<script>
+(function(){
+  var btn = document.getElementById('exploreNearMeBtn');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    if (!navigator.geolocation) { alert("Your browser doesn't support location."); return; }
+    btn.disabled = true;
+    btn.textContent = 'Finding you...';
+    navigator.geolocation.getCurrentPosition(function(pos){
+      document.getElementById('exploreLat').value = pos.coords.latitude;
+      document.getElementById('exploreLng').value = pos.coords.longitude;
+      btn.closest('form').submit();
+    }, function(){
+      btn.disabled = false;
+      btn.textContent = 'Use my location';
+      alert("Couldn't get your location — you can still search by name or area above.");
+    }, { timeout: 10000 });
+  });
+})();
+</script>
 {% endblock %}

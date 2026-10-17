@@ -11,7 +11,7 @@ from django.utils.text import slugify
 from .forms import TemplatePickForm
 from .models import (
     CATEGORY_CHOICES, SECTION_TYPES, SOCIAL_PLATFORMS, TEMPLATE_CATEGORY_CHOICES,
-    SocialLink, Store, StoreImage, StoreSection, StoreTemplate,
+    Rating, SocialLink, Store, StoreImage, StoreSection, StoreTemplate,
 )
 
 PREVIEW_SALT = 'alphadev-store-preview'
@@ -368,20 +368,98 @@ def editor_save_social(request, store_slug):
 
 
 def explore(request):
-    stores = Store.objects.filter(is_published=True, is_approved=True)
-    stores = [s for s in stores if s.is_live]
+    """The public directory. A listing is eligible either as a normal
+    self-serve store with a live subscription, or as a custom-built site
+    (external_url set) added directly by Alpha Dev — those skip the
+    subscription check entirely, since they were never a Stores subscriber.
+    Ranked by: featured flag, then distance from the visitor (if we have
+    their location), then plan tier, then lifetime views, then rating —
+    per-store properties are used rather than queryset annotations since
+    combining two separate reverse-relation aggregates (views + ratings)
+    in one annotated query would double-count; fine at the current scale."""
+    stores = Store.objects.filter(is_published=True, is_approved=True).select_related('template')
+    stores = [s for s in stores if s.is_live or s.external_url]
 
     category = request.GET.get('category', '')
     if category:
         stores = [s for s in stores if s.category == category]
 
-    stores.sort(key=lambda s: (not s.is_featured, s.business_name.lower()))
+    listing_type = request.GET.get('type', '')
+    if listing_type in (Store.LISTING_PRODUCT, Store.LISTING_SERVICE):
+        stores = [s for s in stores if s.listing_type == listing_type]
+
+    query = request.GET.get('q', '').strip().lower()
+    if query:
+        stores = [
+            s for s in stores
+            if query in s.business_name.lower()
+            or query in (s.address or '').lower()
+            or query in (s.tagline or '').lower()
+        ]
+
+    visitor_lat = visitor_lng = None
+    try:
+        visitor_lat = float(request.GET.get('lat', ''))
+        visitor_lng = float(request.GET.get('lng', ''))
+    except ValueError:
+        visitor_lat = visitor_lng = None
+
+    PLAN_RANK = {'pro': 0, 'business': 1, 'starter': 2}
+
+    def sort_key(s):
+        dist = s.distance_km_from(visitor_lat, visitor_lng) if visitor_lat is not None else None
+        s.distance_km = dist
+        plan_tier = s.plan.tier if s.plan else None
+        # External (custom-built by Alpha Dev) listings rank like Pro —
+        # it's the studio's premium work, not an unpaid/free-tier store.
+        tier_rank = 0 if s.external_url else PLAN_RANK.get(plan_tier, 3)
+        return (
+            0 if s.is_featured else 1,
+            dist if dist is not None else float('inf'),
+            tier_rank,
+            -s.total_views,
+            -(s.average_rating or 0),
+            s.business_name.lower(),
+        )
+
+    stores.sort(key=sort_key)
 
     return render(request, 'stores/explore.html', {
         'stores': stores,
         'categories': CATEGORY_CHOICES,
         'selected_category': category,
+        'selected_type': listing_type,
+        'query': request.GET.get('q', ''),
+        'has_visitor_location': visitor_lat is not None,
     })
+
+
+def submit_rating(request, slug):
+    """One rating per browser, via the session key rather than a user
+    account — most visitors to a public store page aren't signed in.
+    Re-submitting updates the visitor's own rating instead of erroring."""
+    if request.method != 'POST':
+        return JsonResponse({'ok': False}, status=405)
+    store = get_object_or_404(Store, slug=slug)
+    if not (store.is_live or store.external_url):
+        raise Http404
+
+    try:
+        stars = int(request.POST.get('stars', 0))
+    except ValueError:
+        stars = 0
+    if stars < 1 or stars > 5:
+        return JsonResponse({'ok': False, 'error': 'Pick 1 to 5 stars.'}, status=400)
+
+    comment = request.POST.get('comment', '').strip()[:300]
+    if not request.session.session_key:
+        request.session.save()
+
+    Rating.objects.update_or_create(
+        store=store, session_key=request.session.session_key,
+        defaults={'stars': stars, 'comment': comment},
+    )
+    return JsonResponse({'ok': True, 'average_rating': store.average_rating, 'rating_count': store.rating_count})
 
 
 def _store_template_name(store):

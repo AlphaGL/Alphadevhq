@@ -390,6 +390,11 @@
 }
 
 /* ---------- Explore directory ---------- */
+.explore-search{ display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap: 10px; max-width: 640px; margin-left:auto; margin-right:auto; }
+.explore-search-input{ flex: 1 1 280px; padding: 10px 16px; border-radius: var(--radius-pill); border: 1px solid var(--line-0); background: var(--bg-0); color: var(--ink-0); font-size: 13.5px; }
+.explore-search-input:focus{ outline:none; border-color: var(--ink-2); }
+.explore-card-meta{ margin-top: 10px; display:flex; justify-content:center; gap: 12px; font-size: 12px; color: var(--ink-2); }
+
 .explore-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap: 18px; margin-top: 32px; }
 .explore-card{ position: relative; padding: 26px; text-align: center; transition: transform var(--dur-fast) var(--ease-out); }
 .explore-card:hover{ transform: translateY(-4px); }

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import DailyVisit, SocialLink, Store, StoreImage, StoreSection, StoreTemplate
+from .models import DailyVisit, Rating, SocialLink, Store, StoreImage, StoreSection, StoreTemplate
 
 
 class StoreSectionInline(admin.TabularInline):
@@ -20,12 +20,24 @@ class SocialLinkInline(admin.TabularInline):
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('business_name', 'slug', 'owner', 'category', 'is_published', 'is_approved', 'is_featured', 'image_count', 'created_at')
-    list_filter = ('category', 'is_published', 'is_approved', 'is_featured')
-    search_fields = ('business_name', 'slug', 'owner__username')
+    list_display = ('business_name', 'slug', 'owner', 'category', 'listing_type', 'external_url', 'is_published', 'is_approved', 'is_featured', 'image_count', 'created_at')
+    list_filter = ('category', 'listing_type', 'is_published', 'is_approved', 'is_featured')
+    search_fields = ('business_name', 'slug', 'owner__username', 'external_url')
     prepopulated_fields = {'slug': ('business_name',)}
     actions = ['approve_stores', 'unapprove_stores', 'feature_stores', 'unfeature_stores']
     inlines = [StoreSectionInline, StoreImageInline, SocialLinkInline]
+    fieldsets = (
+        (None, {'fields': ('owner', 'business_name', 'slug', 'category', 'listing_type', 'tagline', 'bio', 'logo')}),
+        ('Contact & location', {'fields': ('phone', 'address', 'hours', 'latitude', 'longitude')}),
+        ('Custom-built site (not on this platform)', {
+            'fields': ('external_url',),
+            'description': "Set this to show a site you built directly for a client in Explore as portfolio/credibility, "
+                            "instead of a self-serve store. Leave blank for a normal store. Still needs Published + Approved "
+                            "checked below to actually appear.",
+        }),
+        ('Template & plan', {'fields': ('template', 'theme_color')}),
+        ('Visibility', {'fields': ('is_published', 'is_approved', 'is_featured')}),
+    )
 
     @admin.action(description="Approve selected stores for the Explore directory")
     def approve_stores(self, request, queryset):
@@ -56,3 +68,10 @@ class StoreTemplateAdmin(admin.ModelAdmin):
 class DailyVisitAdmin(admin.ModelAdmin):
     list_display = ('store', 'date', 'count')
     list_filter = ('date',)
+
+
+@admin.register(Rating)
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ('store', 'stars', 'comment', 'created_at')
+    list_filter = ('stars',)
+    search_fields = ('store__business_name', 'comment')
