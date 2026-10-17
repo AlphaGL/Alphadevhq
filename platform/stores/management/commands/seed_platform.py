@@ -12,7 +12,7 @@ class Command(BaseCommand):
             dict(
                 name='Healthcare & Clinics', slug='cardiocare', category='medical', tier='single',
                 layout_key='medical+healthcare/cardiocare/cardiocare', accent_color='#DC2626',
-                description='Bold, animated layout for clinics, hospitals and specialist practices.',
+                description='For clinics, hospitals and specialist practices that want a bold, confident first impression.',
                 order=0,
                 example_tagline='Expert, compassionate care for every patient, every time',
                 example_bio=(
@@ -36,7 +36,7 @@ class Command(BaseCommand):
             dict(
                 name='Prime Dental', slug='primedental', category='medical', tier='single',
                 layout_key='medical+healthcare/primedental/primedental', accent_color='#4B3DF2',
-                description='Friendly, modern purple-gradient layout for dental and specialist clinics.',
+                description='For dental practices and specialist clinics that want a warm, welcoming feel.',
                 order=1,
                 example_tagline='Professional & modern dental care for the whole family',
                 example_bio=(
@@ -59,7 +59,7 @@ class Command(BaseCommand):
             dict(
                 name='MedCrest', slug='medcrest', category='medical', tier='single',
                 layout_key='medical+healthcare/medcrest/medcrest', accent_color='#0F9D78',
-                description='Calm, trust-building teal layout with a doctor directory, for clinics and hospitals.',
+                description='For clinics and hospitals with several doctors — includes a built-in doctor directory.',
                 order=2,
                 example_tagline='Excellence in healthcare with compassionate, accredited care',
                 example_bio=(
@@ -82,7 +82,7 @@ class Command(BaseCommand):
             dict(
                 name='Monoline', slug='monoline', category='business', tier='single',
                 layout_key='business+professional/monoline/monoline', accent_color='#FFAA17',
-                description='Modern navy & orange agency layout for consultants and professional services.',
+                description='For creative agencies, freelancers and consultants who want a bold, modern feel.',
                 order=3,
                 example_tagline='Trusted, professional service you can count on',
                 example_bio=(
@@ -105,7 +105,7 @@ class Command(BaseCommand):
             dict(
                 name='VaultEdge', slug='vaultedge', category='business', tier='single',
                 layout_key='business+professional/vaultedge/vaultedge', accent_color='#D4A017',
-                description='Polished navy & gold corporate layout for consultants and professional firms.',
+                description='For financial advisors, legal and accounting firms that want a polished, corporate feel.',
                 order=4,
                 example_tagline='Confident, professional service you can rely on',
                 example_bio=(
@@ -128,7 +128,7 @@ class Command(BaseCommand):
             dict(
                 name='Northfield', slug='northfield', category='business', tier='single',
                 layout_key='business+professional/northfield/northfield', accent_color='#1F9D55',
-                description='Clean green & navy layout for consultants, agencies and professional services.',
+                description='For contractors, agencies and service providers who want a clean, everyday trustworthy look.',
                 order=5,
                 example_tagline='Practical, reliable service you can count on',
                 example_bio=(
@@ -151,7 +151,7 @@ class Command(BaseCommand):
             dict(
                 name='Salone', slug='salone', category='ecommerce', tier='single',
                 layout_key='ecommerce/salone/salone', accent_color='#F28B00',
-                description='Bold orange & red layout for electronics and gadget shops.',
+                description='For electronics, gadget and accessory sellers who want a bold, energetic storefront.',
                 order=6,
                 example_tagline='Genuine electronics, unbeatable prices',
                 example_bio=(
@@ -173,7 +173,7 @@ class Command(BaseCommand):
             dict(
                 name='Loom', slug='loom', category='ecommerce', tier='single',
                 layout_key='ecommerce/loom/loom', accent_color='#8C907E',
-                description='Minimal sage & cream layout for fashion and boutique shops.',
+                description='For fashion, clothing and boutique sellers who want a minimal, elevated feel.',
                 order=7,
                 example_tagline='Thoughtfully chosen pieces, made to last',
                 example_bio=(
@@ -194,7 +194,7 @@ class Command(BaseCommand):
             dict(
                 name='Birchwood', slug='birchwood', category='ecommerce', tier='single',
                 layout_key='ecommerce/birchwood/birchwood', accent_color='#3B5D50',
-                description='Warm forest-green & amber layout for furniture and home goods shops.',
+                description='For furniture, home decor and handmade goods sellers who want a warm, crafted feel.',
                 order=8,
                 example_tagline='Furniture and decor built to live with, not around',
                 example_bio=(
