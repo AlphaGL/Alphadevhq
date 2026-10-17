@@ -34,10 +34,33 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
+                name='Prime Dental', slug='primedental', category='medical', tier='single',
+                layout_key='medical+healthcare/primedental/primedental', accent_color='#4B3DF2',
+                description='Friendly, modern purple-gradient layout for dental and specialist clinics.',
+                order=1,
+                example_tagline='Professional & modern dental care for the whole family',
+                example_bio=(
+                    'High-quality treatments, advanced technology and a caring team — helping patients '
+                    'achieve a healthy, confident smile. Replace this with your own story — how the '
+                    'practice started and what patients can expect when they walk in.'
+                ),
+                example_services=(
+                    'Cosmetic dentistry — veneers, whitening & smile design [Popular]\n'
+                    'Orthodontics — braces and aligners for all ages [Popular]\n'
+                    'Oral hygiene — routine cleaning & checkups [Preventive]\n'
+                    'Dental implants — permanent tooth replacement [Specialist]'
+                ),
+                example_team=(
+                    'Dr. Farah Hassan — General Dentistry\n'
+                    'Dr. Tunde Bakare — Orthodontics\n'
+                    'Dr. Sarah Lin — Cosmetic Dentistry'
+                ),
+            ),
+            dict(
                 name='Business & Professional', slug='business-pro', category='business', tier='single',
                 layout_key='business_pro', accent_color='#0B2E4F',
                 description='Clean, trustworthy layout for consultants and professional services.',
-                order=1,
+                order=2,
                 example_tagline='Trusted, professional service you can count on',
                 example_bio=(
                     'We have served this community for years with reliable, professional care and '

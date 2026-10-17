@@ -1,0 +1,24 @@
+{% load store_extras %}<section id="team" class="container py-5{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div data-services-root{% if is_editor %} data-services-editor data-services-field="team_body"{% endif %}>
+    <div class="text-center mb-4">
+      <span class="pd-tag">Our Team</span>
+      <div class="d-flex align-items-center justify-content-center gap-3 mt-2">
+        <h2 class="fw-bold m-0">{{ section.get_heading }}</h2>
+        {% include "store_templates/_section_controls.html" %}
+      </div>
+    </div>
+    <div class="row g-4 store-team-grid">
+      {% for item in section.body|parse_services %}
+        <div class="col-md-4">
+          <div class="store-team-card"{% if is_editor %} data-service-card{% endif %}>
+            <div class="pd-team-avatar mx-auto"><i class="bi bi-person-fill" style="font-size:36px"></i></div>
+            {% if is_editor %}<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove team member">&times;</button>{% endif %}
+            <h5 class="store-team-card-title"{% if is_editor %} data-service-title contenteditable="true"{% endif %}>{{ item.title }}</h5>
+            {% if item.subtitle or is_editor %}<p class="store-team-card-sub"{% if is_editor %} data-service-sub contenteditable="true"{% endif %}>{{ item.subtitle }}</p>{% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      {% if is_editor %}<div class="col-md-4"><div class="service-add-tile" data-service-add>+ Add team member</div></div>{% endif %}
+    </div>
+  </div>
+</section>

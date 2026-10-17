@@ -1,0 +1,31 @@
+<section id="gallery" class="container py-5{% if is_editor and not section.is_enabled %} is-section-hidden{% endif %}"{% if is_editor %} data-section-wrap{% endif %}>
+  <div class="text-center mb-4">
+    <span class="pd-tag">Gallery</span>
+    <div class="d-flex align-items-center justify-content-center gap-3 mt-2">
+      <h2 class="fw-bold m-0">{{ section.get_heading }}</h2>
+      {% include "store_templates/_section_controls.html" %}
+    </div>
+  </div>
+  <div class="row g-3">
+    {% for image in images %}
+      <div class="col-6 col-md-4 col-lg-3">
+        {% if is_editor %}
+          <div class="pd-gallery-tile gallery-item">
+            <button type="button" class="gallery-delete-btn" data-delete-image="{{ image.id }}" aria-label="Remove photo">&times;</button>
+            <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
+          </div>
+        {% elif is_template_demo %}
+          <div class="pd-gallery-tile gallery-img-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
+        {% else %}
+          <div class="pd-gallery-tile"><img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy"></div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    {% if is_editor %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="gallery-add-tile pd-gallery-tile" data-editable-image="gallery" style="display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;color:#94a3b8">+</div>
+      </div>
+    {% endif %}
+  </div>
+  {% if is_template_demo %}<p class="text-center text-muted small mt-4">Add up to {{ image_limit }} of your own photos here</p>{% endif %}
+</section>
