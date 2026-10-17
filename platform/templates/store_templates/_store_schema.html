@@ -1,0 +1,13 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{ store.business_name|escapejs }}",
+  "url": "{{ request.build_absolute_uri|escapejs }}"
+  {% if store.tagline or store.bio %},"description": "{{ store.tagline|default:store.bio|truncatewords:30|escapejs }}"{% endif %}
+  {% if store.phone %},"telephone": "+{{ store.phone|escapejs }}"{% endif %}
+  {% if store.address %},"address": {"@type": "PostalAddress", "streetAddress": "{{ store.address|escapejs }}", "addressCountry": "NG"}{% endif %}
+  {% if store.logo %},"logo": "{{ store.logo.url|escapejs }}", "image": "{{ store.logo.url|escapejs }}"{% endif %}
+  {% if social_links %},"sameAs": [{% for link in social_links %}"{{ link.url|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}]{% endif %}
+}
+</script>
