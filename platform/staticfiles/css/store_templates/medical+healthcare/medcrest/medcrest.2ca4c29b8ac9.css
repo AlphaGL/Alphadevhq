@@ -1,0 +1,74 @@
+:root {
+  --mc-primary: #0f9d78;
+  --mc-dark: #0b3b36;
+  --mc-light: #eafaf5;
+}
+body { background: #f7fbfa; font-family: "Inter", Arial, sans-serif; }
+h1, h2, h3, h4, h5, .mc-brand { font-family: "Outfit", "Inter", Arial, sans-serif; }
+
+.mc-btn { background: var(--mc-primary); color: #fff; border: none; border-radius: 10px; padding: 11px 26px; font-weight: 600; transition: .25s; display: inline-block; text-decoration: none; }
+.mc-btn:hover { background: #0c8366; transform: translateY(-2px); color: #fff; }
+.mc-btn-light { background: #fff; color: var(--mc-dark); font-weight: 600; border-radius: 10px; padding: 11px 26px; text-decoration: none; display: inline-block; transition: .25s; }
+.mc-btn-light:hover { background: rgba(255,255,255,.9); transform: translateY(-2px); color: var(--mc-dark); }
+
+/* nav */
+.mc-navbar { background: var(--mc-dark); }
+.mc-nav-link { color: #d7f4eb; font-weight: 500; }
+.mc-brand { color: #fff; font-weight: 800; }
+
+/* hero */
+.mc-hero { background: linear-gradient(135deg, var(--mc-dark) 0%, #114d44 55%, var(--mc-primary) 100%); color: #fff; padding-top: 140px; padding-bottom: 70px; }
+.mc-hero-title { font-weight: 800; font-size: clamp(28px, 6vw, 40px); }
+.mc-hero-text { color: rgba(255,255,255,.82); font-size: 16px; max-width: 540px; }
+.mc-hero-inner { padding-top: 120px; padding-bottom: 50px; }
+.mc-trust-badges { display: flex; flex-wrap: wrap; gap: 10px; }
+.mc-trust-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; }
+.mc-hero-visual { width: 260px; height: 260px; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.mc-hero-visual i { font-size: 96px; color: rgba(255,255,255,.85); }
+
+/* emergency banner */
+.mc-banner { background: var(--mc-primary); color: #fff; padding: 22px 0; }
+
+/* cards */
+.mc-card { background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 8px 24px rgba(11,59,54,.08); transition: .2s; height: 100%; }
+.mc-card:hover { transform: translateY(-4px); }
+.mc-card i { font-size: 32px; color: var(--mc-primary); margin-bottom: 10px; }
+
+.mc-tag { color: var(--mc-primary); font-weight: 700; letter-spacing: .5px; font-size: 13px; text-transform: uppercase; }
+
+.mc-why-list { list-style: none; padding: 0; margin-top: 12px; }
+.mc-why-list li { font-size: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: #334; }
+.mc-why-list i { color: var(--mc-primary); font-size: 18px; }
+
+.mc-gallery-tile { border-radius: 14px; overflow: hidden; aspect-ratio: 4/3; background: var(--mc-light); position: relative; }
+.mc-gallery-tile img { width: 100%; height: 100%; object-fit: cover; }
+
+.mc-avatar { width: 84px; height: 84px; border-radius: 50%; background: var(--mc-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: var(--mc-primary); }
+
+.mc-appointment-box { border-radius: 20px; background: linear-gradient(135deg, var(--mc-dark), var(--mc-primary)); padding: clamp(22px, 5vw, 40px); color: #fff; }
+
+.mc-footer { background: #fff; border-top: 1px solid #e3f3ee; }
+
+/* shared editable-card hooks restyled to match this theme
+   (store-services-grid/store-team-grid already get display:grid
+   from store-common.css — don't redeclare it, and never wrap these
+   cards in a Bootstrap .row/.col grid, the two layout systems fight) */
+.store-service-card { position: relative; background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 8px 24px rgba(11,59,54,.08); transition: .2s; }
+.store-service-card:hover { transform: translateY(-4px); }
+.store-service-card-title { font-weight: 700; font-size: 17px; color: #1b2b28; margin-top: 6px; }
+.store-service-card-sub { color: #5c6f6a; font-size: .9rem; margin-top: 4px; }
+.store-service-card.is-hidden { display: none; }
+
+.store-team-card { position: relative; background: #fff; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 8px 24px rgba(11,59,54,.08); transition: .2s; }
+.store-team-card:hover { transform: translateY(-4px); }
+.store-team-card-title { font-weight: 700; font-size: 17px; color: #1b2b28; }
+.store-team-card-sub { color: #5c6f6a; font-size: .9rem; margin-top: 2px; }
+
+.store-pill { display: inline-flex; align-items: center; padding: 8px 18px; border-radius: 999px; font-size: 13px; font-weight: 600; border: 1px solid #d7ece5; color: #5c6f6a; background: #fff; cursor: pointer; }
+.store-pill.is-active { background: var(--mc-primary); color: #fff; border-color: var(--mc-primary); }
+.store-empty-note { display: none; }
+.store-empty-note.is-visible { display: block; }
+
+.store-nav-links a.is-current { color: #8be8c9 !important; }
+.store-nav-links.is-open { display: flex !important; }
+.store-nav-toggle { background: none; border: none; cursor: pointer; color: #fff; }

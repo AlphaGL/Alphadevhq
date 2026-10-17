@@ -57,10 +57,33 @@ class Command(BaseCommand):
                 ),
             ),
             dict(
+                name='MedCrest', slug='medcrest', category='medical', tier='single',
+                layout_key='medical+healthcare/medcrest/medcrest', accent_color='#0F9D78',
+                description='Calm, trust-building teal layout with a doctor directory, for clinics and hospitals.',
+                order=2,
+                example_tagline='Excellence in healthcare with compassionate, accredited care',
+                example_bio=(
+                    'We combine modern diagnostic technology with a calm, unhurried approach to care. '
+                    'Every visit starts with listening, not a rushed appointment slot. Replace this with '
+                    'your own story — how the practice started and what patients can expect when they walk in.'
+                ),
+                example_services=(
+                    'General consultations — walk-in or by appointment [Consultations]\n'
+                    'Lab diagnostics and screening — same-day results [Diagnostics]\n'
+                    'Minor procedures — outpatient [Procedures]\n'
+                    'Family health plans — monthly [Plans]'
+                ),
+                example_team=(
+                    'Dr. Amanda Foster — Cardiology\n'
+                    'Dr. Marcus Johnson — Neurology\n'
+                    'Dr. Rachel Williams — Pediatrics'
+                ),
+            ),
+            dict(
                 name='Business & Professional', slug='business-pro', category='business', tier='single',
                 layout_key='business_pro', accent_color='#0B2E4F',
                 description='Clean, trustworthy layout for consultants and professional services.',
-                order=2,
+                order=3,
                 example_tagline='Trusted, professional service you can count on',
                 example_bio=(
                     'We have served this community for years with reliable, professional care and '
