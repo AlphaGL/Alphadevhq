@@ -1,0 +1,29 @@
+<nav class="navbar sl-navbar fixed-top py-3 navbar-expand-lg">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="#home" class="d-flex align-items-center gap-2 text-decoration-none" style="min-width:0">
+      <i class="bi bi-bag-fill sl-brand fs-4 flex-shrink-0"></i>
+      <span class="fw-bold m-0 sl-brand text-break"{% if is_editor %} data-editable-field="business_name" data-singleline contenteditable="true"{% endif %}>{{ store.business_name }}</span>
+    </a>
+    <ul class="nav d-none d-lg-flex gap-1">
+      <li class="nav-item"><a class="nav-link sl-nav-link" href="#home">Home</a></li>
+      <li class="nav-item"><a class="nav-link sl-nav-link" href="#about">About</a></li>
+      <li class="nav-item"><a class="nav-link sl-nav-link" href="#services">Products</a></li>
+      <li class="nav-item"><a class="nav-link sl-nav-link" href="#team">Team</a></li>
+      <li class="nav-item"><a class="nav-link sl-nav-link" href="#gallery">Gallery</a></li>
+      <li class="nav-item"><a class="nav-link sl-nav-link" href="#contact">Contact</a></li>
+    </ul>
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="sl-btn px-4 d-none d-lg-block" style="background:#fff;color:var(--sl-primary)">Order Now</a>
+    <button type="button" class="store-nav-toggle d-lg-none" aria-label="Menu">
+      <i class="bi bi-list fs-1"></i>
+    </button>
+  </div>
+  <div class="store-nav-links d-none flex-column gap-2 px-4 pt-3" style="background:var(--sl-primary)">
+    <a href="#home" class="sl-nav-link">Home</a>
+    <a href="#about" class="sl-nav-link">About</a>
+    <a href="#services" class="sl-nav-link">Products</a>
+    <a href="#team" class="sl-nav-link">Team</a>
+    <a href="#gallery" class="sl-nav-link">Gallery</a>
+    <a href="#contact" class="sl-nav-link">Contact</a>
+    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="sl-btn text-center mb-3" style="background:#fff;color:var(--sl-primary)">Order Now</a>
+  </div>
+</nav>

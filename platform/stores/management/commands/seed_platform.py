@@ -148,6 +148,28 @@ class Command(BaseCommand):
                     'Femi Adewale — Operations'
                 ),
             ),
+            dict(
+                name='Salone', slug='salone', category='ecommerce', tier='single',
+                layout_key='ecommerce/salone/salone', accent_color='#F28B00',
+                description='Bold orange & red layout for electronics and gadget shops.',
+                order=6,
+                example_tagline='Genuine electronics, unbeatable prices',
+                example_bio=(
+                    'We stock a wide range of genuine electronics and gadgets, sourced for quality and '
+                    'priced to be fair. Replace this with your own story — what you sell and why customers '
+                    'should shop with you.'
+                ),
+                example_services=(
+                    'Wireless Earbuds — ₦18,000 [Audio]\n'
+                    'Smart Watch — ₦35,000 [Wearables]\n'
+                    'Power Bank 20000mAh — ₦12,000 [Accessories]\n'
+                    'Bluetooth Speaker — ₦22,000 [Audio]'
+                ),
+                example_team=(
+                    'Tunde Bakare — Store Manager\n'
+                    'Chiamaka Eze — Customer Support'
+                ),
+            ),
         ]
         for data in templates:
             StoreTemplate.objects.update_or_create(slug=data['slug'], defaults=data)
