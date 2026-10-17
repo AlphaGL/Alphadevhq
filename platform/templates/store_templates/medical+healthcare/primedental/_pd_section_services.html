@@ -18,18 +18,16 @@
         {% endif %}
       {% endwith %}
     {% endif %}
-    <div class="row g-4 store-services-grid">
+    <div class="store-services-grid">
       {% for item in section.body|parse_services %}
-        <div class="col-md-4">
-          <div class="store-service-card" data-tag="{{ item.tag }}" data-search-text="{{ item.title }} {{ item.subtitle }}"{% if is_editor %} data-service-card{% endif %}>
-            <i class="bi bi-capsule"></i>
-            {% if is_editor %}<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove service">&times;</button>{% endif %}
-            <h5 class="store-service-card-title"{% if is_editor %} data-service-title contenteditable="true"{% endif %}>{{ item.title }}</h5>
-            {% if item.subtitle or is_editor %}<p class="store-service-card-sub"{% if is_editor %} data-service-sub contenteditable="true"{% endif %}>{{ item.subtitle }}</p>{% endif %}
-          </div>
+        <div class="store-service-card" data-tag="{{ item.tag }}" data-search-text="{{ item.title }} {{ item.subtitle }}"{% if is_editor %} data-service-card{% endif %}>
+          <i class="bi bi-capsule"></i>
+          {% if is_editor %}<button type="button" class="service-remove-btn" data-service-remove aria-label="Remove service">&times;</button>{% endif %}
+          <h5 class="store-service-card-title"{% if is_editor %} data-service-title contenteditable="true"{% endif %}>{{ item.title }}</h5>
+          {% if item.subtitle or is_editor %}<p class="store-service-card-sub"{% if is_editor %} data-service-sub contenteditable="true"{% endif %}>{{ item.subtitle }}</p>{% endif %}
         </div>
       {% endfor %}
-      {% if is_editor %}<div class="col-md-4"><div class="service-add-tile" data-service-add>+ Add service</div></div>{% endif %}
+      {% if is_editor %}<div class="service-add-tile" data-service-add>+ Add service</div>{% endif %}
     </div>
     {% if not is_editor %}<p class="store-empty-note text-center text-muted mt-4">No matching services found.</p>{% endif %}
   </div>

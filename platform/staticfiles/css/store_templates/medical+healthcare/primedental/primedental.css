@@ -21,11 +21,11 @@ body { background: #f3f4fb; font-family: "Poppins", Arial, sans-serif; }
 /* hero */
 .pd-hero {
   min-height: 60vh; padding-top: 130px; padding-bottom: 60px;
-  background: linear-gradient(180deg, #4b3df2 0%, #8a7aff 20%, #bfc4ff 45%, #eef0ff 70%, #ffffff 100%);
+  background: linear-gradient(180deg, #4b3df2 0%, #5d54ff 45%, #6b63ff 100%);
   border-radius: 0 0 35px 35px; color: #fff; text-align: center;
 }
-.pd-hero-title { font-weight: 800; font-size: 42px; color: #fff; }
-.pd-hero-text { color: rgba(255,255,255,.85); font-size: 16px; max-width: 650px; margin: 10px auto 25px; }
+.pd-hero-title { font-weight: 800; font-size: clamp(28px, 6vw, 42px); color: #fff; }
+.pd-hero-text { color: rgba(255,255,255,.95); font-size: 16px; max-width: 650px; margin: 10px auto 25px; }
 .pd-hero-inner { min-height: 40vh; padding-top: 120px; }
 
 /* cards */
@@ -50,7 +50,7 @@ body { background: #f3f4fb; font-family: "Poppins", Arial, sans-serif; }
 .pd-why-list li { font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; color: #444; }
 .pd-why-list i { color: #4b3df2; font-size: 18px; }
 
-.pd-appointment-box { position: relative; border-radius: 22px; background: linear-gradient(135deg, #6b63ff, #4b3df2); overflow: hidden; padding: 45px; }
+.pd-appointment-box { position: relative; border-radius: 22px; background: linear-gradient(135deg, #6b63ff, #4b3df2); overflow: hidden; padding: clamp(22px, 5vw, 45px); }
 .pd-appointment-box::before, .pd-appointment-box::after { content: ""; position: absolute; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.15); }
 .pd-appointment-box::before { top: -40px; left: -20px; }
 .pd-appointment-box::after { bottom: -30px; right: 30px; }
