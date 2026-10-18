@@ -32,11 +32,22 @@ def agency_home(request):
         for category, group in itertools.groupby(templates, key=lambda t: t.category)
     ]
     plans = Plan.objects.all()
+    by_slug = {t.slug: t for t in templates}
     return render(request, 'stores/agency_home.html', {
         'templates': templates,
         'grouped_templates': grouped_templates,
         'plans': plans,
+        'showcase_template_1': by_slug.get('monoline'),
+        'showcase_template_2': by_slug.get('salone'),
     })
+
+
+def pricing_page(request):
+    """Standalone pricing page, split out of the homepage so it's a short,
+    shareable page instead of one more section in a long scroll."""
+    from billing.models import Plan
+    plans = Plan.objects.all()
+    return render(request, 'stores/pricing.html', {'plans': plans})
 
 
 def privacy_policy(request):
