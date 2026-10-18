@@ -39,6 +39,9 @@ html[data-theme="dark"]{
   --glass-spec: rgba(255,255,255,.5);
   --accent: #ffffff;
   --accent-ink: #050506;
+  --brand: #1fae6b;
+  --brand-rgb: 31,174,107;
+  --brand-ink: #ffffff;
   --shadow-color: 0,0,0;
   --grain-opacity: .05;
   --invert-logo: 0;
@@ -59,6 +62,9 @@ html[data-theme="light"]{
   --glass-spec: rgba(255,255,255,.9);
   --accent: #0b0b0c;
   --accent-ink: #fbfbfc;
+  --brand: #189a5c;
+  --brand-rgb: 24,154,92;
+  --brand-ink: #ffffff;
   --shadow-color: 10,10,12;
   --grain-opacity: .035;
   --invert-logo: 1;
@@ -375,10 +381,10 @@ body.menu-open .mobile-menu{ opacity: 1; visibility: visible; transform: transla
 }
 .btn svg{ width: 16px; height: 16px; }
 .btn-primary{
-  background: var(--ink-0);
-  color: var(--bg-0);
+  background: var(--brand);
+  color: var(--brand-ink);
 }
-.btn-primary:hover{ box-shadow: 0 10px 30px -10px rgba(var(--shadow-color), .5); }
+.btn-primary:hover{ box-shadow: 0 10px 30px -10px rgba(var(--brand-rgb), .5); }
 .btn-ghost{
   border: 1px solid var(--line-0);
   background: var(--glass-fill);
@@ -715,10 +721,14 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
 @media (max-width: 760px){ .path-grid{ grid-template-columns: 1fr; } }
 .path-card{ display:block; padding: 32px; border-radius: var(--radius-lg); transition: transform var(--dur-fast) var(--ease-soft); }
 .path-card:hover{ transform: translateY(-4px); }
-.path-tag{ display:inline-block; font-size: 12.5px; font-weight: 650; letter-spacing: .3px; color: var(--ink-2); padding: 6px 12px; border: 1px solid var(--line-0); border-radius: var(--radius-pill); }
+.hero-paths{ display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.hero-path-pill{ display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600; padding:9px 18px; border-radius: var(--radius-pill); background: rgba(var(--brand-rgb),.12); border:1px solid rgba(var(--brand-rgb),.3); color: var(--brand); transition: transform var(--dur-fast) var(--ease-soft); }
+.hero-path-pill:hover{ transform: translateY(-2px); }
+.hero-path-pill svg{ width:14px; height:14px; }
+.path-tag{ display:inline-block; font-size: 12.5px; font-weight: 650; letter-spacing: .3px; color: var(--brand); padding: 6px 12px; background: rgba(var(--brand-rgb), .12); border: 1px solid rgba(var(--brand-rgb), .3); border-radius: var(--radius-pill); }
 .path-card h3{ margin-top: 16px; font-size: 24px; font-weight: 650; }
 .path-card p{ margin-top: 10px; color: var(--ink-1); font-size: 14.5px; line-height: 1.6; }
-.path-link{ display:flex; align-items:center; gap: 6px; margin-top: 20px; font-size: 13.5px; font-weight: 650; }
+.path-link{ display:flex; align-items:center; gap: 6px; margin-top: 20px; font-size: 13.5px; font-weight: 650; color: var(--brand); }
 .path-link svg{ width:14px; height:14px; transition: transform .3s var(--ease-out); }
 .path-card:hover .path-link svg{ transform: translate(4px,-4px); }
 

@@ -522,7 +522,7 @@
     }
 
     function socialLink(){
-      return "https://instagram.com/alphadevhq";
+      return "https://wa.me/2348138582078";
     }
 
     form.addEventListener("submit", function(e){

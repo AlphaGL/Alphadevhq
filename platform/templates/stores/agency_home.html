@@ -215,11 +215,21 @@
         <span class="line"><span style="--i:1">web presence your</span></span>
         <span class="line"><span style="--i:2">business <em>deserves</em>.</span></span>
       </h1>
-      <p class="hero-sub">Alpha Dev designs and builds websites, apps, and search presence for businesses, clinics and schools across Nigeria. Premium work, built to be found and built to convert.</p>
+      <p class="hero-sub">Two ways to get online: build your own site from a ready template, or have us design and build a custom one for you. Either way, it's WhatsApp-ready from day one.</p>
+      <div class="hero-paths" data-reveal>
+        <a href="{% url 'stores:store_landing' %}" class="hero-path-pill">
+          <svg><use href="#icon-store"></use></svg>
+          Build it yourself — from &#8358;2,000/month
+        </a>
+        <a href="#pricing" class="hero-path-pill">
+          <svg><use href="#icon-code"></use></svg>
+          We build it for you — from &#8358;150,000
+        </a>
+      </div>
       <div class="hero-cta">
-        <a class="btn btn-primary" data-magnetic href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">
-          <svg><use href="#icon-instagram"></use></svg>
-          Message us on Instagram
+        <a class="btn btn-primary" data-magnetic href="https://wa.me/2348138582078" target="_blank" rel="noopener">
+          <svg><use href="#icon-whatsapp"></use></svg>
+          Message us on WhatsApp
         </a>
         <a class="btn btn-ghost" data-magnetic href="#work">
           View our work
@@ -239,6 +249,9 @@
   <!-- Paths -->
   <section class="section" id="paths" style="padding-top:0">
     <div class="container">
+      <div class="section-head is-center" data-reveal style="margin-bottom:28px">
+        <span class="eyebrow"><span class="dot"></span>Two ways to start</span>
+      </div>
       <div class="path-grid" data-reveal-stagger>
         <a href="{% url 'stores:store_landing' %}" class="path-card glass">
           <span class="path-tag">Starting at &#8358;2,000/month</span>
@@ -272,49 +285,6 @@
         <span>Local Business <svg><use href="#icon-dot"></use></svg></span>
         <span>Media &amp; Publishing <svg><use href="#icon-dot"></use></svg></span>
         <span>Engineering Services <svg><use href="#icon-dot"></use></svg></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Free Website Check -->
-  <section class="section" id="check">
-    <div class="container">
-      <div class="section-head is-center" data-reveal>
-        <span class="eyebrow"><span class="dot"></span>Free tool</span>
-        <h2 class="section-title">How does your website actually perform?</h2>
-        <p class="section-sub">Drop in any website URL. We run it through Google's own performance engine, live, and show you exactly where it stands.</p>
-      </div>
-
-      <div class="checker-panel glass" data-reveal>
-        <form class="checker-form" id="checkerForm">
-          <input type="text" id="checkerUrl" class="checker-input" placeholder="yourbusiness.com" autocomplete="off" inputmode="url" aria-label="Website URL to check">
-          <button type="submit" class="btn btn-primary" id="checkerSubmit">
-            Run free check
-            <svg><use href="#icon-arrow-right"></use></svg>
-          </button>
-        </form>
-
-        <div class="checker-state" id="checkerLoading" hidden>
-          <img class="checker-spinner" src="/static/assets/img/alpha-dev-mark.png" alt="" aria-hidden="true">
-          <p>Running a live check on Google's engine. This can take up to 30 seconds.</p>
-        </div>
-
-        <div class="checker-state" id="checkerError" hidden>
-          <p id="checkerErrorMsg">Something went wrong reaching Google's checker. Try again, or just send us the link directly.</p>
-          <a class="btn btn-ghost btn-sm" id="checkerErrorCta" target="_blank" rel="noopener">
-            <svg><use href="#icon-instagram"></use></svg>
-            Send us the link instead
-          </a>
-        </div>
-
-        <div class="checker-results" id="checkerResults" hidden>
-          <div class="checker-scores" id="checkerScores"></div>
-          <p class="checker-verdict" id="checkerVerdict"></p>
-          <a class="btn btn-primary" id="checkerCta" target="_blank" rel="noopener">
-            <svg><use href="#icon-instagram"></use></svg>
-            Get these fixed
-          </a>
-        </div>
       </div>
     </div>
   </section>
@@ -537,6 +507,50 @@
     </div>
   </section>
 
+  <!-- Free Website Check -->
+  <section class="section" id="check">
+    <div class="container">
+      <div class="section-head is-center" data-reveal>
+        <span class="eyebrow"><span class="dot"></span>Free tool</span>
+        <h2 class="section-title">How does your website actually perform?</h2>
+        <p class="section-sub">Already have a website? Drop the URL in below and we'll run it through Google's own performance engine, live, and show you exactly where it stands.</p>
+        <p class="section-sub">Don't have a website yet? Skip this — that's what we build. <a href="{% url 'stores:store_landing' %}">See a store from &#8358;2,000/month</a> or <a href="#pricing">a custom site from &#8358;150,000</a>.</p>
+      </div>
+
+      <div class="checker-panel glass" data-reveal>
+        <form class="checker-form" id="checkerForm">
+          <input type="text" id="checkerUrl" class="checker-input" placeholder="yourbusiness.com" autocomplete="off" inputmode="url" aria-label="Website URL to check">
+          <button type="submit" class="btn btn-primary" id="checkerSubmit">
+            Run free check
+            <svg><use href="#icon-arrow-right"></use></svg>
+          </button>
+        </form>
+
+        <div class="checker-state" id="checkerLoading" hidden>
+          <img class="checker-spinner" src="/static/assets/img/alpha-dev-mark.png" alt="" aria-hidden="true">
+          <p>Running a live check on Google's engine. This can take up to 30 seconds.</p>
+        </div>
+
+        <div class="checker-state" id="checkerError" hidden>
+          <p id="checkerErrorMsg">Something went wrong reaching Google's checker. Try again, or just send us the link directly.</p>
+          <a class="btn btn-ghost btn-sm" id="checkerErrorCta" target="_blank" rel="noopener">
+            <svg><use href="#icon-whatsapp"></use></svg>
+            Send us the link instead
+          </a>
+        </div>
+
+        <div class="checker-results" id="checkerResults" hidden>
+          <div class="checker-scores" id="checkerScores"></div>
+          <p class="checker-verdict" id="checkerVerdict"></p>
+          <a class="btn btn-primary" id="checkerCta" target="_blank" rel="noopener">
+            <svg><use href="#icon-whatsapp"></use></svg>
+            Get these fixed
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Pricing -->
   <section class="section" id="pricing">
     <div class="container">
@@ -561,7 +575,7 @@
             <li><svg><use href="#icon-check"></use></svg>Basic SEO</li>
             <li><svg><use href="#icon-check"></use></svg>30 days of post launch support</li>
           </ul>
-          <a class="btn btn-ghost btn-block" href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">Get started</a>
+          <a class="btn btn-ghost btn-block" href="https://wa.me/2348138582078" target="_blank" rel="noopener">Get started</a>
         </div>
 
         <div class="price-card glass is-popular">
@@ -577,7 +591,7 @@
             <li><svg><use href="#icon-check"></use></svg>Extended SEO setup</li>
             <li><svg><use href="#icon-check"></use></svg>60 days of post launch support</li>
           </ul>
-          <a class="btn btn-primary btn-block" href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">Get started</a>
+          <a class="btn btn-primary btn-block" href="https://wa.me/2348138582078" target="_blank" rel="noopener">Get started</a>
         </div>
 
         <div class="price-card glass">
@@ -592,7 +606,7 @@
             <li><svg><use href="#icon-check"></use></svg>Third party integrations: payments, WhatsApp API and more</li>
             <li><svg><use href="#icon-check"></use></svg>Support and SEO scoped to the project</li>
           </ul>
-          <a class="btn btn-ghost btn-block" href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">Talk to us</a>
+          <a class="btn btn-ghost btn-block" href="https://wa.me/2348138582078" target="_blank" rel="noopener">Talk to us</a>
         </div>
 
       </div>
@@ -602,7 +616,7 @@
           <span class="eyebrow"><span class="dot"></span>Custom</span>
           <h3>Need something added on top?</h3>
           <p>These bolt onto any package above, scoped and quoted once we know exactly what you need.</p>
-          <a class="btn btn-primary" data-magnetic href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">
+          <a class="btn btn-primary" data-magnetic href="https://wa.me/2348138582078" target="_blank" rel="noopener">
             Ask about an add-on
             <svg><use href="#icon-arrow-up-right"></use></svg>
           </a>
@@ -700,11 +714,11 @@
         <div>
           <span class="eyebrow"><span class="dot"></span>Get in touch</span>
           <h2 class="contact-title">Let's build something your customers trust.</h2>
-          <p class="contact-copy">Tell us about your business and what you need. We typically reply within 24 hours, often sooner on Instagram.</p>
+          <p class="contact-copy">Tell us about your business and what you need. We typically reply within 24 hours, often sooner on WhatsApp.</p>
           <div class="contact-cta">
-            <a class="btn btn-primary" data-magnetic href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">
-              <svg><use href="#icon-instagram"></use></svg>
-              Message us on Instagram
+            <a class="btn btn-primary" data-magnetic href="https://wa.me/2348138582078" target="_blank" rel="noopener">
+              <svg><use href="#icon-whatsapp"></use></svg>
+              Message us on WhatsApp
             </a>
             <a class="btn btn-ghost" data-magnetic href="mailto:ichukwugozirim@gmail.com">
               <svg><use href="#icon-mail"></use></svg>
@@ -713,6 +727,11 @@
           </div>
         </div>
         <div class="contact-list">
+          <a class="contact-row" href="https://wa.me/2348138582078" target="_blank" rel="noopener" aria-label="Message Alpha Dev on WhatsApp">
+            <span class="contact-row-icon"><svg><use href="#icon-whatsapp"></use></svg></span>
+            <span class="contact-row-label">Message us on WhatsApp</span>
+            <svg class="contact-row-arrow"><use href="#icon-arrow-up-right"></use></svg>
+          </a>
           <a class="contact-row" href="https://instagram.com/alphadevhq?obrf=OXVqMWEydmN5cDBz&amp;utm_source=qr" target="_blank" rel="noopener" aria-label="Follow Alpha Dev on Instagram">
             <span class="contact-row-icon"><svg><use href="#icon-instagram"></use></svg></span>
             <span class="contact-row-label">Follow us on Instagram</span>
@@ -750,6 +769,7 @@
         </a>
         <p>A web and app development studio building for businesses, clinics and schools across Nigeria.</p>
         <div class="footer-social">
+          <a href="https://wa.me/2348138582078" target="_blank" rel="noopener" aria-label="Message Alpha Dev on WhatsApp"><svg><use href="#icon-whatsapp"></use></svg></a>
           <a href="https://instagram.com/alphadevhq?obrf=OXVqMWEydmN5cDBz&amp;utm_source=qr" target="_blank" rel="noopener" aria-label="Alpha Dev on Instagram"><svg><use href="#icon-instagram"></use></svg></a>
           <a href="https://www.facebook.com/share/1HS3z1CGgz/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Alpha Dev on Facebook"><svg><use href="#icon-facebook"></use></svg></a>
         </div>
@@ -778,6 +798,7 @@
         <div class="footer-col">
           <h4>Contact</h4>
           <ul>
+            <li><a href="https://wa.me/2348138582078" target="_blank" rel="noopener">WhatsApp</a></li>
             <li><a href="https://instagram.com/alphadevhq" target="_blank" rel="noopener">Instagram</a></li>
             <li><a href="https://www.facebook.com/share/1HS3z1CGgz/?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook</a></li>
             <li><a href="mailto:ichukwugozirim@gmail.com">Email</a></li>
@@ -793,8 +814,8 @@
   </div>
 </footer>
 
-<a href="https://instagram.com/alphadevhq" target="_blank" rel="noopener" class="wa-float" aria-label="Message Alpha Dev on Instagram">
-  <svg><use href="#icon-instagram"></use></svg>
+<a href="https://wa.me/2348138582078" target="_blank" rel="noopener" class="wa-float" aria-label="Message Alpha Dev on WhatsApp">
+  <svg><use href="#icon-whatsapp"></use></svg>
   <span>Chat with us</span>
 </a>
 
