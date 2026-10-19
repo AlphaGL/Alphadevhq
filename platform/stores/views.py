@@ -3,7 +3,7 @@ from functools import wraps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import signing
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.text import slugify
@@ -25,6 +25,7 @@ def make_preview_token(store):
 def agency_home(request):
     """The real homepage — the full Alpha Dev agency marketing site."""
     import itertools
+    from accounts import google_auth
     from billing.models import Plan
     templates = StoreTemplate.objects.filter(is_active=True, tier='single').order_by('category', 'order')
     grouped_templates = [
@@ -39,6 +40,7 @@ def agency_home(request):
         'plans': plans,
         'showcase_template_1': by_slug.get('monoline'),
         'showcase_template_2': by_slug.get('salone'),
+        'google_configured': google_auth.is_configured(),
     })
 
 
@@ -48,6 +50,21 @@ def pricing_page(request):
     from billing.models import Plan
     plans = Plan.objects.all()
     return render(request, 'stores/pricing.html', {'plans': plans})
+
+
+def cron_cleanup(request):
+    """Triggered once a day by Vercel Cron (see vercel.json). Vercel attaches
+    CRON_SECRET as a Bearer token automatically when that env var is set, so
+    a mismatched/missing token means this wasn't really Vercel calling it."""
+    from django.conf import settings
+    from django.core.management import call_command
+
+    expected = f"Bearer {settings.CRON_SECRET}"
+    if not settings.CRON_SECRET or request.headers.get('Authorization') != expected:
+        return HttpResponse(status=401)
+
+    call_command('cleanup_expired_stores')
+    return JsonResponse({'ok': True})
 
 
 def privacy_policy(request):

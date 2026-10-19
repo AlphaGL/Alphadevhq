@@ -114,6 +114,13 @@ class Subscription(models.Model):
         self.grace_period_end = None
         self.save(update_fields=['status', 'current_period_end', 'grace_period_end'])
 
+        # Back in good standing — clear any pending-deletion warning so a
+        # *future* lapse gets its own fresh warning instead of staying
+        # silent because one was already sent for this earlier lapse.
+        if self.store.deletion_warning_sent_at:
+            self.store.deletion_warning_sent_at = None
+            self.store.save(update_fields=['deletion_warning_sent_at'])
+
     def start_trial(self):
         self.status = self.TRIALING
         self.current_period_end = timezone.now() + timezone.timedelta(days=self.TRIAL_DAYS)

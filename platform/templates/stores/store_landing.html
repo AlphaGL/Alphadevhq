@@ -47,20 +47,21 @@
       <h3 class="templates-panel-title">{{ cat_label }}</h3>
       <div class="template-grid" style="margin-top:20px">
         {% for tpl in cat_templates %}
-          <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card">
-            <div class="template-card-preview">
+          <div class="template-card">
+            <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card-preview">
               {% if tpl.preview_image %}
                 <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
               {% else %}
                 <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
               {% endif %}
               <span class="template-card-preview-link">See full preview</span>
-            </div>
+            </a>
             <div class="template-card-body">
               <h4>{{ tpl.name }}</h4>
               <p>{{ tpl.description }}</p>
+              <a href="{% url 'stores:builder_new' %}?template={{ tpl.slug }}" class="btn btn-primary btn-block" style="margin-top:12px" data-select-template>Select this template</a>
             </div>
-          </a>
+          </div>
         {% endfor %}
       </div>
     </div>
@@ -100,6 +101,14 @@
     showCategory(requested, false);
     grid.closest('.platform-wide').scrollIntoView({ behavior: 'auto', block: 'start' });
   }
+
+  document.querySelectorAll('[data-select-template]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.textContent = 'Selected ✓';
+      btn.classList.add('is-selected');
+      btn.closest('.template-card').classList.add('is-checked');
+    });
+  });
 })();
 </script>
 

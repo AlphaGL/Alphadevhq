@@ -11,6 +11,7 @@ urlpatterns = [
     path('explore/', views.explore, name='explore'),
     path('check-name/', views.slug_check, name='slug_check'),
     path('template-preview/<slug:slug>/', views.template_preview, name='template_preview'),
+    path('cron/cleanup/', views.cron_cleanup, name='cron_cleanup'),
     path('legal/privacy/', views.privacy_policy, name='privacy'),
     path('legal/terms/', views.terms, name='terms'),
 

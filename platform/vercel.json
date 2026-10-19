@@ -15,5 +15,11 @@
             "src": "/(.*)",
             "dest": "alphaplatform/wsgi.py"
         }
+    ],
+    "crons": [
+        {
+            "path": "/cron/cleanup/",
+            "schedule": "0 3 * * *"
+        }
     ]
 }

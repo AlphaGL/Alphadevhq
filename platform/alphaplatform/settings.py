@@ -198,6 +198,14 @@ EMAIL_BACKEND = (
 GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='')
 GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET', default='')
 
+# ---------------------------------------------------------------------------
+# Daily cleanup cron — see stores/views.py:cron_cleanup and
+# stores/management/commands/cleanup_expired_stores.py. Vercel Cron attaches
+# this value as a Bearer token automatically when CRON_SECRET is set as a
+# Vercel env var, so the endpoint just has to check it matches.
+# ---------------------------------------------------------------------------
+CRON_SECRET = config('CRON_SECRET', default='')
+
 # Store platform settings
 PLATFORM_DOMAIN = config('PLATFORM_DOMAIN', default='alphadevhq.com')
 DAILY_VISIT_SOFT_CAP = 5000

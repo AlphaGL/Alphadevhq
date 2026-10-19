@@ -100,6 +100,12 @@ class Store(models.Model):
                    "(e.g. 'yourbusiness.com', no http:// or www). Visiting that domain serves this store directly.",
     )
 
+    # Set once, the first time the cleanup job sends a "your store will be
+    # removed soon" warning email — stops it re-sending that warning every
+    # day until the store either pays/renews (cleared) or actually gets
+    # deleted.
+    deletion_warning_sent_at = models.DateTimeField(null=True, blank=True)
+
     has_customized_content = models.BooleanField(default=False, help_text="Owner has edited the example copy at least once")
     is_published = models.BooleanField(default=False, help_text="Owner has asked to go live (still gated by an active subscription)")
     is_approved = models.BooleanField(default=False, help_text="Passed Alpha Dev's quality check to appear in the public Explore directory")
