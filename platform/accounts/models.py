@@ -19,6 +19,11 @@ class Profile(models.Model):
     # deleting and recreating a store to keep resetting it.
     trial_used_at = models.DateTimeField(null=True, blank=True)
 
+    # Google's stable per-account id ("sub" claim) — kept alongside email so
+    # a login still matches up even if the user later changes their Google
+    # account's email address.
+    google_sub = models.CharField(max_length=64, blank=True)
+
     def __str__(self):
         return f"{self.user.username} profile"
 

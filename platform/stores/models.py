@@ -94,6 +94,12 @@ class Store(models.Model):
                    "Explore links straight to this URL instead of an internal store page. Leave blank for a normal self-serve store.",
     )
 
+    custom_domain = models.CharField(
+        max_length=255, blank=True,
+        help_text="Set manually once a Business/Pro customer has pointed their own domain's DNS at us "
+                   "(e.g. 'yourbusiness.com', no http:// or www). Visiting that domain serves this store directly.",
+    )
+
     has_customized_content = models.BooleanField(default=False, help_text="Owner has edited the example copy at least once")
     is_published = models.BooleanField(default=False, help_text="Owner has asked to go live (still gated by an active subscription)")
     is_approved = models.BooleanField(default=False, help_text="Passed Alpha Dev's quality check to appear in the public Explore directory")
@@ -147,6 +153,24 @@ class Store(models.Model):
     def is_listed(self):
         """Whether this store should appear in the public Explore directory."""
         return self.is_live and self.is_approved
+
+    @property
+    def domain_eligible(self):
+        """Business/Pro only — Starter stays on the shared alphadevhq.com/slug path."""
+        from billing.models import Plan
+        return bool(self.plan and self.plan.tier != Plan.STARTER)
+
+    @property
+    def live_url(self):
+        """The full address customers should actually be given — prefers a
+        connected custom domain, then the plan's alphadevhq.com subdomain,
+        falling back to the shared /slug/ path everyone gets by default."""
+        from django.conf import settings
+        if self.custom_domain:
+            return f'https://{self.custom_domain}/'
+        if self.domain_eligible:
+            return f'https://{self.slug}.{settings.PLATFORM_DOMAIN}/'
+        return f'https://{settings.PLATFORM_DOMAIN}{self.get_public_url()}'
 
     @property
     def image_limit(self):

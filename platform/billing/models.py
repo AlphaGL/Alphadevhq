@@ -18,6 +18,13 @@ class Plan(models.Model):
     features = models.JSONField(default=list, blank=True)
     order = models.PositiveIntegerField(default=0)
 
+    # Paystack bills monthly and annual as separate Plan objects on their
+    # side. Populated by `manage.py sync_paystack_plans` — blank until then,
+    # which checkout() treats as "no real Paystack plan yet, fall back to a
+    # plain one-time charge" rather than erroring.
+    paystack_plan_code_monthly = models.CharField(max_length=100, blank=True)
+    paystack_plan_code_annual = models.CharField(max_length=100, blank=True)
+
     class Meta:
         ordering = ['order']
 
@@ -128,3 +135,21 @@ class PaymentLog(models.Model):
 
     def __str__(self):
         return f"{self.reference} — {self.status}"
+
+
+class WebhookEvent(models.Model):
+    """Raw record of every Paystack webhook call we receive, kept regardless
+    of whether we understood/handled it. Paystack's published docs don't
+    show the exact payload shape for the subscription-lifecycle events, so
+    this is how we confirm real field names from live traffic instead of
+    guessing — and a safety net if a handler ever needs retrying by hand."""
+    event_type = models.CharField(max_length=100)
+    raw_body = models.JSONField(default=dict, blank=True)
+    handled = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.event_type} @ {self.created_at:%Y-%m-%d %H:%M}"

@@ -20,9 +20,9 @@ class SocialLinkInline(admin.TabularInline):
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
-    list_display = ('business_name', 'slug', 'owner', 'category', 'listing_type', 'external_url', 'is_published', 'is_approved', 'is_featured', 'image_count', 'created_at')
+    list_display = ('business_name', 'slug', 'owner', 'category', 'listing_type', 'custom_domain', 'external_url', 'is_published', 'is_approved', 'is_featured', 'image_count', 'created_at')
     list_filter = ('category', 'listing_type', 'is_published', 'is_approved', 'is_featured')
-    search_fields = ('business_name', 'slug', 'owner__username', 'external_url')
+    search_fields = ('business_name', 'slug', 'owner__username', 'external_url', 'custom_domain')
     prepopulated_fields = {'slug': ('business_name',)}
     actions = ['approve_stores', 'unapprove_stores', 'feature_stores', 'unfeature_stores']
     inlines = [StoreSectionInline, StoreImageInline, SocialLinkInline]
@@ -36,6 +36,12 @@ class StoreAdmin(admin.ModelAdmin):
                             "checked below to actually appear.",
         }),
         ('Template & plan', {'fields': ('template', 'theme_color')}),
+        ('Domain (Business/Pro only)', {
+            'fields': ('custom_domain',),
+            'description': "Set once a Business or Pro customer's own domain DNS is pointed at us. "
+                            "No http:// or www — just the bare domain, e.g. 'yourbusiness.com'. "
+                            "Starter stores can't use this regardless of what's set here.",
+        }),
         ('Visibility', {'fields': ('is_published', 'is_approved', 'is_featured')}),
     )
 

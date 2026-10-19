@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}One more step — Alpha Dev Stores{% endblock %}
+{% block content %}
+<div class="platform-narrow">
+  <div class="platform-card glass">
+    <h1 class="platform-title">One more step</h1>
+    <p class="platform-sub">Alpha Dev Stores is WhatsApp-first, so we need your WhatsApp number to finish setting up your account.</p>
+
+    <form method="post" novalidate style="margin-top:28px">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px">Send verification code</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

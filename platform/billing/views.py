@@ -15,7 +15,7 @@ from django.views.decorators.csrf import csrf_exempt
 from stores.models import Store
 
 from . import paystack
-from .models import PaymentLog, Plan, Subscription
+from .models import PaymentLog, Plan, Subscription, WebhookEvent
 
 
 @login_required
@@ -92,8 +92,11 @@ def checkout(request, store_slug, plan_slug):
 
     callback_url = request.build_absolute_uri(reverse('billing:payment_callback'))
 
+    plan_code = plan.paystack_plan_code_annual if cycle == Subscription.ANNUAL else plan.paystack_plan_code_monthly
+
     result = paystack.initialize_transaction(
         email=request.user.email, amount_naira=amount, reference=reference, callback_url=callback_url,
+        plan_code=plan_code or None,
     )
 
     PaymentLog.objects.create(subscription=subscription, reference=reference, amount=amount, billing_cycle=cycle, raw_response=result)
@@ -191,6 +194,30 @@ def paystack_webhook(request):
     event_type = event.get('event', '')
     data = event.get('data', {})
 
+    # Paystack's docs don't publish the exact payload shape for the
+    # subscription-lifecycle events below, so every event is kept here
+    # regardless of whether we recognised it — lets us confirm real field
+    # names from live traffic, and gives a durable record to replay by hand
+    # if a handler below ever turns out to have matched the wrong field.
+    log_entry = WebhookEvent.objects.create(event_type=event_type, raw_body=event)
+    handled = False
+
+    customer_email = (data.get('customer') or {}).get('email', '')
+
+    def _find_subscription():
+        """Best-effort match for subscription-lifecycle events: prefer the
+        Paystack subscription code if we already have one on file, else
+        fall back to the account's email — a store only ever has one
+        subscription, so this is reliable even without a confirmed code."""
+        sub_code = data.get('subscription_code') or (data.get('subscription') or {}).get('subscription_code', '')
+        if sub_code:
+            sub = Subscription.objects.filter(paystack_subscription_code=sub_code).first()
+            if sub:
+                return sub
+        if customer_email:
+            return Subscription.objects.filter(store__owner__email__iexact=customer_email).order_by('-updated_at').first()
+        return None
+
     if event_type == 'charge.success':
         reference = data.get('reference', '')
         log = PaymentLog.objects.filter(reference=reference).first()
@@ -201,10 +228,32 @@ def paystack_webhook(request):
             days = Subscription.PERIOD_DAYS[log.billing_cycle]
             log.subscription.mark_active(period_end=timezone.now() + timezone.timedelta(days=days))
 
-    elif event_type in ('subscription.disable', 'invoice.payment_failed'):
+            auth_code = (data.get('authorization') or {}).get('authorization_code', '')
+            customer_code = (data.get('customer') or {}).get('customer_code', '')
+            if auth_code or customer_code:
+                if auth_code:
+                    log.subscription.paystack_authorization_code = auth_code
+                if customer_code:
+                    log.subscription.paystack_customer_code = customer_code
+                log.subscription.save(update_fields=['paystack_authorization_code', 'paystack_customer_code'])
+            handled = True
+
+    elif event_type == 'subscription.create':
         sub_code = data.get('subscription_code', '')
-        sub = Subscription.objects.filter(paystack_subscription_code=sub_code).first()
+        sub = _find_subscription()
+        if sub and sub_code:
+            sub.paystack_subscription_code = sub_code
+            sub.save(update_fields=['paystack_subscription_code'])
+            handled = True
+
+    elif event_type in ('subscription.disable', 'invoice.payment_failed'):
+        sub = _find_subscription()
         if sub:
             sub.mark_past_due()
+            handled = True
+
+    if handled:
+        log_entry.handled = True
+        log_entry.save(update_fields=['handled'])
 
     return HttpResponse(status=200)

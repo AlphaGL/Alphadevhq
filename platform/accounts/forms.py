@@ -40,6 +40,20 @@ class SignupForm(forms.Form):
         return cleaned
 
 
+class GooglePhoneForm(forms.Form):
+    phone = forms.CharField(
+        max_length=20,
+        widget=forms.TextInput(attrs={'placeholder': '2348012345678'}),
+        help_text='WhatsApp number with country code, no spaces or plus sign.',
+    )
+
+    def clean_phone(self):
+        phone = ''.join(ch for ch in self.cleaned_data['phone'] if ch.isdigit())
+        if len(phone) < 10:
+            raise forms.ValidationError('Enter a valid phone number with country code.')
+        return phone
+
+
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'placeholder': 'you@business.com'}))
 

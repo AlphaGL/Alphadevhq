@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'stores.middleware.StoreDomainMiddleware',
     'stores.middleware.StoreVisitMiddleware',
 ]
 
@@ -176,6 +177,26 @@ PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='')
 # and logged instead of sent.
 # ---------------------------------------------------------------------------
 SMS_PROVIDER_API_KEY = config('SMS_PROVIDER_API_KEY', default='')
+
+# ---------------------------------------------------------------------------
+# Transactional email, sent via Brevo's API — see alphaplatform/email_backend.py.
+# Blank key falls back to printing emails to the console instead of sending.
+# ---------------------------------------------------------------------------
+BREVO_API_KEY = config('BREVO_API_KEY', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Alpha Dev <ichukwugozirim@gmail.com>')
+EMAIL_BACKEND = (
+    'alphaplatform.email_backend.BrevoAPIBackend' if BREVO_API_KEY
+    else 'django.core.mail.backends.console.EmailBackend'
+)
+
+# ---------------------------------------------------------------------------
+# "Continue with Google" sign-in — see accounts/google_auth.py. Needs an
+# OAuth client created at https://console.cloud.google.com/apis/credentials
+# (type: Web application) with an authorized redirect URI of
+# <site>/accounts/google/callback/. Blank in dev just hides the button.
+# ---------------------------------------------------------------------------
+GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID', default='')
+GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET', default='')
 
 # Store platform settings
 PLATFORM_DOMAIN = config('PLATFORM_DOMAIN', default='alphadevhq.com')
