@@ -122,12 +122,46 @@ def store_list(request):
     """An account can own more than one store (e.g. separate businesses),
     each billed and published independently. Zero stores sends you straight
     into building the first one; exactly one skips the picker entirely."""
-    stores = Store.objects.filter(owner=request.user).order_by('-created_at')
+    from django.db.models import Sum
+    from django.utils import timezone
+
+    from . import analytics
+
+    stores = Store.objects.filter(owner=request.user).select_related('subscription__plan').order_by('-created_at')
     if not stores.exists():
         return redirect('stores:builder_new')
     if stores.count() == 1:
         return redirect('stores:dashboard', store_slug=stores.first().slug)
-    return render(request, 'stores/store_list.html', {'stores': stores})
+
+    tier_counts = {'starter': 0, 'business': 0, 'pro': 0, 'none': 0}
+    total_visits_today = 0
+    total_visits_week = 0
+    needs_attention = []
+    week_start = timezone.localdate() - timezone.timedelta(days=6)
+
+    for store in stores:
+        sub = store.subscription_or_none
+        if sub and sub.plan:
+            tier_counts[sub.plan.tier] = tier_counts.get(sub.plan.tier, 0) + 1
+        else:
+            tier_counts['none'] += 1
+
+        total_visits_today += store.visits_today()
+        week_total = store.daily_visits.filter(date__gte=week_start).aggregate(total=Sum('count'))['total']
+        total_visits_week += week_total or 0
+
+        renewal = analytics.renewal_status(sub)
+        if renewal and renewal['urgency'] in ('warning', 'critical'):
+            needs_attention.append({'store': store, 'renewal': renewal})
+
+    return render(request, 'stores/store_list.html', {
+        'stores': stores,
+        'total_stores': stores.count(),
+        'tier_counts': tier_counts,
+        'total_visits_today': total_visits_today,
+        'total_visits_week': total_visits_week,
+        'needs_attention': needs_attention,
+    })
 
 
 @login_required

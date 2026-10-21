@@ -5,11 +5,43 @@
   <h1 class="platform-title">My stores</h1>
   <p class="platform-sub">Each store is published and billed on its own — pick one to edit, or start another.</p>
 
+  <div class="dash-grid-4" style="margin-top:24px">
+    <div class="dash-stat glass is-accent">
+      <div class="dash-stat-label">Stores</div>
+      <div class="dash-stat-value">{{ total_stores }}</div>
+    </div>
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">Visits today, all stores</div>
+      <div class="dash-stat-value">{{ total_visits_today }}</div>
+    </div>
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">Visits this week, all stores</div>
+      <div class="dash-stat-value">{{ total_visits_week }}</div>
+    </div>
+    <div class="dash-stat glass">
+      <div class="dash-stat-label">By plan</div>
+      <div class="dash-stat-value" style="font-size:14px;line-height:1.6">
+        Starter {{ tier_counts.starter }} &middot; Business {{ tier_counts.business }} &middot; Pro {{ tier_counts.pro }}
+        {% if tier_counts.none %}<br>{{ tier_counts.none }} not on a plan{% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if needs_attention %}
+    <div class="banner is-warning" style="margin-top:20px">
+      <strong>{{ needs_attention|length }} store{{ needs_attention|length|pluralize }} need{{ needs_attention|length|pluralize:"s," }} attention:</strong>
+      {% for item in needs_attention %}
+        <a href="{% url 'stores:dashboard' item.store.slug %}">{{ item.store.business_name }}</a> &mdash; {{ item.renewal.label }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
   <div class="store-list-grid" style="margin-top:28px">
     {% for store in stores %}
       <a href="{% url 'stores:dashboard' store.slug %}" class="platform-card glass store-list-card">
         <h3 style="font-family:var(--font-display);font-weight:650;font-size:17px">{{ store.business_name }}</h3>
         <p class="platform-sub" style="margin-top:4px">alphadevhq.com/{{ store.slug }}/</p>
+        <p class="helptext" style="margin-top:2px">{% if store.plan %}{{ store.plan.name }} plan{% else %}No plan yet{% endif %} &middot; {{ store.visits_today }} visit{{ store.visits_today|pluralize }} today</p>
         {% if store.is_live %}
           <span class="status-pill is-active">Live</span>
         {% elif store.subscription_or_none.status == 'past_due' %}
