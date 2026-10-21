@@ -23,7 +23,7 @@ h1, h2, h3, h4, h5, .mc-brand { font-family: "Outfit", "Inter", Arial, sans-seri
 .mc-hero-inner { padding-top: 120px; padding-bottom: 50px; }
 .mc-trust-badges { display: flex; flex-wrap: wrap; gap: 10px; }
 .mc-trust-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; }
-.mc-hero-visual { width: 260px; height: 260px; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+.mc-hero-visual { width: min(260px, 58vw); height: min(260px, 58vw); border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; margin: 0 auto; }
 .mc-hero-visual i { font-size: 96px; color: rgba(255,255,255,.85); }
 
 /* emergency banner */
