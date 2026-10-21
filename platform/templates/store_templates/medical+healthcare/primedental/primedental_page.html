@@ -29,7 +29,7 @@
     <h1 class="pd-hero-title text-break">{{ store.business_name }}</h1>
     {% if store.tagline %}<p class="pd-hero-text">{{ store.tagline }}</p>{% endif %}
     <div class="d-flex gap-3 justify-content-center flex-wrap">
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="pd-btn-light px-4">
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="pd-btn-light px-4">
         <i class="bi bi-whatsapp me-2"></i>Book on WhatsApp
       </a>
       <a href="{{ nav_pages.1.url }}" class="pd-btn px-4">
@@ -45,7 +45,7 @@
       <h5 class="fw-bold mb-1">Ready to book your appointment?</h5>
       <p class="mb-0" style="opacity:.85">Message us on WhatsApp and we'll get you scheduled.</p>
     </div>
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="pd-btn-light px-4 text-nowrap">Make Appointment</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="pd-btn-light px-4 text-nowrap">Make Appointment</a>
   </div>
 </section>
 {% endif %}

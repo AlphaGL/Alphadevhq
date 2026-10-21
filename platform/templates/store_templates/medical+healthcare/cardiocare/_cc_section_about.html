@@ -12,7 +12,7 @@
         {% else %}
           <p class="text-slate-600 leading-relaxed mb-6">{{ section.body|default:store.bio|linebreaksbr }}</p>
         {% endif %}
-        <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary-dark inline-flex">
+        <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="btn-primary-dark inline-flex">
           <i data-lucide="calendar-plus" class="w-5 h-5"></i>
           Book on WhatsApp
         </a>

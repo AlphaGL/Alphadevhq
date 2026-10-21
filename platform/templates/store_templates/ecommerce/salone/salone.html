@@ -31,7 +31,7 @@
       <p class="sl-hero-text"{% if is_editor %} data-editable-field="tagline" data-placeholder="A short line about what you sell" contenteditable="true"{% endif %}>{{ store.tagline }}</p>
     {% endif %}
     <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="sl-btn px-4" style="background:#fff;color:var(--sl-primary)">
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="sl-btn px-4" style="background:#fff;color:var(--sl-primary)">
         <i class="bi bi-whatsapp me-2"></i>Order Now
       </a>
       <a href="#services" class="sl-btn-outline px-4">

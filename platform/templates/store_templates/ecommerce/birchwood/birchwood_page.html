@@ -28,7 +28,7 @@
     {% if store.tagline %}<p class="bw-hero-text">{{ store.tagline }}</p>{% endif %}
     <div class="d-flex gap-3 flex-wrap mt-4">
       <a href="{{ nav_pages.1.url }}" class="bw-btn">Shop Now</a>
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="bw-btn-outline">
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="bw-btn-outline">
         <i class="bi bi-whatsapp me-2"></i>Order Now
       </a>
     </div>

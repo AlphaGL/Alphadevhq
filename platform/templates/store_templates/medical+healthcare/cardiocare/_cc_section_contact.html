@@ -9,7 +9,7 @@
     {% if is_editor %}
       <span class="text-red-600 font-bold text-lg block mb-8" data-editable-field="phone" data-singleline data-placeholder="2348012345678" contenteditable="true">{{ store.phone }}</span>
     {% endif %}
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary inline-flex">
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="btn-primary inline-flex">
       <i data-lucide="message-circle" class="w-5 h-5"></i>
       Book on WhatsApp
     </a>

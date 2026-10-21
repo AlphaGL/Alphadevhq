@@ -37,7 +37,7 @@
           <p class="mc-hero-text mx-auto mx-lg-0 mt-3"{% if is_editor %} data-editable-field="tagline" data-placeholder="A short, reassuring line about your practice" contenteditable="true"{% endif %}>{{ store.tagline }}</p>
         {% endif %}
         <div class="d-flex gap-3 justify-content-center justify-content-lg-start flex-wrap mt-4">
-          <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="mc-btn-light px-4">
+          <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="mc-btn-light px-4">
             <i class="bi bi-whatsapp me-2"></i>Book on WhatsApp
           </a>
           <a href="#services" class="mc-btn px-4">
@@ -59,7 +59,7 @@
       <span class="d-inline-block rounded-circle bg-white" style="width:10px;height:10px"></span>
       <span class="fw-semibold">Emergency services available 24/7 — reach us any time via WhatsApp.</span>
     </div>
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="mc-btn-light px-4 text-nowrap">
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="mc-btn-light px-4 text-nowrap">
       <i class="bi bi-telephone-fill me-2"></i>Message Us Now
     </a>
   </div>

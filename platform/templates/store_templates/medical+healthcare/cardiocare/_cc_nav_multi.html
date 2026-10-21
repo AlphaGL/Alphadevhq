@@ -28,7 +28,7 @@
         {% endfor %}
       </div>
       <div class="flex items-center gap-3">
-        <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="hidden lg:flex btn-primary text-sm py-2.5 px-5">
+        <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="hidden lg:flex btn-primary text-sm py-2.5 px-5">
           <i data-lucide="calendar" class="w-4 h-4"></i>
           Book on WhatsApp
         </a>
@@ -41,7 +41,7 @@
       {% for p in nav_pages %}
         <a href="{{ p.url }}" class="nav-link py-2.5 text-sm font-medium{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
       {% endfor %}
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary mt-3 justify-center">Book on WhatsApp</a>
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="btn-primary mt-3 justify-center">Book on WhatsApp</a>
     </div>
   </div>
 </nav>

@@ -9,7 +9,7 @@
         <li class="nav-item"><a class="nav-link sl-nav-link{% if p.slug == current_slug %} is-current{% endif %}" href="{{ p.url }}">{{ p.label }}</a></li>
       {% endfor %}
     </ul>
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="sl-btn px-4 d-none d-lg-block" style="background:#fff;color:var(--sl-primary)">Order Now</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="sl-btn px-4 d-none d-lg-block" style="background:#fff;color:var(--sl-primary)">Order Now</a>
     <button type="button" class="store-nav-toggle d-lg-none" aria-label="Menu">
       <i class="bi bi-list fs-1"></i>
     </button>
@@ -18,6 +18,6 @@
     {% for p in nav_pages %}
       <a href="{{ p.url }}" class="sl-nav-link{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
     {% endfor %}
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="sl-btn text-center mb-3" style="background:#fff;color:var(--sl-primary)">Order Now</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="sl-btn text-center mb-3" style="background:#fff;color:var(--sl-primary)">Order Now</a>
   </div>
 </nav>

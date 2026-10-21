@@ -8,7 +8,7 @@
         <li class="nav-item"><a class="nav-link lm-nav-link{% if p.slug == current_slug %} is-current{% endif %}" href="{{ p.url }}">{{ p.label }}</a></li>
       {% endfor %}
     </ul>
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="lm-btn d-none d-lg-block">Order Now</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="lm-btn d-none d-lg-block">Order Now</a>
     <button type="button" class="store-nav-toggle d-lg-none" aria-label="Menu">
       <i class="bi bi-list fs-1"></i>
     </button>
@@ -17,6 +17,6 @@
     {% for p in nav_pages %}
       <a href="{{ p.url }}" class="lm-nav-link{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
     {% endfor %}
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="lm-btn text-center mb-3">Order Now</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="lm-btn text-center mb-3">Order Now</a>
   </div>
 </nav>

@@ -37,7 +37,7 @@
           <p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg"{% if is_editor %} data-editable-field="tagline" data-placeholder="A short, reassuring line about your practice" contenteditable="true"{% endif %}>{{ store.tagline }}</p>
         {% endif %}
         <div class="flex flex-wrap gap-4">
-          <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary text-base py-3.5 px-7">
+          <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="btn-primary text-base py-3.5 px-7">
             <i data-lucide="calendar-plus" class="w-5 h-5"></i>Book on WhatsApp
           </a>
           <a href="#services" class="btn-outline text-base py-3.5 px-7">
@@ -66,7 +66,7 @@
         <span class="font-heading font-semibold text-base">Need urgent care?</span>
         <span class="text-red-200 text-sm hidden md:block">Reach us any time via WhatsApp.</span>
       </div>
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="bg-white text-red-600 font-heading font-bold px-6 py-2.5 rounded-lg hover:bg-red-50 transition-all text-sm whitespace-nowrap flex items-center gap-2">
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="bg-white text-red-600 font-heading font-bold px-6 py-2.5 rounded-lg hover:bg-red-50 transition-all text-sm whitespace-nowrap flex items-center gap-2">
         <i data-lucide="phone-call" class="w-4 h-4"></i>Message Us Now
       </a>
     </div>

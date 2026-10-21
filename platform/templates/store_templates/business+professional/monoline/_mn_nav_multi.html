@@ -9,7 +9,7 @@
         <li class="nav-item"><a class="nav-link mn-nav-link{% if p.slug == current_slug %} is-current{% endif %}" href="{{ p.url }}">{{ p.label }}</a></li>
       {% endfor %}
     </ul>
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="mn-btn px-4 d-none d-lg-block">Get in Touch</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="mn-btn px-4 d-none d-lg-block">Get in Touch</a>
     <button type="button" class="store-nav-toggle d-lg-none" aria-label="Menu">
       <i class="bi bi-list fs-1"></i>
     </button>
@@ -18,6 +18,6 @@
     {% for p in nav_pages %}
       <a href="{{ p.url }}" class="mn-nav-link{% if p.slug == current_slug %} is-current{% endif %}">{{ p.label }}</a>
     {% endfor %}
-    <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="mn-btn text-center mb-3">Get in Touch</a>
+    <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="mn-btn text-center mb-3">Get in Touch</a>
   </div>
 </nav>

@@ -32,7 +32,7 @@
         <h1 class="font-heading font-extrabold text-4xl lg:text-5xl text-white leading-tight mb-6 mt-4 break-words">{{ store.business_name }}</h1>
         {% if store.tagline %}<p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg">{{ store.tagline }}</p>{% endif %}
         <div class="flex flex-wrap gap-4">
-          <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="btn-primary text-base py-3.5 px-7">
+          <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="btn-primary text-base py-3.5 px-7">
             <i data-lucide="calendar-plus" class="w-5 h-5"></i>Book on WhatsApp
           </a>
           <a href="{{ nav_pages.1.url }}" class="btn-outline text-base py-3.5 px-7">
@@ -60,7 +60,7 @@
         <span class="font-heading font-semibold text-base">Need urgent care?</span>
         <span class="text-red-200 text-sm hidden md:block">Reach us any time via WhatsApp.</span>
       </div>
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="bg-white text-red-600 font-heading font-bold px-6 py-2.5 rounded-lg hover:bg-red-50 transition-all text-sm whitespace-nowrap flex items-center gap-2">
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="bg-white text-red-600 font-heading font-bold px-6 py-2.5 rounded-lg hover:bg-red-50 transition-all text-sm whitespace-nowrap flex items-center gap-2">
         <i data-lucide="phone-call" class="w-4 h-4"></i>Message Us Now
       </a>
     </div>

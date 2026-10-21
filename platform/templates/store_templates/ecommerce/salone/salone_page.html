@@ -26,7 +26,7 @@
     <h1 class="sl-hero-title text-break">{{ store.business_name }}</h1>
     {% if store.tagline %}<p class="sl-hero-text">{{ store.tagline }}</p>{% endif %}
     <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
-      <a href="{{ store.whatsapp_url|default:'#' }}" target="_blank" rel="noopener" class="sl-btn px-4" style="background:#fff;color:var(--sl-primary)">
+      <a href="{{ store.whatsapp_url|default:'#contact' }}" target="_blank" rel="noopener" class="sl-btn px-4" style="background:#fff;color:var(--sl-primary)">
         <i class="bi bi-whatsapp me-2"></i>Order Now
       </a>
       <a href="{{ nav_pages.1.url }}" class="sl-btn-outline px-4">
