@@ -40,22 +40,31 @@
 
   <div class="store-list-grid" style="margin-top:28px">
     {% for store in stores %}
-      <a href="{% url 'stores:dashboard' store.slug %}" class="platform-card glass store-list-card">
-        <h3 style="font-family:var(--font-display);font-weight:650;font-size:17px">{{ store.business_name }}</h3>
-        <p class="platform-sub" style="margin-top:4px">alphadevhq.com/{{ store.slug }}/</p>
-        <p class="helptext" style="margin-top:2px">{% if store.plan %}{{ store.plan.name }} plan{% else %}No plan yet{% endif %} &middot; {{ store.visits_today }} visit{{ store.visits_today|pluralize }} today</p>
-        {% if store.is_live %}
-          <span class="status-pill is-active">Live</span>
-        {% elif store.subscription_or_none.status == 'past_due' %}
-          <span class="status-pill is-warning">Payment due</span>
-        {% else %}
-          <span class="status-pill">Not published</span>
-        {% endif %}
+      <a href="{% url 'stores:dashboard' store.slug %}"
+         class="platform-card glass store-list-card{% if store.is_live %} is-live{% elif store.subscription_or_none.status == 'past_due' %} is-past-due{% endif %}">
+        <div class="store-list-card-top">
+          <span class="store-list-avatar">{{ store.business_name|slice:":1"|upper }}</span>
+          {% if store.is_live %}
+            <span class="status-pill is-active">&#9679; Live</span>
+          {% elif store.subscription_or_none.status == 'past_due' %}
+            <span class="status-pill is-warning">&#9679; Payment due</span>
+          {% else %}
+            <span class="status-pill is-muted">Not published</span>
+          {% endif %}
+        </div>
+        <h3 class="store-list-card-name">{{ store.business_name }}</h3>
+        <p class="store-list-card-url">alphadevhq.com/{{ store.slug }}/</p>
+        <div class="store-list-card-meta">
+          <span>{% if store.plan %}{{ store.plan.name }} plan{% else %}No plan yet{% endif %}</span>
+          <span class="store-list-card-dot">&middot;</span>
+          <span>{{ store.visits_today }} visit{{ store.visits_today|pluralize }} today</span>
+        </div>
       </a>
     {% endfor %}
 
     <a href="{% url 'stores:builder_new' %}" class="platform-card store-list-card store-list-card-new">
-      <span>+ Build another store</span>
+      <span class="store-list-card-new-icon"><svg><use href="#icon-plus"></use></svg></span>
+      <span>Build another store</span>
     </a>
   </div>
 </div>
