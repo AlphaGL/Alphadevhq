@@ -14,7 +14,7 @@
     {% if subscription.status == 'active' %}
       <span class="status-pill is-active">Live</span>
     {% elif subscription.status == 'past_due' %}
-      <span class="status-pill is-warning">Payment due — grace period</span>
+      <span class="status-pill is-warning">Payment due — your site is still live for now</span>
     {% elif subscription.status == 'trialing' %}
       <span class="status-pill">Not published yet</span>
     {% else %}
@@ -37,6 +37,18 @@
 
   {% if not subscription or subscription.status == 'trialing' %}
     <div class="banner">Your store is built but not published. <a href="{% url 'billing:choose_plan' store.slug %}">Choose a plan to go live</a>.</div>
+  {% endif %}
+
+  {% if not store.has_customized_content %}
+    <div class="platform-card glass" style="margin-top:20px;padding:24px 26px">
+      <h3 style="font-family:var(--font-display);font-size:17px;font-weight:650;margin:0">Welcome — let's get your store ready</h3>
+      <p class="helptext" style="margin-top:6px">You're starting from a template with example text and photos. Here's the fastest path to something customers can actually find and trust:</p>
+      <ol style="margin-top:14px;padding-left:20px;font-size:13.5px;color:var(--ink-1);line-height:1.9">
+        <li>Swap in your real business name, logo and a few photos — <a href="{% url 'stores:builder_edit' store.slug %}">edit your site</a></li>
+        <li>Check it looks right — <a href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">preview your store</a></li>
+        <li>Go live so people can actually find you — <a href="{% url 'billing:choose_plan' store.slug %}">{% if store.is_live %}manage billing{% else %}choose a plan{% endif %}</a></li>
+      </ol>
+    </div>
   {% endif %}
 
   <!-- Stat row -->
@@ -96,6 +108,11 @@
         <div class="health-ring" style="--score: {{ health.score }}">
           <div class="health-ring-value">{{ health.score }}<small>/ 100</small></div>
         </div>
+        <p class="helptext" style="margin-bottom:10px">
+          {% if health.score == 100 %}Everything's filled in — your site is as complete as it can be.
+          {% elif health.score >= 60 %}{{ health.done_count }} of {{ health.total }} done. A few things left below would make it stronger.
+          {% else %}{{ health.done_count }} of {{ health.total }} done. Finishing the list below is the single fastest way to look more credible to a customer who lands on your site.{% endif %}
+        </p>
         <ul class="health-checklist">
           {% for item in health.items %}
             <li{% if item.done %} class="is-done"{% endif %}>

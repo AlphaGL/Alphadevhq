@@ -96,7 +96,7 @@ class Store(models.Model):
 
     custom_domain = models.CharField(
         max_length=255, blank=True,
-        help_text="Set manually once a Business/Pro customer has pointed their own domain's DNS at us "
+        help_text="Set manually once a paying customer (any plan) has pointed their own domain's DNS at us "
                    "(e.g. 'yourbusiness.com', no http:// or www). Visiting that domain serves this store directly.",
     )
 
@@ -162,9 +162,11 @@ class Store(models.Model):
 
     @property
     def domain_eligible(self):
-        """Business/Pro only — Starter stays on the shared alphadevhq.com/slug path."""
-        from billing.models import Plan
-        return bool(self.plan and self.plan.tier != Plan.STARTER)
+        """Whether this store can use a yourbusiness.alphadevhq.com subdomain
+        or a connected custom domain — true on any paying plan. (A separate
+        concept from the plan's image/page limits, which is where the real
+        upgrade incentive lives.)"""
+        return bool(self.plan)
 
     @property
     def live_url(self):

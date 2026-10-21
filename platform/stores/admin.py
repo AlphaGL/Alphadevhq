@@ -36,11 +36,12 @@ class StoreAdmin(admin.ModelAdmin):
                             "checked below to actually appear.",
         }),
         ('Template & plan', {'fields': ('template', 'theme_color')}),
-        ('Domain (Business/Pro only)', {
+        ('Custom domain (any paying plan)', {
             'fields': ('custom_domain',),
-            'description': "Set once a Business or Pro customer's own domain DNS is pointed at us. "
-                            "No http:// or www — just the bare domain, e.g. 'yourbusiness.com'. "
-                            "Starter stores can't use this regardless of what's set here.",
+            'description': "Set once a paying customer's own domain DNS is pointed at us — works on any "
+                            "plan, including Starter. No http:// or www — just the bare domain, "
+                            "e.g. 'yourbusiness.com'. The free yourbusiness.alphadevhq.com subdomain is "
+                            "the only thing still limited to Business/Pro.",
         }),
         ('Visibility', {'fields': ('is_published', 'is_approved', 'is_featured')}),
     )

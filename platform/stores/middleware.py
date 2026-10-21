@@ -3,11 +3,14 @@ from django.utils import timezone
 
 
 class StoreDomainMiddleware:
-    """Lets a Business/Pro store be reached on its own domain instead of
+    """Lets a store be reached on its own domain instead of
     alphadevhq.com/slug/ — either a subdomain we control (<slug>.alphadevhq.com,
-    works the moment DNS for alphadevhq.com itself is wired up, no per-store
-    setup needed) or a custom domain a customer has pointed at us by hand
-    (store.custom_domain, set manually in the admin once their DNS is live).
+    a free perk on Business/Pro, works the moment DNS for alphadevhq.com
+    itself is wired up, no per-store setup needed) or a custom domain a
+    customer already owns and has pointed at us by hand (store.custom_domain,
+    set manually in the admin once their DNS is live) — available on every
+    paying tier, including Starter, since it costs us one field edit per
+    customer regardless of what they're paying.
 
     Works by rewriting path_info to the normal /<slug>/... URL before
     Django resolves it — same trick behind most "custom domain per tenant"
@@ -32,7 +35,6 @@ class StoreDomainMiddleware:
         return self.get_response(request)
 
     def _resolve_store(self, host, platform_domain):
-        from billing.models import Plan
         from .models import Store
 
         suffix = f'.{platform_domain}'
@@ -41,9 +43,7 @@ class StoreDomainMiddleware:
         else:
             store = Store.objects.filter(custom_domain__iexact=host).select_related('subscription__plan').first()
 
-        if not store or not store.is_live:
-            return None
-        if not store.plan or store.plan.tier == Plan.STARTER:
+        if not store or not store.is_live or not store.plan:
             return None
         return store
 
