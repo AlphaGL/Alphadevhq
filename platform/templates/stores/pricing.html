@@ -238,10 +238,23 @@
         </div>
         <div class="stores-price-cards">
           {% for plan in plans %}
-          <div class="stores-price-card">
+          <div class="stores-price-card{% if plan.tier == 'business' %} is-popular{% endif %}">
+            {% if plan.tier == 'business' %}<span class="price-badge">Most popular</span>{% endif %}
             <h4>{{ plan.name }}</h4>
             <div class="stores-price-amount">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
-            <p>{{ plan.page_limit }} page{{ plan.page_limit|pluralize }}, up to {{ plan.image_limit }} images{% if plan.tier == 'pro' %}, priority support{% endif %}</p>
+            <ul class="price-features">
+              <li><svg><use href="#icon-check"></use></svg>{{ plan.page_limit }} page{{ plan.page_limit|pluralize }}</li>
+              <li><svg><use href="#icon-check"></use></svg>Up to {{ plan.image_limit }} photos</li>
+              <li><svg><use href="#icon-check"></use></svg>Your own yourbusiness.alphadevhq.com address</li>
+              <li><svg><use href="#icon-check"></use></svg>Connect a domain you already own</li>
+              {% if plan.tier == 'starter' %}
+                <li><svg><use href="#icon-check"></use></svg>We'll make updates for you once a week, if you want</li>
+              {% elif plan.tier == 'business' %}
+                <li><svg><use href="#icon-check"></use></svg>We'll make updates for you up to 3&times; a week, if you want</li>
+              {% else %}
+                <li><svg><use href="#icon-check"></use></svg>We'll make updates for you daily, if you want</li>
+              {% endif %}
+            </ul>
           </div>
           {% endfor %}
         </div>

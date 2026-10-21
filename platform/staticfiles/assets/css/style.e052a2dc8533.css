@@ -1020,7 +1020,10 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
 .stores-price-cards{ display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
 @media (max-width: 960px){ .stores-price-cards{ grid-template-columns: 1fr 1fr; } }
 @media (max-width: 640px){ .stores-price-cards{ grid-template-columns: 1fr; } }
-.stores-price-card{ padding: 22px; border-radius: var(--radius-md); border: 1px solid var(--line-0); background: var(--glass-fill); }
+.stores-price-card{ padding: 22px; border-radius: var(--radius-md); border: 1px solid var(--line-0); background: var(--glass-fill); display: flex; flex-direction: column; }
+.stores-price-card.is-popular{ border-color: var(--ink-1); }
+.stores-price-card .price-badge{ margin-bottom: 10px; }
+.stores-price-card .price-features{ margin-top: 16px; }
 .stores-price-card h4{ font-family: var(--font-display); font-size: 14px; font-weight: 650; color: var(--ink-1); text-transform: uppercase; letter-spacing: .04em; }
 .stores-price-amount{ margin-top: 10px; font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--ink-0); }
 .stores-price-amount small{ font-size: 13px; font-weight: 500; color: var(--ink-2); }
