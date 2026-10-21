@@ -5,24 +5,26 @@
   <h1 class="platform-title">My stores</h1>
   <p class="platform-sub">Each store is published and billed on its own — pick one to edit, or start another.</p>
 
-  <div class="dash-grid-4" style="margin-top:24px">
-    <div class="dash-stat glass is-accent">
-      <div class="dash-stat-label">Stores</div>
-      <div class="dash-stat-value">{{ total_stores }}</div>
+  <div class="account-stats">
+    <div class="account-stat glass">
+      <div class="account-stat-label">Stores</div>
+      <div class="account-stat-value">{{ total_stores }}</div>
     </div>
-    <div class="dash-stat glass">
-      <div class="dash-stat-label">Visits today, all stores</div>
-      <div class="dash-stat-value">{{ total_visits_today }}</div>
+    <div class="account-stat glass">
+      <div class="account-stat-label">Visits today</div>
+      <div class="account-stat-value">{{ total_visits_today }}</div>
     </div>
-    <div class="dash-stat glass">
-      <div class="dash-stat-label">Visits this week, all stores</div>
-      <div class="dash-stat-value">{{ total_visits_week }}</div>
+    <div class="account-stat glass">
+      <div class="account-stat-label">Visits this week</div>
+      <div class="account-stat-value">{{ total_visits_week }}</div>
     </div>
-    <div class="dash-stat glass">
-      <div class="dash-stat-label">By plan</div>
-      <div class="dash-stat-value" style="font-size:14px;line-height:1.6">
-        Starter {{ tier_counts.starter }} &middot; Business {{ tier_counts.business }} &middot; Pro {{ tier_counts.pro }}
-        {% if tier_counts.none %}<br>{{ tier_counts.none }} not on a plan{% endif %}
+    <div class="account-stat glass account-stat-plans">
+      <div class="account-stat-label">By plan</div>
+      <div class="plan-breakdown">
+        <span class="plan-chip"><span class="plan-dot is-starter"></span>Starter<strong>{{ tier_counts.starter }}</strong></span>
+        <span class="plan-chip"><span class="plan-dot is-business"></span>Business<strong>{{ tier_counts.business }}</strong></span>
+        <span class="plan-chip"><span class="plan-dot is-pro"></span>Pro<strong>{{ tier_counts.pro }}</strong></span>
+        {% if tier_counts.none %}<span class="plan-chip is-muted">{{ tier_counts.none }} unpublished</span>{% endif %}
       </div>
     </div>
   </div>
