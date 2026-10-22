@@ -483,6 +483,14 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
   color: var(--ink-1);
   animation: hero-fade-up .9s var(--ease-out) .7s both;
 }
+.hero-sub a, .section-sub a{
+  color: var(--dash-accent);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: text-decoration-color .2s;
+}
+.hero-sub a:hover, .section-sub a:hover{ text-decoration-color: var(--dash-accent); }
 
 .hero-cta{
   display: flex;
