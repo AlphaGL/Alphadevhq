@@ -345,11 +345,8 @@
         </div>
 
         <div class="feature-row" data-reveal>
-          <div class="feature-media feature-media-mock">
-            <div class="mock-chat">
-              <div class="mock-chat-bubble">Hi, is this still available? 😊</div>
-              <div class="mock-chat-bubble is-reply">Yes! Still available ✅</div>
-            </div>
+          <div class="feature-media">
+            <img src="/static/assets/img/showcase/whatsapp-cta.png" alt="A real Alpha Dev Stores website with a Message Us on WhatsApp button">
           </div>
           <div class="feature-copy">
             <h3>People message you on WhatsApp</h3>
@@ -359,15 +356,13 @@
         </div>
 
         <div class="feature-row is-reverse" data-reveal>
-          <div class="feature-media feature-media-mock">
-            <div class="mock-search">
-              <div class="mock-search-bar"><svg><use href="#icon-search"></use></svg>salon near me</div>
-              <div class="mock-search-result"><span class="mock-search-dot"></span>Your Business Name</div>
-            </div>
+          <div class="feature-media is-wide">
+            <img src="/static/assets/img/showcase/directory-search.png" alt="Searching for a business in the Alpha Dev directory">
           </div>
           <div class="feature-copy">
-            <h3>People can find you on Google</h3>
-            <p>When someone nearby searches for what you sell, your business can show up on the screen — so they call you, not the next person.</p>
+            <h3>People can find you nearby</h3>
+            <p>Your business shows up in our directory when people search by name or area, and we help you show up on Google too — so they call you, not the next person.</p>
+            <a href="{% url 'stores:explore' %}" class="path-link">Look through the directory <svg><use href="#icon-arrow-right"></use></svg></a>
           </div>
         </div>
 
