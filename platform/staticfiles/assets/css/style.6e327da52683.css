@@ -777,6 +777,15 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
 /* Feature-row mock illustration — styled preview, not a real screenshot */
 .feature-media-mock{ display:flex; align-items:center; justify-content:center; padding: 32px; }
 .mock-dash{ width:100%; max-width:320px; display:flex; flex-direction:column; gap:14px; }
+
+.mock-phone{ width:100%; max-width:300px; border-radius: 22px; background: var(--bg-0); box-shadow: 0 20px 50px -20px rgba(var(--shadow-color), .4), 0 0 0 8px var(--bg-0), 0 0 0 9px var(--line-0); overflow: hidden; }
+.mock-phone-bar{ display:flex; align-items:center; gap:10px; padding: 14px 16px; background: #1f8a58; color:#fff; font-size: 13.5px; font-weight: 650; }
+.mock-phone-bar small{ margin-left: auto; font-weight: 500; font-size: 11px; opacity: .85; }
+.mock-phone-avatar{ width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size: 12px; flex: none; }
+.mock-phone-body{ padding: 18px 14px; display:flex; flex-direction:column; gap: 10px; background: #e9eef0; min-height: 180px; justify-content: flex-end; }
+.mock-phone-bubble{ align-self:flex-start; background: #fff; padding: 9px 13px; border-radius: 12px 12px 12px 3px; font-size: 13px; color: #222; box-shadow: 0 1px 2px rgba(0,0,0,.08); max-width: 80%; }
+.mock-phone-bubble.is-reply{ align-self:flex-end; background: #d9fdd3; border-radius: 12px 12px 3px 12px; display:flex; align-items:center; gap:6px; }
+.mock-phone-tick{ width: 14px; height: 10px; color: #53bdeb; flex: none; }
 .mock-dash-card{ background: var(--bg-1); border:1px solid var(--line-1); border-radius: var(--radius-md); padding:18px 20px; font-size:13.5px; color: var(--ink-1); box-shadow: 0 6px 18px -10px rgba(var(--shadow-color), .3); }
 .mock-dash-card span{ display:block; font-family: var(--font-display); font-size:28px; font-weight:700; color: var(--ink-0); margin-bottom:4px; }
 
@@ -1331,7 +1340,9 @@ body.lightbox-open{ overflow: hidden; }
 .signin-modal{
   position: fixed; z-index: 999;
   left: 50%; top: 50%;
-  width: min(360px, calc(100vw - 40px));
+  width: min(380px, calc(100vw - 40px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
   padding: 32px 28px;
   border-radius: var(--radius-lg);
   text-align: left;
@@ -1348,9 +1359,25 @@ body.lightbox-open{ overflow: hidden; }
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid var(--line-0); background: var(--glass-fill);
+  z-index: 1;
 }
 .signin-modal-close svg{ width: 13px; height: 13px; }
 .signin-modal-divider{ display: flex; align-items: center; gap: 12px; margin: 16px 0; font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+
+.signin-modal-panel[hidden]{ display: none; }
+.signin-modal-back{ display: flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 650; color: var(--ink-2); background: none; border: none; cursor: pointer; padding: 0; }
+.signin-modal-back svg{ width: 13px; height: 13px; }
+.signin-modal-panel[data-panel] h3{ margin-top: 10px; }
+.signin-modal-field{ margin-top: 14px; }
+.signin-modal-field label{ display: block; font-size: 12.5px; font-weight: 650; color: var(--ink-1); margin-bottom: 6px; }
+.signin-modal-field input{
+  width: 100%; padding: 11px 14px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line-0); background: var(--bg-1); color: var(--ink-0);
+  font-size: 14px; font-family: var(--font-body);
+}
+.signin-modal-help{ margin-top: 5px; font-size: 11.5px; color: var(--ink-2); }
+.signin-modal-check{ display: flex; align-items: flex-start; gap: 9px; margin-top: 16px; font-size: 12px; color: var(--ink-1); line-height: 1.5; cursor: pointer; }
+.signin-modal-check input{ margin-top: 2px; flex: none; }
 .signin-modal-divider::before, .signin-modal-divider::after{ content: ""; flex: 1; height: 1px; background: var(--line-1); }
 
 .signin-pill{
