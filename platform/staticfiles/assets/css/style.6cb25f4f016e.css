@@ -178,7 +178,8 @@ html[data-theme="light"] .atmosphere .orb{
    the handful of surfaces that actually float over moving content
    (nav, floating buttons, the lightbox) rather than every card on the page. */
 .nav-inner.glass,
-.to-top.glass{
+.to-top.glass,
+.signin-pill.glass{
   backdrop-filter: blur(22px) saturate(140%);
   -webkit-backdrop-filter: blur(22px) saturate(140%);
 }
@@ -1055,9 +1056,18 @@ h1, h2, h3, h4{ font-family: var(--font-display); letter-spacing: -.01em; }
 .addon-grid li{ display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--ink-1); line-height: 1.55; }
 .addon-grid svg{ width: 16px; height: 16px; flex: none; margin-top: 2px; color: var(--ink-0); }
 
+.compare-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.compare-col{ padding: 24px; border-radius: var(--radius-md); background: var(--bg-1); border: 1px solid var(--line-1); }
+.compare-col.is-highlight{ background: rgba(var(--brand-rgb), .08); border-color: rgba(var(--brand-rgb), .3); }
+.compare-col h4{ font-family: var(--font-display); font-size: 16.5px; font-weight: 650; }
+.compare-col .price-features{ margin-top: 16px; }
+.compare-col .price-features li{ font-size: 13px; }
+.compare-col .price-features svg{ width: 15px; height: 15px; flex: none; margin-top: 1px; color: var(--brand); }
+
 @media (max-width: 860px){
   .addon-panel{ grid-template-columns: 1fr; padding: 36px 26px; gap: 30px; }
   .addon-grid{ grid-template-columns: 1fr; }
+  .compare-grid{ grid-template-columns: 1fr; }
   .addon-head p{ max-width: none; }
 }
 
@@ -1319,6 +1329,7 @@ body.lightbox-open{ overflow: hidden; }
   padding: 32px 28px;
   border-radius: var(--radius-lg);
   text-align: left;
+  background: var(--bg-0);
   opacity: 0; pointer-events: none;
   transform: translate(-50%,-50%) scale(.96);
   transition: opacity var(--dur-med) var(--ease-soft), transform var(--dur-med) var(--ease-soft);

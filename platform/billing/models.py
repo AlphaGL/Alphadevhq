@@ -65,7 +65,7 @@ class Subscription(models.Model):
     PERIOD_DAYS = {MONTHLY: 30, ANNUAL: 365}
 
     GRACE_DAYS = 5
-    TRIAL_DAYS = 7
+    TRIAL_DAYS = 3
 
     store = models.OneToOneField('stores.Store', on_delete=models.CASCADE, related_name='subscription')
     plan = models.ForeignKey(Plan, on_delete=models.PROTECT, related_name='subscriptions')
