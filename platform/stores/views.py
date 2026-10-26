@@ -665,8 +665,32 @@ def _nav_pages_for(store, plan):
     return pages
 
 
+def _canonical_redirect(request, store, page_slug=None):
+    """301 a live store's shared-domain path (www.alphadevhq.com/slug/) to its
+    own address, so search engines index one URL per store instead of two."""
+    from django.conf import settings
+    from django.http import HttpResponsePermanentRedirect
+    from urllib.parse import urlparse
+
+    if not store.is_live or not (store.custom_domain or store.domain_eligible):
+        return None
+    platform = settings.PLATFORM_DOMAIN.lower()
+    host = request.get_host().split(':')[0].lower()
+    if host not in {platform, f'www.{platform}', 'alphadevhq.vercel.app'}:
+        return None
+    if host == urlparse(store.live_url).hostname:
+        return None
+    target = store.live_url + (f'{page_slug}/' if page_slug else '')
+    if request.META.get('QUERY_STRING'):
+        target += '?' + request.META['QUERY_STRING']
+    return HttpResponsePermanentRedirect(target)
+
+
 def public_store(request, slug):
     store = get_object_or_404(Store, slug=slug)
+    canonical = _canonical_redirect(request, store)
+    if canonical:
+        return canonical
     not_live = _not_live_response(request, store)
     if not_live:
         return not_live
@@ -704,6 +728,9 @@ def public_store_page(request, slug, page_slug):
         raise Http404
     page = matches[0]
 
+    canonical = _canonical_redirect(request, store, page_slug)
+    if canonical:
+        return canonical
     not_live = _not_live_response(request, store)
     if not_live:
         return not_live

@@ -1,9 +1,17 @@
+{% with canonical=store.live_url|add:"" %}{% if page and not page.is_home %}{% with canonical_page=canonical|add:page.slug|add:"/" %}<link rel="canonical" href="{{ canonical_page }}">
+<meta property="og:url" content="{{ canonical_page }}">{% endwith %}{% else %}<link rel="canonical" href="{{ canonical }}">
+<meta property="og:url" content="{{ canonical }}">{% endif %}{% endwith %}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ store.business_name }}">
+<meta property="og:title" content="{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}">
+{% if store.tagline or store.bio %}<meta property="og:description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">{% endif %}
+{% if store.logo %}<meta property="og:image" content="{{ store.logo.url }}">{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "name": "{{ store.business_name|escapejs }}",
-  "url": "{{ request.build_absolute_uri|escapejs }}"
+  "url": "{{ store.live_url|escapejs }}"
   {% if store.tagline or store.bio %},"description": "{{ store.tagline|default:store.bio|truncatewords:30|escapejs }}"{% endif %}
   {% if store.phone %},"telephone": "+{{ store.phone|escapejs }}"{% endif %}
   {% if store.address %},"address": {"@type": "PostalAddress", "streetAddress": "{{ store.address|escapejs }}", "addressCountry": "NG"}{% endif %}

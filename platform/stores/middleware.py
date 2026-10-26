@@ -39,12 +39,12 @@ class StoreDomainMiddleware:
 
         suffix = f'.{platform_domain}'
         if host.endswith(suffix):
-            store = Store.objects.filter(slug=host[: -len(suffix)]).select_related('subscription__plan').first()
+            store = Store.objects.filter(slug=host[: -len(suffix)], external_url='').first()
         else:
-            store = Store.objects.filter(custom_domain__iexact=host).select_related('subscription__plan').first()
+            store = Store.objects.filter(custom_domain__iexact=host).first()
 
-        if not store or not store.is_live or not store.plan:
-            return None
+        # Any existing store is routed, live or not, so a lapsed/unpublished
+        # store shows its own paused page rather than the Alpha Dev homepage.
         return store
 
 

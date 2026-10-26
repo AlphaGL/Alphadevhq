@@ -136,7 +136,7 @@ class Store(models.Model):
     def get_display_url(self):
         """Where an Explore card should link. External custom-built sites
         (no template/subscription on this platform) link straight out."""
-        return self.external_url or self.get_public_url()
+        return self.external_url or self.live_url
 
     @property
     def plan(self):
