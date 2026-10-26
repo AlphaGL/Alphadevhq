@@ -60,6 +60,7 @@ CATEGORY_CHOICES = [
     ('portfolio', 'Portfolio / Creative'),
     ('repair', 'Repair / Technical Services'),
     ('consulting', 'Consulting / Professional Services'),
+    ('fashion', 'Fashion / Clothing'),
     ('other', 'Other Service Business'),
 ]
 
