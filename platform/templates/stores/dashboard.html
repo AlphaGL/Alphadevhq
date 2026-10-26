@@ -28,7 +28,7 @@
   {% endif %}
 
   {% if store.is_live %}
-    <p class="platform-sub" style="margin-top:10px">Your store is live at <a href="{{ store.get_public_url }}" target="_blank"><strong>alphadevhq.com{{ store.get_public_url }}</strong></a></p>
+    <p class="platform-sub" style="margin-top:10px">Your store is live at <a href="{{ store.live_url }}" target="_blank" rel="noopener"><strong>{{ store.address }}</strong></a></p>
   {% endif %}
 
   {% if near_cap %}

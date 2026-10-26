@@ -220,7 +220,7 @@ class Command(BaseCommand):
 
         plans = [
             dict(
-                name='Starter', slug='starter', tier=Plan.STARTER, price=2000,
+                name='Starter', slug='starter', tier=Plan.STARTER, price=3500,
                 image_limit=10, page_limit=1,
                 description='One page, everything a small service business needs to be found online.',
                 features=[
@@ -228,12 +228,12 @@ class Command(BaseCommand):
                     'Up to 10 images',
                     'WhatsApp-first contact button',
                     'Pick a real, pre-designed template for your business',
-                    'Your web address: alphadevhq.com/your-business',
+                    'Your web address: yourbusiness.alphadevhq.com',
                 ],
                 order=0,
             ),
             dict(
-                name='Business', slug='business', tier=Plan.BUSINESS, price=3500,
+                name='Business', slug='business', tier=Plan.BUSINESS, price=5000,
                 image_limit=15, page_limit=3,
                 description='For a business ready to show more: real pages, more photos.',
                 features=[
@@ -245,7 +245,7 @@ class Command(BaseCommand):
                 order=1,
             ),
             dict(
-                name='Pro', slug='pro', tier=Plan.PRO, price=6500,
+                name='Pro', slug='pro', tier=Plan.PRO, price=10000,
                 image_limit=25, page_limit=6,
                 description='The full site: every section as its own page, room for a lot more photos.',
                 features=[
@@ -253,7 +253,7 @@ class Command(BaseCommand):
                     'Up to 6 pages (Home, Services, About, Team, Gallery, Contact)',
                     'Up to 25 images',
                     'Priority support',
-                    'Custom domain connection (yourbusiness.com) — coming soon',
+                    'Connect a domain you already own',
                 ],
                 order=2,
             ),

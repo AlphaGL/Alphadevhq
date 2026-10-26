@@ -169,6 +169,12 @@ class Store(models.Model):
         return bool(self.plan)
 
     @property
+    def address(self):
+        """The bare web address to show the owner: their own domain if connected, else slug.alphadevhq.com."""
+        from django.conf import settings
+        return self.custom_domain or f'{self.slug}.{settings.PLATFORM_DOMAIN}'
+
+    @property
     def live_url(self):
         """The full address customers should actually be given — prefers a
         connected custom domain, then the plan's alphadevhq.com subdomain,

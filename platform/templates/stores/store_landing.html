@@ -5,7 +5,7 @@
   <span class="eyebrow"><span class="dot"></span>Alpha Dev Stores</span>
   <h1 class="hero-title" style="margin-top:18px;font-size:clamp(32px,6vw,54px)">Is your business name taken?</h1>
   <div><span class="badge-pill">Now onboarding our first 100 stores</span></div>
-  <p class="platform-sub" style="font-size:17px">Check if <strong>alphadevhq.com/your-business/</strong> is free, then build your page. Free to design, pay only when you publish.</p>
+  <p class="platform-sub" style="font-size:17px">Check if <strong>yourbusiness.alphadevhq.com</strong> is free, then build your page. Free to design, pay only when you publish.</p>
 
   <div class="platform-card glass" style="margin-top:28px;text-align:left">
     <div class="field" style="margin-bottom:12px">
@@ -149,9 +149,9 @@
         .then(function(data){
           if (!data.slug){ result.textContent = ''; return; }
           if (data.available){
-            result.innerHTML = '<strong style="color:var(--ink-0)">alphadevhq.com/' + data.slug + '/</strong> is available.';
+            result.innerHTML = '<strong style="color:var(--ink-0)">' + data.slug + '.alphadevhq.com</strong> is available.';
           } else {
-            result.innerHTML = 'alphadevhq.com/' + data.slug + '/ is already taken — try another name.';
+            result.innerHTML = data.slug + '.alphadevhq.com is already taken — try another name.';
           }
         });
     }, 350);
