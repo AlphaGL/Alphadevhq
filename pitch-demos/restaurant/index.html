@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aurelia — Fine dining, Owerri</title>
+<meta name="description" content="Seasonal fine dining, a 120-label wine cellar and private dining for up to 40 guests. Reserve a table or order Aurelia to your home.">
+<meta name="theme-color" content="#0f0d0b">
+<meta property="og:title" content="Aurelia — Fine dining in Owerri">
+<meta property="og:description" content="Reserve a table, book private dining or order to your home.">
+<meta property="og:image" content="img/dining-room.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f0d0b'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-size='36' fill='%23c9a46b'%3EA%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/shop.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hdr" id="top">
+  <div class="wrap hdr-in">
+    <a href="#top" class="logo" aria-label="Aurelia home"><span class="logo-a">A</span><span class="logo-word">Aurelia</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="#menu">Menu</a>
+      <a href="#reserve">Reservations</a>
+      <a href="#private">Private dining</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <div class="hdr-actions">
+      <button class="cart-btn" data-cart-open aria-label="Open your order"><svg class="ic"><use href="#i-bag"/></svg><b data-cart-count class="is-empty">0</b></button>
+      <a href="#reserve" class="btn btn-gold btn-sm hide-sm">Reserve a table</a>
+      <button class="burger" aria-label="Menu" data-burger><span></span><span></span></button>
+    </div>
+  </div>
+  <div class="mnav" data-mnav>
+    <a href="#menu">Menu</a><a href="#reserve">Reservations</a><a href="#private">Private dining</a><a href="#gallery">Gallery</a><a href="#visit">Visit</a>
+    <a class="btn btn-gold" href="#reserve">Reserve a table</a>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"><img src="img/dining-room.jpg" alt="" fetchpriority="high"></div>
+    <div class="wrap hero-in">
+      <p class="kicker" data-r>Fine dining · Owerri · Since 2019</p>
+      <h1 class="hero-h"><span class="ln"><span>An evening worth</span></span><span class="ln"><span><em>dressing up</em> for.</span></span></h1>
+      <p class="hero-p" data-r>Seasonal cooking, a cellar of 120 wines and service that remembers your name. Reserve a table, or let us bring Aurelia home to you.</p>
+      <div class="hero-cta" data-r>
+        <a href="#reserve" class="btn btn-gold btn-lg">Reserve a table</a>
+        <a href="#menu" class="btn btn-line btn-lg">Order to your home</a>
+      </div>
+    </div>
+    <div class="hero-foot wrap" data-r>
+      <div><small>Tonight</small><b data-tonight>Open 6pm – 11pm</b></div>
+      <div><small>Tables left</small><b><span data-tables>7</span> for this evening</b></div>
+      <div class="hide-sm"><small>Dress code</small><b>Smart casual</b></div>
+      <a href="#menu" class="scroll-cue" aria-label="Scroll to menu"><span></span></a>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="wrap intro-in">
+      <p class="intro-big" data-r>We cook what is good this week, from farms within a day's drive of Owerri — and pair it with wines we've chosen one bottle at a time.</p>
+      <ul class="intro-stats">
+        <li data-r><b data-count="120">0</b><span>Wines in our cellar</span></li>
+        <li data-r><b data-count="40">0</b><span>Guests in the private room</span></li>
+        <li data-r><b data-count="4.9" data-dec="1">0</b><span>Average guest rating</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SIGNATURES -->
+  <section class="sig">
+    <div class="wrap">
+      <div class="sec-head row" data-r>
+        <div><p class="kicker">Signatures</p><h2>Dishes our guests come back for</h2></div>
+        <a href="#menu" class="link-arrow">Full menu <svg class="ic"><use href="#i-arrowr"/></svg></a>
+      </div>
+    </div>
+    <div class="sig-track" data-sig></div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu" id="menu">
+    <div class="wrap">
+      <div class="sec-head center" data-r>
+        <p class="kicker">The menu</p>
+        <h2>Order Aurelia to your home</h2>
+        <p>Our full kitchen, delivered in insulated packaging within Owerri. Tap a dish for details.</p>
+      </div>
+      <div class="tabs" data-tabs role="tablist"></div>
+      <div class="menu-list" data-menu></div>
+    </div>
+  </section>
+
+  <!-- CHEF -->
+  <section class="chef">
+    <div class="wrap chef-in">
+      <div class="chef-img" data-r><img src="img/grilled-prawns.jpg" alt="Flame-grilled tiger prawns" loading="lazy"></div>
+      <div class="chef-copy" data-r>
+        <p class="kicker">From the kitchen</p>
+        <blockquote>"Fire, good salt and the patience to leave things alone. Everything else is just listening to the ingredients."</blockquote>
+        <p class="chef-sig">Executive Chef Obinna Eze</p>
+        <ul class="chef-list">
+          <li><svg class="ic"><use href="#i-leaf"/></svg>Produce from farms across Imo and Abia</li>
+          <li><svg class="ic"><use href="#i-flame"/></svg>Wood-fired grill, lit every evening at 4pm</li>
+          <li><svg class="ic"><use href="#i-wine"/></svg>A sommelier on the floor every night</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVE -->
+  <section class="reserve" id="reserve">
+    <div class="wrap reserve-in">
+      <div class="reserve-copy" data-r>
+        <p class="kicker">Reservations</p>
+        <h2>Reserve your table</h2>
+        <p>Pick a date and time — we'll confirm instantly and send a reminder on the day. For parties over 10, see private dining below.</p>
+        <ul class="reserve-notes">
+          <li><svg class="ic"><use href="#i-clock"/></svg>Tables are held for 15 minutes</li>
+          <li><svg class="ic"><use href="#i-gift"/></svg>Tell us about birthdays — dessert is on us</li>
+          <li><svg class="ic"><use href="#i-call"/></svg>Same-day? Call 0813 858 2078</li>
+        </ul>
+      </div>
+      <form class="book" data-book novalidate data-r>
+        <div class="book-step">
+          <p class="book-label"><span>1</span>Choose a date</p>
+          <div class="dates" data-dates></div>
+        </div>
+        <div class="book-step">
+          <p class="book-label"><span>2</span>Pick a time</p>
+          <div class="times" data-times></div>
+        </div>
+        <div class="book-row">
+          <div class="book-step">
+            <p class="book-label"><span>3</span>Guests</p>
+            <div class="stepper"><button type="button" data-g="-1" aria-label="Fewer guests"><svg class="ic"><use href="#i-minus"/></svg></button><b data-guests>2</b><button type="button" data-g="1" aria-label="More guests"><svg class="ic"><use href="#i-plus"/></svg></button></div>
+          </div>
+          <div class="book-step">
+            <p class="book-label"><span>4</span>Seating</p>
+            <div class="seg" data-seat><button type="button" class="is-on">Dining room</button><button type="button">Terrace</button><button type="button">Bar</button></div>
+          </div>
+        </div>
+        <div class="book-fields">
+          <label class="fld"><span>Full name</span><input name="name" required placeholder="Your name" autocomplete="name"></label>
+          <label class="fld"><span>Phone</span><input name="phone" required inputmode="tel" placeholder="0803 123 4567" autocomplete="tel"></label>
+          <label class="fld"><span>Occasion</span><select name="occasion"><option>Just dinner</option><option>Birthday</option><option>Anniversary</option><option>Date night</option><option>Business dinner</option></select></label>
+          <label class="fld"><span>Requests</span><input name="notes" placeholder="Allergies, high chair, quiet table…"></label>
+        </div>
+        <button class="btn btn-gold btn-lg btn-block" type="submit">Confirm reservation</button>
+        <p class="book-fine">No deposit needed for tables under 10 guests. Free cancellation up to 4 hours before.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- PRIVATE -->
+  <section class="private" id="private">
+    <div class="private-bg" data-parallax style="background-image:url('img/wine.jpg')"></div>
+    <div class="wrap private-in">
+      <div data-r>
+        <p class="kicker">Private dining</p>
+        <h2>The Cellar Room</h2>
+        <p>A candlelit private room beside our wine cellar for 12 to 40 guests. Your own menu, your own sommelier, and the room is yours for the night.</p>
+      </div>
+      <div class="packages">
+        <article class="pkg" data-r><p class="pkg-tier">Intimate</p><b>₦45,000</b><small>per guest · 12–20 guests</small><ul><li>Four-course menu</li><li>Welcome cocktail</li><li>Personalised printed menus</li></ul><button class="btn btn-line btn-block" data-pkg="Intimate" data-deposit="100000">Hold the date</button></article>
+        <article class="pkg is-star" data-r><p class="pkg-tier">Celebration</p><b>₦65,000</b><small>per guest · up to 40 guests</small><ul><li>Six-course tasting menu</li><li>Paired wines</li><li>Cake and florals</li><li>Dedicated host</li></ul><button class="btn btn-gold btn-block" data-pkg="Celebration" data-deposit="150000">Hold the date</button></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="gallery">
+    <div class="wrap">
+      <div class="sec-head center" data-r><p class="kicker">Gallery</p><h2>A look inside</h2></div>
+      <div class="masonry" data-gallery>
+        <button data-img="img/dining-room.jpg" data-r><img src="img/dining-room.jpg" alt="The dining room" loading="lazy"></button>
+        <button data-img="img/lava-cake.jpg" data-r><img src="img/lava-cake.jpg" alt="Molten chocolate cake" loading="lazy"></button>
+        <button data-img="img/espresso-martini.jpg" data-r><img src="img/espresso-martini.jpg" alt="Espresso martini" loading="lazy"></button>
+        <button data-img="img/lamb.jpg" data-r><img src="img/lamb.jpg" alt="Lamb chops" loading="lazy"></button>
+        <button data-img="img/salmon.jpg" data-r><img src="img/salmon.jpg" alt="Grilled salmon" loading="lazy"></button>
+        <button data-img="img/wine.jpg" data-r><img src="img/wine.jpg" alt="Red wine by the fire" loading="lazy"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESS -->
+  <section class="press">
+    <div class="wrap">
+      <div class="quotes" data-quotes>
+        <figure class="is-on"><blockquote>"The most confident cooking in the South-East right now. Book the tasting menu."</blockquote><figcaption>— City Table Magazine</figcaption></figure>
+        <figure><blockquote>"We came for an anniversary and left with a new favourite restaurant. The service is exceptional."</blockquote><figcaption>— Nneka &amp; Femi, guests</figcaption></figure>
+        <figure><blockquote>"A wine list you would expect in Lagos or London, served with real warmth."</blockquote><figcaption>— The Owerri Weekender</figcaption></figure>
+      </div>
+      <div class="dots" data-qdots></div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="visit" id="visit">
+    <div class="wrap visit-in">
+      <div data-r>
+        <p class="kicker">Visit</p>
+        <h2>Find us</h2>
+        <p class="visit-addr">7 Okigwe Road, by Imo Concorde Boulevard<br>Owerri, Imo State</p>
+        <dl class="visit-hours">
+          <dt>Tuesday – Thursday</dt><dd>6:00pm – 11:00pm</dd>
+          <dt>Friday – Saturday</dt><dd>6:00pm – 12:30am</dd>
+          <dt>Sunday brunch</dt><dd>12:00pm – 4:00pm</dd>
+          <dt>Monday</dt><dd>Closed</dd>
+        </dl>
+        <div class="visit-cta"><a href="#reserve" class="btn btn-gold">Reserve a table</a><a href="https://wa.me/2348138582078" target="_blank" rel="noopener" class="btn btn-line"><svg class="ic"><use href="#i-whatsapp"/></svg>WhatsApp</a></div>
+      </div>
+      <div class="visit-map" data-r><iframe title="Map to Aurelia" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Okigwe%20Road%20Owerri&z=15&output=embed"></iframe></div>
+    </div>
+  </section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap ftr-in">
+    <a href="#top" class="logo"><span class="logo-a">A</span><span class="logo-word">Aurelia</span></a>
+    <nav><a href="#menu">Menu</a><a href="#reserve">Reservations</a><a href="#private">Private dining</a><a href="#visit">Visit</a></nav>
+    <div class="socials">
+      <a href="#" aria-label="Instagram"><svg class="ic"><use href="#i-instagram"/></svg></a>
+      <a href="#" aria-label="Facebook"><svg class="ic"><use href="#i-facebook"/></svg></a>
+      <a href="https://wa.me/2348138582078" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="ic"><use href="#i-whatsapp"/></svg></a>
+    </div>
+  </div>
+  <div class="wrap ftr-bot">
+    <span>© <span data-year></span> Aurelia. Demo website — sample menu, prices and reviews.</span>
+    <span><button class="linkish" data-credits>Photo credits</button> · Designed by <a href="https://www.alphadevhq.com" target="_blank" rel="noopener">Alpha Dev</a></span>
+  </div>
+</footer>
+
+<div class="lightbox" data-lightbox hidden><button class="lb-x" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button><img alt=""></div>
+
+<a class="mbar" href="#" data-cart-open data-mbar hidden>
+  <span class="mbar-count" data-cart-count>0</span><span>View your order</span><b data-mbar-total></b>
+</a>
+
+<script src="shared/icons.js"></script>
+<script src="img/credits.js"></script>
+<script src="shared/shop.js"></script>
+<script src="shared/site.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
