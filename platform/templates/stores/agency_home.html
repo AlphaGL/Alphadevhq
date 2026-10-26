@@ -256,60 +256,30 @@
     </div>
   </section>
 
-  <!-- Explainer carousel: the whole site in 3 slides -->
+  <!-- Explainer video: the whole Stores flow in 20 seconds -->
   <section class="section" id="explainer" style="padding-top:0">
     <div class="container">
       <div class="explainer-hint" data-reveal>
         <svg><use href="#icon-arrow-right"></use></svg>
-        Swipe or tap the arrows &mdash; 3 quick slides on how this works
+        How it works, in 20 seconds
       </div>
-      <div class="explainer-wrap" data-carousel data-carousel-interval="5000" data-reveal>
-        <div class="explainer-track glass">
-          <div class="explainer-rail carousel-rail">
-
-            <div class="explainer-slide">
-              <div class="explainer-media">
-                {% if showcase_template_1.preview_image %}<img src="{{ showcase_template_1.preview_image.url }}" alt="">{% endif %}
-              </div>
-              <div class="explainer-copy">
-                <span class="explainer-step">1. Pick your path</span>
-                <h3>Two ways to get online</h3>
-                <p>Build it yourself from a ready design, or let us build a custom one for you. Either way, you're live and on WhatsApp fast.</p>
-              </div>
-            </div>
-
-            <div class="explainer-slide">
-              <div class="explainer-media">
-                {% if showcase_template_2.preview_image %}<img src="{{ showcase_template_2.preview_image.url }}" alt="">{% endif %}
-              </div>
-              <div class="explainer-copy">
-                <span class="explainer-step">2. Build it yourself</span>
-                <h3>Pick a look, publish today</h3>
-                <p>Choose a real design, add your details and photos, and go live in minutes. From &#8358;3,500/month, free to try for 3 days.</p>
-              </div>
-            </div>
-
-            <div class="explainer-slide">
-              <div class="explainer-media">
-                <img src="/static/assets/img/uiux/crestcare-poster.png" alt="">
-              </div>
-              <div class="explainer-copy">
-                <span class="explainer-step">3. Or we build it for you</span>
-                <h3>A custom site, made around your business</h3>
-                <p>Need bookings, payments, or something bigger than a template? We design and build it from scratch, from &#8358;150,000.</p>
-              </div>
-            </div>
-
-          </div>
-        </div>
-        <div class="testimonial-nav">
-          <button class="t-arrow carousel-prev" aria-label="Previous slide"><svg><use href="#icon-chevron" style="transform:rotate(180deg)"></use></svg></button>
-          <div class="t-dots carousel-dots"></div>
-          <button class="t-arrow carousel-next" aria-label="Next slide"><svg><use href="#icon-chevron"></use></svg></button>
-        </div>
+      <div class="explainer-video-wrap glass" data-reveal>
+        <video class="explainer-video" id="explainerVideo" autoplay muted loop playsinline preload="metadata"
+               poster="/static/assets/video/how-it-works.jpg"
+               aria-label="How Alpha Dev Stores works: pick a design, add your name and photos, and customers message you on WhatsApp. Live today from 3,500 naira a month.">
+          <source src="/static/assets/video/how-it-works.mp4" type="video/mp4">
+        </video>
       </div>
     </div>
   </section>
+  <script>
+  (function(){
+    var v = document.getElementById('explainerVideo');
+    if (v && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.removeAttribute('autoplay'); v.pause(); v.controls = true;
+    }
+  })();
+  </script>
 
   <!-- Product tour: one plain step at a time, no jargon -->
   <section class="section" id="tour">
