@@ -169,7 +169,7 @@ class Store(models.Model):
         return bool(self.plan)
 
     @property
-    def address(self):
+    def web_address(self):
         """The bare web address to show the owner: their own domain if connected, else slug.alphadevhq.com."""
         from django.conf import settings
         return self.custom_domain or f'{self.slug}.{settings.PLATFORM_DOMAIN}'
