@@ -106,6 +106,11 @@
       flashStatus('Uploading…');
       postFile(url, fieldName, file).then(function(res){
         if (res.ok && res.json.ok){ location.reload(); }
+        else if (res.json && res.json.upgrade_url){
+          // Hit the plan's photo limit: offer the upgrade right here
+          // instead of a status flash that disappears in two seconds.
+          if (window.confirm(res.json.error + '\n\nSee plans now?')) location.href = res.json.upgrade_url;
+        }
         else { flashStatus((res.json && res.json.error) || 'Could not upload', true); }
       });
     });

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pricing | Alpha Dev Web &amp; App Development, Nigeria</title>
-<meta name="description" content="Straightforward pricing for Alpha Dev's web development, app development and Alpha Dev Stores packages. Custom sites from ₦150,000, self-serve stores from ₦3,500/month.">
+<meta name="description" content="Get your business online free with Alpha Dev. Paid plans from ₦3,000/month for more pages, more photos and your own .com. No cut of your sales. Custom websites from ₦150,000.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.alphadevhq.com/pricing/">
 
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Alpha Dev">
 <meta property="og:title" content="Pricing | Alpha Dev">
-<meta property="og:description" content="Custom websites from ₦150,000, or a self-serve WhatsApp-ready site from ₦3,500/month. See exactly what's included.">
+<meta property="og:description" content="Start free. Upgrade from ₦3,000/month when you grow. No cut of your sales. Custom websites from ₦150,000.">
 <meta property="og:image" content="/static/assets/img/og-cover.jpg">
 <meta property="og:url" content="https://www.alphadevhq.com/pricing/">
 <meta property="og:locale" content="en_NG">
@@ -20,7 +20,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pricing | Alpha Dev">
-<meta name="twitter:description" content="Custom websites from ₦150,000, or a self-serve WhatsApp-ready site from ₦3,500/month.">
+<meta name="twitter:description" content="Start free. Upgrade from ₦3,000/month when you grow. No cut of your sales.">
 <meta name="twitter:image" content="/static/assets/img/og-cover.jpg">
 
 <meta name="theme-color" content="#050506">
@@ -44,7 +44,7 @@
   "logo": "https://www.alphadevhq.com/static/assets/img/favicon-512.png",
   "url": "https://www.alphadevhq.com/pricing/",
   "telephone": "+2348138582078",
-  "priceRange": "NGN 2000 - NGN 500000+",
+  "priceRange": "NGN 0 - NGN 500000+",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Owerri",
@@ -104,19 +104,18 @@
       ALPHA DEV
     </a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="{% url 'stores:store_landing' %}">Get Your Website</a>
-      <a href="{% url 'stores:pricing' %}" class="is-active">Pricing</a>
-      <a href="{% url 'stores:home' %}#services">Services</a>
       <a href="{% url 'stores:explore' %}">Find a Business</a>
-      <a href="{% url 'stores:home' %}#contact">Contact</a>
+      <a href="{% url 'stores:pricing' %}" class="is-active">Pricing</a>
+      <a href="#custom">Custom websites</a>
+      {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">My dashboard</a>{% else %}<a href="{% url 'accounts:login' %}">Sign in</a>{% endif %}
     </nav>
     <div class="nav-actions">
       <button class="theme-toggle" data-theme-toggle aria-label="Toggle light and dark theme">
         <svg class="icon-sun"><use href="#icon-sun"></use></svg>
         <svg class="icon-moon"><use href="#icon-moon"></use></svg>
       </button>
-      <a class="btn btn-primary btn-sm hide-mobile" data-magnetic href="https://wa.me/2348138582078?text=Hi%2C%20I%27m%20interested%20in%20a%20custom%20website%2Fapp%20build" target="_blank" rel="noopener">
-        Start a project
+      <a class="btn btn-primary btn-sm hide-mobile" data-magnetic href="{% url 'stores:store_landing' %}">
+        Create free site
         <svg><use href="#icon-arrow-right"></use></svg>
       </a>
       <button class="menu-toggle" aria-label="Open menu"><span></span><span></span></button>
@@ -125,30 +124,121 @@
 </header>
 
 <div class="mobile-menu">
-  <a href="{% url 'stores:store_landing' %}">Get Your Website</a>
-  <a href="{% url 'stores:pricing' %}">Pricing</a>
-  <a href="{% url 'stores:home' %}#services">Services</a>
   <a href="{% url 'stores:explore' %}">Find a Business</a>
-  <a href="{% url 'stores:home' %}#contact">Contact</a>
-  <a class="btn btn-primary" href="https://wa.me/2348138582078?text=Hi%2C%20I%27m%20interested%20in%20a%20custom%20website%2Fapp%20build" target="_blank" rel="noopener">
-    Start a project <svg><use href="#icon-arrow-right"></use></svg>
+  <a href="{% url 'stores:pricing' %}">Pricing</a>
+  <a href="#custom">Custom websites</a>
+  {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">My dashboard</a>{% else %}<a href="{% url 'accounts:login' %}">Sign in</a>{% endif %}
+  <a class="btn btn-primary" href="{% url 'stores:store_landing' %}">
+    Create free site <svg><use href="#icon-arrow-right"></use></svg>
   </a>
 </div>
 
 <main>
 
-  <!-- Pricing -->
-  <section class="section" style="padding:calc(var(--nav-h) + 56px) 0 0">
+  <!-- Plans: ready-made website -->
+  <section class="section" id="plans" style="padding:calc(var(--nav-h) + 56px) 0 0">
+    <div class="container">
+      <div class="section-head is-center" data-reveal>
+        <span class="eyebrow"><span class="dot"></span>Ready-made website</span>
+        <h1 class="section-title">Start free. Upgrade when you grow.</h1>
+        <p class="section-sub">Pick a design, add your details and you're online today. No card needed. We never take a cut of your sales.</p>
+      </div>
+
+      <div class="plan-toggle" role="group" aria-label="Billing period" data-reveal>
+        <button type="button" class="is-active" data-cycle="monthly">Monthly</button>
+        <button type="button" data-cycle="annual">Yearly <span class="plan-toggle-badge">2 months free</span></button>
+      </div>
+
+      <div class="pricing-grid is-4" data-reveal-stagger>
+        {% for plan in plans %}
+        <div class="price-card glass{% if plan.tier == 'pro' %} is-popular{% endif %}">
+          {% if plan.tier == 'pro' %}<span class="price-badge">Most popular</span>{% endif %}
+          <h3>{{ plan.name }}</h3>
+          <div class="plan-for">{{ plan.description }}</div>
+          {% if plan.is_free %}
+            <div class="price-amount">&#8358;0</div>
+            <div class="price-sub">Free forever</div>
+          {% else %}
+            <div class="price-amount" data-price-monthly>&#8358;{{ plan.price|floatformat:"0g" }}<small>/month</small></div>
+            <div class="price-amount" data-price-annual hidden>&#8358;{{ plan.annual_price|floatformat:"0g" }}<small>/year</small></div>
+            <div class="price-sub" data-price-monthly>Pay monthly, stop anytime</div>
+            <div class="price-sub" data-price-annual hidden>Works out to &#8358;{{ plan.annual_monthly_equivalent|floatformat:"0g" }}/month</div>
+          {% endif %}
+          <ul class="price-features">
+            {% for f in plan.features %}<li><svg><use href="#icon-check"></use></svg>{{ f }}</li>{% endfor %}
+          </ul>
+          {% if plan.is_free %}
+            <a class="btn btn-ghost btn-block" href="{% url 'stores:store_landing' %}">Create my free site</a>
+          {% elif plan.tier == 'business' %}
+            <a class="btn btn-ghost btn-block" href="https://wa.me/2348138582078?text=Hi%2C%20I%27d%20like%20the%20Business%20plan%20%E2%80%94%20please%20set%20up%20my%20site" target="_blank" rel="noopener">Let us set it up</a>
+          {% else %}
+            <a class="btn {% if plan.tier == 'pro' %}btn-primary{% else %}btn-ghost{% endif %} btn-block" href="{% url 'stores:store_landing' %}">Start free, upgrade anytime</a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="plan-trust" data-reveal>
+        <span><svg><use href="#icon-check"></use></svg>No cut of your sales, ever</span>
+        <span><svg><use href="#icon-check"></use></svg>Stop paying and your site stays live on Free</span>
+        <span><svg><use href="#icon-check"></use></svg>Every Pro feature free for your first 7 days</span>
+        <span><svg><use href="#icon-check"></use></svg>Pay in naira by card, transfer or USSD</span>
+      </div>
+
+      <details class="plan-compare glass" data-reveal>
+        <summary>Compare all features <svg><use href="#icon-arrow-right"></use></svg></summary>
+        <div class="plan-compare-scroll">
+          <table>
+            <thead>
+              <tr><th scope="col">What you get</th><th scope="col">Free</th><th scope="col">Starter</th><th scope="col">Pro</th><th scope="col">Business</th></tr>
+            </thead>
+            <tbody>
+              <tr class="is-group"><td colspan="5">Your website</td></tr>
+              <tr><td>Web address: yourname.alphadevhq.com</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Every design</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Pages</td><td>1</td><td>3</td><td>6</td><td>6</td></tr>
+              <tr><td>Photos</td><td>5</td><td>20</td><td>50</td><td>100</td></tr>
+              <tr><td>"Made with Alpha Dev" badge</td><td>Shown</td><td class="yes">Removed</td><td class="yes">Removed</td><td class="yes">Removed</td></tr>
+              <tr><td>Use your own .com address</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+
+              <tr class="is-group"><td colspan="5">Getting customers</td></tr>
+              <tr><td>WhatsApp and call buttons</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Customer star reviews</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Listed in Find a Business</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td>Shown higher</td><td>Top of your category</td></tr>
+              <tr><td>Visitor numbers</td><td>This week</td><td>Every day</td><td>Every day</td><td>Every day + monthly report</td></tr>
+
+              <tr class="is-group"><td colspan="5">Selling and booking</td></tr>
+              <tr><td>Product and service list <span class="soon-tag">Soon</span></td><td>10 items</td><td>50 items</td><td>Unlimited</td><td>Unlimited</td></tr>
+              <tr><td>WhatsApp order list <span class="soon-tag">Soon</span></td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Online payments to your bank, 0% cut <span class="soon-tag">Soon</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Booking requests <span class="soon-tag">Soon</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Discount codes <span class="soon-tag">Soon</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+
+              <tr class="is-group"><td colspan="5">Help from our team</td></tr>
+              <tr><td>We set up your site for you</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Priority WhatsApp support</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
+              <tr><td>Several sites (branches or brands) <span class="soon-tag">Soon</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td>Up to 3</td></tr>
+              <tr><td>Team logins <span class="soon-tag">Soon</span></td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="no">&mdash;</td><td class="yes">&#10003;</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  {% include "stores/_demos_section.html" %}
+
+  <!-- Custom packages -->
+  <section class="section" id="packages" style="padding-top:0">
     <div class="container">
       <div class="section-head" data-reveal>
-        <span class="eyebrow"><span class="dot"></span>Packages</span>
-        <h1 class="section-title">Straightforward pricing, scoped to you.</h1>
+        <span class="eyebrow"><span class="dot"></span>Custom build packages</span>
+        <h2 class="section-title">One price, built around your business.</h2>
         <p class="section-sub">Every package includes getting your business onto WhatsApp and Google. Want an app instead? We'll quote that after a quick call.</p>
         <p class="section-sub" style="margin-top:10px">Why it costs what it costs: a website isn't just a page. It's the writing, the design, the actual building, your own web address, and making sure people can find you on Google. The price covers all of that, done once and done properly.</p>
       </div>
 
       <div class="pricing-grid" data-reveal-stagger>
-
         <div class="price-card glass">
           <h3>Starter Business Site</h3>
           <div class="price-note">For a business, clinic or school that needs a credible site people can find and trust</div>
@@ -195,7 +285,6 @@
           </ul>
           <a class="btn btn-ghost btn-block" href="https://wa.me/2348138582078" target="_blank" rel="noopener">Talk to us</a>
         </div>
-
       </div>
 
       <div class="addon-panel glass" data-reveal>
@@ -222,74 +311,74 @@
 
       <div class="addon-panel glass" data-reveal>
         <div class="addon-head">
-          <span class="eyebrow"><span class="dot"></span>Alpha Dev Stores</span>
-          <h3>Not ready for a custom build? Get a ready-made website instead.</h3>
-          <p>A simpler one-page website for small businesses — pick a design and type in your details, no coding. Billed monthly instead of paid upfront, and free to set up before you publish. Don't want to set it up yourself? Message us and we'll do it for you, same monthly price.</p>
-          <a class="btn btn-primary" data-magnetic href="{% url 'stores:store_landing' %}">
-            Check if your business name is free
-            <svg><use href="#icon-arrow-up-right"></use></svg>
-          </a>
-        </div>
-        <div class="stores-price-cards">
-          {% for plan in plans %}
-          <div class="stores-price-card{% if plan.tier == 'business' %} is-popular{% endif %}">
-            {% if plan.tier == 'business' %}<span class="price-badge">Most popular</span>{% endif %}
-            <h4>{{ plan.name }}</h4>
-            <div class="stores-price-amount">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></div>
-            <ul class="price-features">
-              <li><svg><use href="#icon-check"></use></svg>{{ plan.page_limit }} page{{ plan.page_limit|pluralize }}</li>
-              <li><svg><use href="#icon-check"></use></svg>Up to {{ plan.image_limit }} photos</li>
-              <li><svg><use href="#icon-check"></use></svg>Your own yourbusiness.alphadevhq.com address</li>
-              <li><svg><use href="#icon-check"></use></svg>Connect a domain you already own</li>
-              {% if plan.tier == 'starter' %}
-                <li><svg><use href="#icon-check"></use></svg>We'll make updates for you once a week, if you want</li>
-              {% elif plan.tier == 'business' %}
-                <li><svg><use href="#icon-check"></use></svg>We'll make updates for you up to 3&times; a week, if you want</li>
-              {% else %}
-                <li><svg><use href="#icon-check"></use></svg>We'll make updates for you daily, if you want</li>
-              {% endif %}
-            </ul>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="addon-panel glass" data-reveal>
-        <div class="addon-head">
           <span class="eyebrow"><span class="dot"></span>Not sure which to pick?</span>
           <h3>Here's the real difference.</h3>
           <p>Both get you online and messaging customers on WhatsApp. This is what actually changes between them.</p>
         </div>
         <div class="compare-grid">
           <div class="compare-col is-highlight">
-            <h4>Custom Build</h4>
+            <h4>Custom website</h4>
             <ul class="price-features">
-              <li><svg><use href="#icon-check"></use></svg>A site designed around exactly your business, not a template</li>
+              <li><svg><use href="#icon-check"></use></svg>Designed around exactly your business, not a template</li>
               <li><svg><use href="#icon-check"></use></svg>As many pages as you actually need</li>
-              <li><svg><use href="#icon-check"></use></svg>Bookings, payments or other features built in, if you need them</li>
-              <li><svg><use href="#icon-check"></use></svg>We set up and verify your Google Business Profile for you</li>
-              <li><svg><use href="#icon-check"></use></svg>Ongoing help getting you to rank higher on Google</li>
-              <li><svg><use href="#icon-check"></use></svg>A private dashboard to update your own content whenever you like</li>
+              <li><svg><use href="#icon-check"></use></svg>Ordering, bookings, payments or anything else built in</li>
+              <li><svg><use href="#icon-check"></use></svg>We set up your Google Business Profile for you</li>
+              <li><svg><use href="#icon-check"></use></svg>Ongoing help to rank higher on Google</li>
               <li><svg><use href="#icon-check"></use></svg>We fix anything that breaks, free, for weeks after launch</li>
-              <li><svg><use href="#icon-check"></use></svg>Can grow into a full app or booking system later — not stuck as one page</li>
               <li><svg><use href="#icon-check"></use></svg>One quoted price. Nothing billed monthly</li>
             </ul>
           </div>
           <div class="compare-col">
-            <h4>Alpha Dev Stores</h4>
+            <h4>Ready-made website</h4>
             <ul class="price-features">
-              <li><svg><use href="#icon-check"></use></svg>A ready-made design you pick from</li>
-              <li><svg><use href="#icon-check"></use></svg>Live the same day, no waiting on a build</li>
-              <li><svg><use href="#icon-check"></use></svg>One page, your own web address</li>
-              <li><svg><use href="#icon-check"></use></svg>Billed monthly instead of one big payment upfront</li>
-              <li><svg><use href="#icon-check"></use></svg>Set it up yourself in minutes, or we'll do it for you</li>
-              <li><svg><use href="#icon-check"></use></svg>Upgrade to a custom build anytime once you're ready</li>
+              <li><svg><use href="#icon-check"></use></svg>Pick from ready-made designs</li>
+              <li><svg><use href="#icon-check"></use></svg>Live the same day</li>
+              <li><svg><use href="#icon-check"></use></svg>Free to start, from &#8358;3,000/month for more</li>
+              <li><svg><use href="#icon-check"></use></svg>Up to 6 pages and your own .com on Pro</li>
+              <li><svg><use href="#icon-check"></use></svg>Set it up yourself in minutes, or we do it on Business</li>
+              <li><svg><use href="#icon-check"></use></svg>Move to a custom website whenever you're ready</li>
             </ul>
           </div>
         </div>
       </div>
 
-      <p class="pricing-note">Prices shown in Nigerian naira and reflect a typical starting scope. Every quote is confirmed after a short discovery call.</p>
+      <p class="pricing-note">Custom build prices are a typical starting scope, confirmed after a short call. All prices in Nigerian naira.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" style="padding-top:0">
+    <div class="container">
+      <div class="section-head is-center" data-reveal>
+        <span class="eyebrow"><span class="dot"></span>Questions</span>
+        <h2 class="section-title">Good questions, straight answers.</h2>
+      </div>
+      <div class="faq-list" data-reveal>
+        <div class="faq-item glass">
+          <h3 class="faq-q">Is the free plan really free?</h3>
+          <div class="faq-a"><p>Yes. No card, no time limit. You get a one-page website at yourname.alphadevhq.com with up to 5 photos, WhatsApp buttons and reviews. Free sites show a small "Made with Alpha Dev" note at the bottom.</p></div>
+        </div>
+        <div class="faq-item glass">
+          <h3 class="faq-q">Do you take a cut when I sell?</h3>
+          <div class="faq-a"><p>No, never, on any plan. Your customers pay you directly.</p></div>
+        </div>
+        <div class="faq-item glass">
+          <h3 class="faq-q">What happens if I stop paying?</h3>
+          <div class="faq-a"><p>Your site stays online on the Free plan. Extra pages and photos are hidden, not deleted, and they come back the moment you upgrade again.</p></div>
+        </div>
+        <div class="faq-item glass">
+          <h3 class="faq-q">Can I change plans later?</h3>
+          <div class="faq-a"><p>Any time, from your dashboard. Start on Free, upgrade when you need more, or switch to yearly to get 2 months free.</p></div>
+        </div>
+        <div class="faq-item glass">
+          <h3 class="faq-q">I don't have time to set it up. Can you do it?</h3>
+          <div class="faq-a"><p>Yes. On the Business plan our team sets up your whole site for you. Just send us your details and photos on WhatsApp.</p></div>
+        </div>
+        <div class="faq-item glass">
+          <h3 class="faq-q">Ready-made or custom: which do I need?</h3>
+          <div class="faq-a"><p>If you want to be found online and get WhatsApp messages, start with a ready-made site. If you need online ordering, bookings or a system built around how you work, look at our custom websites above.</p></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -382,5 +471,18 @@
 <button class="to-top glass" aria-label="Back to top"><svg><use href="#icon-up"></use></svg></button>
 
 <script src="/static/assets/js/main.js"></script>
+<script>
+(function(){
+  var btns = document.querySelectorAll('.plan-toggle [data-cycle]');
+  btns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var annual = btn.getAttribute('data-cycle') === 'annual';
+      btns.forEach(function(b){ b.classList.toggle('is-active', b === btn); });
+      document.querySelectorAll('[data-price-monthly]').forEach(function(el){ el.hidden = annual; });
+      document.querySelectorAll('[data-price-annual]').forEach(function(el){ el.hidden = !annual; });
+    });
+  });
+})();
+</script>
 </body>
 </html>

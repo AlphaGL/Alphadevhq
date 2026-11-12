@@ -114,12 +114,12 @@
 
 <div class="platform-narrow" style="margin-top:70px;text-align:center">
   <h2 class="section-title">Plans</h2>
-  <p class="platform-sub">Pick a template and start designing for free — pay only when you're ready to publish.</p>
+  <p class="platform-sub">Build and publish your site for free. Upgrade only when you want more. <a href="{% url 'stores:pricing' %}">Compare plans</a></p>
   <div class="plan-teaser-row">
     {% for plan in plans %}
       <div class="plan-teaser-chip">
         <strong>{{ plan.name }}</strong>
-        <span>&#8358;{{ plan.price|floatformat:0 }}<small>/mo</small></span>
+        <span>{% if plan.is_free %}&#8358;0<small> forever</small>{% else %}&#8358;{{ plan.price|floatformat:"0g" }}<small>/mo</small>{% endif %}</span>
       </div>
     {% endfor %}
   </div>
@@ -127,9 +127,9 @@
 
 <div class="platform-narrow" style="margin-top:70px">
   <div class="platform-card glass" style="text-align:center">
-    <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">Need more than a one-page store?</h3>
-    <p class="platform-sub">If your business needs more pages, bookings, a custom domain or a fully custom build, Alpha Dev also designs and builds full websites and apps from scratch.</p>
-    <a href="{% url 'stores:pricing' %}" class="btn btn-ghost">See our web development packages</a>
+    <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">Need something bigger?</h3>
+    <p class="platform-sub">Online ordering, table bookings, appointment systems: we design and build full custom websites too. Click through real examples.</p>
+    <a href="https://demos.alphadevhq.com" target="_blank" rel="noopener" class="btn btn-ghost">See live demo websites</a>
   </div>
 </div>
 

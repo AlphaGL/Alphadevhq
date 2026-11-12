@@ -96,7 +96,7 @@
 <footer class="text-white py-14">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
     <div class="font-heading font-bold text-xl mb-2">{{ store.business_name }}</div>
-    <div class="text-slate-400 text-sm">Built with <a href="{% url 'stores:store_landing' %}" class="text-red-400">Alpha Dev</a></div>
+    <div class="text-slate-400 text-sm">{% if is_template_demo %}Built with <a href="{% url 'stores:store_landing' %}" class="text-red-400">Alpha Dev</a>{% endif %}</div>
   </div>
 </footer>
 
@@ -107,5 +107,6 @@ document.addEventListener('DOMContentLoaded', function(){
   if (window.AOS) AOS.init({ once: true, duration: 600 });
 });
 </script>
+{% include 'store_templates/_made_with_badge.html' %}
 </body>
 </html>

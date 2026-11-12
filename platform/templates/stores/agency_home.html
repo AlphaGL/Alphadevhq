@@ -167,19 +167,18 @@
       ALPHA DEV
     </a>
     <nav class="nav-links" aria-label="Primary">
-      <a href="{% url 'stores:store_landing' %}">Get Your Website</a>
-      <a href="{% url 'stores:pricing' %}">Pricing</a>
-      <a href="#services">Services</a>
       <a href="{% url 'stores:explore' %}">Find a Business</a>
-      <a href="#contact">Contact</a>
+      <a href="{% url 'stores:pricing' %}">Pricing</a>
+      <a href="#custom">Custom websites</a>
+      {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">My dashboard</a>{% else %}<a href="{% url 'accounts:login' %}">Sign in</a>{% endif %}
     </nav>
     <div class="nav-actions">
       <button class="theme-toggle" data-theme-toggle aria-label="Toggle light and dark theme">
         <svg class="icon-sun"><use href="#icon-sun"></use></svg>
         <svg class="icon-moon"><use href="#icon-moon"></use></svg>
       </button>
-      <a class="btn btn-primary btn-sm hide-mobile" data-magnetic href="https://wa.me/2348138582078?text=Hi%2C%20I%27m%20interested%20in%20a%20custom%20website%2Fapp%20build" target="_blank" rel="noopener">
-        Start a project
+      <a class="btn btn-primary btn-sm hide-mobile" data-magnetic href="{% url 'stores:store_landing' %}">
+        Create free site
         <svg><use href="#icon-arrow-right"></use></svg>
       </a>
       <button class="menu-toggle" aria-label="Open menu"><span></span><span></span></button>
@@ -188,13 +187,12 @@
 </header>
 
 <div class="mobile-menu">
-  <a href="{% url 'stores:store_landing' %}">Get Your Website</a>
-  <a href="{% url 'stores:pricing' %}">Pricing</a>
-  <a href="#services">Services</a>
   <a href="{% url 'stores:explore' %}">Find a Business</a>
-  <a href="#contact">Contact</a>
-  <a class="btn btn-primary" href="https://wa.me/2348138582078?text=Hi%2C%20I%27m%20interested%20in%20a%20custom%20website%2Fapp%20build" target="_blank" rel="noopener">
-    Start a project <svg><use href="#icon-arrow-right"></use></svg>
+  <a href="{% url 'stores:pricing' %}">Pricing</a>
+  <a href="#custom">Custom websites</a>
+  {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">My dashboard</a>{% else %}<a href="{% url 'accounts:login' %}">Sign in</a>{% endif %}
+  <a class="btn btn-primary" href="{% url 'stores:store_landing' %}">
+    Create free site <svg><use href="#icon-arrow-right"></use></svg>
   </a>
 </div>
 
@@ -209,13 +207,13 @@
         <span class="line"><span style="--i:1">already searching for you.</span></span>
         <span class="line"><span style="--i:2">Make sure they <em>find</em> you.</span></span>
       </h1>
-      <p class="hero-sub">Be the business people find, trust and message first. <a href="{% url 'stores:store_landing' %}">Get a ready-made website today</a> from &#8358;3,500/month, or <a href="{% url 'stores:pricing' %}">let us build a custom one for you</a> from &#8358;150,000. Either way, you're live and taking enquiries on WhatsApp fast.</p>
+      <p class="hero-sub">Be the business people find, trust and message first. <a href="{% url 'stores:store_landing' %}">Get a ready-made website today, free</a>, or <a href="{% url 'stores:pricing' %}">let us build a custom one for you</a> from &#8358;150,000. Either way, you're live and taking enquiries on WhatsApp fast.</p>
       <div class="hero-paths" data-reveal>
         <a href="{% url 'stores:store_landing' %}" class="hero-path-pill">
           <svg><use href="#icon-store"></use></svg>
-          Ready-made website: from &#8358;3,500/month
+          Ready-made website: free to start
         </a>
-        <a href="{% url 'stores:pricing' %}" class="hero-path-pill">
+        <a href="#custom" class="hero-path-pill">
           <svg><use href="#icon-code"></use></svg>
           Custom website, built for you: from &#8358;150,000
         </a>
@@ -225,8 +223,8 @@
           <svg><use href="#icon-whatsapp"></use></svg>
           Message us on WhatsApp
         </a>
-        <a class="btn btn-ghost" data-magnetic href="#work">
-          View our work
+        <a class="btn btn-ghost" data-magnetic href="#custom">
+          See websites we've built
           <svg><use href="#icon-arrow-right"></use></svg>
         </a>
       </div>
@@ -250,7 +248,7 @@
       <div class="explainer-video-wrap glass" data-reveal>
         <video class="explainer-video" id="explainerVideo" autoplay muted loop playsinline preload="metadata"
                poster="/static/assets/video/how-it-works.jpg"
-               aria-label="How Alpha Dev Stores works: pick a design, add your name and photos, and customers message you on WhatsApp. Live today from 3,500 naira a month.">
+               aria-label="How Alpha Dev Stores works: pick a design, add your name and photos, and customers message you on WhatsApp. Free to start, live today.">
           <source src="/static/assets/video/how-it-works.mp4" type="video/mp4">
         </video>
       </div>
@@ -367,7 +365,7 @@
       </div>
       <div class="path-grid" data-reveal-stagger>
         <a href="{% url 'stores:store_landing' %}" class="path-card glass">
-          <span class="path-tag">Starting at &#8358;3,500/month</span>
+          <span class="path-tag">Free to start</span>
           <h3>Start getting found today</h3>
           <p>Show up on Google so people can find you, and let them message you straight on WhatsApp. Live today, not in three weeks.</p>
           <span class="path-link">Set up your store <svg><use href="#icon-arrow-right"></use></svg></span>
@@ -454,7 +452,7 @@
           <span class="eyebrow"><span class="dot"></span>New &middot; Alpha Dev Stores</span>
           <h2 class="contact-title">Not ready for a custom build yet?</h2>
           <span class="badge-pill">Now onboarding our first 100 stores</span>
-          <p class="contact-copy">Be online and taking enquiries today, from &#8358;3,500/month. Pick a look, add your details and photos, and go live free for 3 days. See real visitors before you pay a naira.</p>
+          <p class="contact-copy">Be online and taking enquiries today, for free. Pick a look, add your details and photos, and publish. Upgrade only when you want more pages, more photos or your own .com.</p>
           <div class="contact-cta">
             <a class="btn btn-primary" data-magnetic href="{% url 'stores:store_landing' %}">
               <svg><use href="#icon-store"></use></svg>
@@ -468,7 +466,7 @@
         <div class="contact-list">
           <div class="contact-row">
             <span class="contact-row-icon"><svg><use href="#icon-store"></use></svg></span>
-            <span><span class="contact-row-caption">From</span><span class="contact-row-place">&#8358;3,500/month</span></span>
+            <span><span class="contact-row-caption">Price</span><span class="contact-row-place">Free forever. Paid plans from &#8358;3,000/month</span></span>
           </div>
           <div class="contact-row">
             <span class="contact-row-icon"><svg><use href="#icon-images"></use></svg></span>
@@ -480,7 +478,7 @@
           </div>
           <div class="contact-row">
             <span class="contact-row-icon"><svg><use href="#icon-life"></use></svg></span>
-            <span><span class="contact-row-caption">Try first</span><span class="contact-row-place">3 days live, free. Cancel anytime before paying</span></span>
+            <span><span class="contact-row-caption">Bonus</span><span class="contact-row-place">Every Pro feature free for your first 7 days</span></span>
           </div>
         </div>
       </div>
@@ -494,7 +492,7 @@
         <span class="eyebrow"><span class="dot"></span>Alpha Dev Stores &middot; pick a design, make it yours</span>
         <h2 class="section-title">See what you'd actually get.</h2>
         <p class="section-sub">Real designs you can click through right now &mdash; not just pictures. Pick one, try it live, then add your own business details.</p>
-        <p class="section-sub" style="margin-top:6px;font-size:13.5px;opacity:.75">These are the ready-made looks you can pick from for &#8358;3,500&ndash;&#8358;10,000 a month &mdash; a quick, affordable way to get online. Want something built just for you instead, from the ground up? That's our custom service below.</p>
+        <p class="section-sub" style="margin-top:6px;font-size:13.5px;opacity:.75">These are the ready-made looks you can pick from, free to start &mdash; the quickest way to get online. Want something built just for you instead, from the ground up? That's our custom service below.</p>
       </div>
 
       <div class="work-category-grid" data-reveal-stagger>
@@ -519,6 +517,8 @@
       </div>
     </div>
   </section>
+
+  {% include "stores/_demos_section.html" %}
 
   <!-- Process -->
   <section class="section" id="process">
@@ -645,7 +645,7 @@
         <span class="eyebrow"><span class="dot"></span>Free tool</span>
         <h2 class="section-title">How does your website actually perform?</h2>
         <p class="section-sub">Already have a website? Drop the URL in below and we'll run it through Google's own performance engine, live, and show you exactly where it stands.</p>
-        <p class="section-sub">Don't have a website yet? Skip this. That's what we build. <a href="{% url 'stores:store_landing' %}">See a store from &#8358;3,500/month</a> or <a href="{% url 'stores:pricing' %}">a custom site from &#8358;150,000</a>.</p>
+        <p class="section-sub">Don't have a website yet? Skip this. That's what we build. <a href="{% url 'stores:store_landing' %}">Make a free website</a> or <a href="{% url 'stores:pricing' %}">a custom site from &#8358;150,000</a>.</p>
       </div>
 
       <div class="checker-panel glass" data-reveal>
@@ -688,7 +688,7 @@
       <div class="section-head is-center" data-reveal>
         <span class="eyebrow"><span class="dot"></span>Packages</span>
         <h2 class="section-title">Straightforward pricing, scoped to you.</h2>
-        <p class="section-sub">A custom site from &#8358;150,000, or a ready-made one from &#8358;3,500/month. Either way, customers can message you straight on WhatsApp.</p>
+        <p class="section-sub">A custom site from &#8358;150,000, or a ready-made one for free. Either way, customers can message you straight on WhatsApp.</p>
       </div>
       <div class="price-teaser-row" data-reveal>
         <a href="{% url 'stores:pricing' %}" class="price-teaser-chip">Starter: from &#8358;150,000</a>
@@ -723,7 +723,7 @@
         </div>
         <div class="faq-item glass">
           <h3 class="faq-q">How much does a website cost with Alpha Dev?</h3>
-          <div class="faq-a"><p>Business websites start from 150,000 naira. The final price depends on how many pages you need, whether you want bookings or enquiry forms, and whether it's something bigger than a normal website. If you just need a simple one-page site, <a href="{% url 'stores:store_landing' %}">Alpha Dev Stores</a> starts from &#8358;3,500/month.</p></div>
+          <div class="faq-a"><p>Business websites start from 150,000 naira. The final price depends on how many pages you need, whether you want bookings or enquiry forms, and whether it's something bigger than a normal website. If you just need a simple one-page site, <a href="{% url 'stores:store_landing' %}">Alpha Dev Stores</a> is free to start.</p></div>
         </div>
         <div class="faq-item glass">
           <h3 class="faq-q">Do you help set up Google Business Profile and local search?</h3>
@@ -739,7 +739,7 @@
         </div>
         <div class="faq-item glass">
           <h3 class="faq-q">What is Alpha Dev Stores?</h3>
-          <div class="faq-a"><p>A simpler, cheaper way to get online if a custom build is not what you need yet. Pick a look, add your details and photos, and publish a one-page site for your business, billed monthly from &#8358;3,500 instead of paid upfront. <a href="{% url 'stores:store_landing' %}">See if your business name is free</a>.</p></div>
+          <div class="faq-a"><p>A simpler, cheaper way to get online if a custom build is not what you need yet. Pick a look, add your details and photos, and publish a site for your business for free. Paid plans from &#8358;3,000/month add more pages, more photos and your own .com. We never take a cut of your sales. <a href="{% url 'stores:store_landing' %}">See if your business name is free</a>.</p></div>
         </div>
         <div class="faq-item glass">
           <h3 class="faq-q">What is the difference between Alpha Dev Stores and a custom website?</h3>

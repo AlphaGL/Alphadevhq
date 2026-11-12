@@ -10,33 +10,40 @@
   <a href="{% url 'stores:store_list' %}" class="helptext">&larr; All my stores</a>
   <h1 class="platform-title" style="margin-top:8px">{{ store.business_name }}</h1>
 
-  {% if subscription %}
-    {% if subscription.status == 'active' %}
-      <span class="status-pill is-active">Live</span>
-    {% elif subscription.status == 'past_due' %}
-      <span class="status-pill is-warning">Payment due — your site is still live for now</span>
-    {% elif subscription.status == 'trialing' %}
-      <span class="status-pill">Not published yet</span>
-    {% else %}
-      <span class="status-pill is-warning">{{ subscription.get_status_display }}</span>
-    {% endif %}
+  {% if store.is_live %}
+    <span class="status-pill is-active">Live</span>
+  {% elif store.is_paused %}
+    <span class="status-pill is-warning">Paused by Alpha Dev. Message us to bring it back</span>
   {% else %}
     <span class="status-pill">Not published yet</span>
   {% endif %}
+  <span class="status-pill">{{ store.plan.name|default:"Free" }} plan</span>
   {% if renewal %}
     <span class="status-pill{% if renewal.urgency != 'ok' %} is-warning{% endif %}">{{ renewal.label }}</span>
   {% endif %}
 
   {% if store.is_live %}
-    <p class="platform-sub" style="margin-top:10px">Your store is live at <a href="{{ store.live_url }}" target="_blank" rel="noopener"><strong>{{ store.web_address }}</strong></a></p>
+    <p class="platform-sub" style="margin-top:10px">Your site is live at <a href="{{ store.live_url }}" target="_blank" rel="noopener"><strong>{{ store.web_address }}</strong></a></p>
   {% endif %}
 
   {% if near_cap %}
-    <div class="banner is-warning">Your store is getting real traffic ({{ visits_today }} visits today) — consider upgrading to keep it fast.</div>
+    <div class="banner is-warning">Your site is getting real traffic ({{ visits_today }} visits today). Nice work!</div>
   {% endif %}
 
-  {% if not subscription or subscription.status == 'trialing' %}
-    <div class="banner">Your store is built but not published. <a href="{% url 'billing:choose_plan' store.slug %}">Choose a plan to go live</a>.</div>
+  {% if not store.is_published and not store.is_paused %}
+    <div class="banner publish-banner">
+      <div>
+        <strong>Your site is ready to go live, for free.</strong>
+        <span>Customers can find it at {{ store.web_address }} as soon as you publish.{% if not request.user.profile.trial_used_at %} You also get every Pro feature free for 7 days.{% endif %}</span>
+      </div>
+      <form method="post" action="{% url 'billing:publish' store.slug %}">{% csrf_token %}
+        <button type="submit" class="btn btn-primary">Publish my site</button>
+      </form>
+    </div>
+  {% endif %}
+
+  {% if store.hidden_image_count %}
+    <div class="banner is-warning">{{ store.hidden_image_count }} of your photos are hidden because the {{ store.plan.name|default:"Free" }} plan shows up to {{ store.image_limit }}. They're safe. <a href="{% url 'billing:choose_plan' store.slug %}">Upgrade to show them again</a>.</div>
   {% endif %}
 
   {% if not store.has_customized_content %}
@@ -46,7 +53,7 @@
       <ol style="margin-top:14px;padding-left:20px;font-size:13.5px;color:var(--ink-1);line-height:1.9">
         <li>Swap in your real business name, logo and a few photos — <a href="{% url 'stores:builder_edit' store.slug %}">edit your site</a></li>
         <li>Check it looks right — <a href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">preview your store</a></li>
-        <li>Go live so people can actually find you — <a href="{% url 'billing:choose_plan' store.slug %}">{% if store.is_live %}manage billing{% else %}choose a plan{% endif %}</a></li>
+        <li>{% if store.is_live %}You're live! Share your link: <strong>{{ store.web_address }}</strong>{% else %}Press <strong>Publish my site</strong> above. It's free{% endif %}</li>
       </ol>
     </div>
   {% endif %}
@@ -67,7 +74,8 @@
     </div>
     <div class="dash-stat glass">
       <div class="dash-stat-label">Plan</div>
-      <div class="dash-stat-value">{% if store.plan %}{{ store.plan.name }}{% else %}None{% endif %}</div>
+      <div class="dash-stat-value">{{ store.plan.name|default:"Free" }}</div>
+      {% if store.plan.tier != 'business' %}<a class="helptext" href="{% url 'billing:choose_plan' store.slug %}">See plans &rarr;</a>{% endif %}
     </div>
     <div class="dash-stat glass">
       <div class="dash-stat-label">Site health</div>
@@ -91,10 +99,11 @@
       <div class="dash-quick-actions-links">
         <a href="{% url 'stores:builder_edit' store.slug %}">Edit your site &rarr;</a>
         <a href="{% url 'stores:preview_store' preview_token %}" target="_blank" rel="noopener">Preview your store &rarr;</a>
-        {% if not store.is_live %}
-          <a href="{% url 'billing:choose_plan' store.slug %}">Publish for real &rarr;</a>
-        {% else %}
-          <a href="{% url 'billing:choose_plan' store.slug %}">Manage billing &rarr;</a>
+        <a href="{% url 'billing:choose_plan' store.slug %}">{% if store.is_on_free_plan %}Upgrade your plan{% else %}Your plan &amp; billing{% endif %} &rarr;</a>
+        {% if store.is_published %}
+          <form method="post" action="{% url 'billing:unpublish' store.slug %}" onsubmit="return confirm('Hide your site from customers? You can publish it again any time.')">{% csrf_token %}
+            <button type="submit" class="link-button">Hide my site &rarr;</button>
+          </form>
         {% endif %}
       </div>
     </div>
@@ -146,12 +155,13 @@
       <div class="dash-stat glass">
         <div class="dash-stat-label">Photos</div>
         <div class="dash-stat-value" style="font-size:20px">{{ store.image_count }} / {{ store.image_limit }}</div>
-        <div class="quota-bar"><div class="quota-bar-fill" style="width:{% widthratio store.image_count store.image_limit 100 %}%"></div></div>
+        <div class="quota-bar"><div class="quota-bar-fill" style="width:{% if store.image_count >= store.image_limit %}100{% else %}{% widthratio store.image_count store.image_limit 100 %}{% endif %}%"></div></div>
+        {% if store.image_count >= store.image_limit and store.plan.tier != 'business' %}<a class="helptext" style="display:inline-block;margin-top:10px" href="{% url 'billing:choose_plan' store.slug %}">Need more photos? Upgrade &rarr;</a>{% endif %}
       </div>
       <div class="dash-stat glass">
         <div class="dash-stat-label">Pages</div>
         <div class="dash-stat-value" style="font-size:20px">{{ store.page_limit }} page{{ store.page_limit|pluralize }}</div>
-        <div class="helptext" style="margin-top:10px">{% if store.page_limit > 1 %}Your site is split across real pages{% else %}Upgrade your plan to split your site into multiple pages{% endif %}</div>
+        <div class="helptext" style="margin-top:10px">{% if store.page_limit > 1 %}Your site is split across real pages{% else %}<a href="{% url 'billing:choose_plan' store.slug %}">Upgrade to Starter</a> to get Home, Services and About pages{% endif %}</div>
       </div>
     </div>
   </div>

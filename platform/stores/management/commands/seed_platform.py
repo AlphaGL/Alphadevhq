@@ -218,46 +218,8 @@ class Command(BaseCommand):
             StoreTemplate.objects.update_or_create(slug=data['slug'], defaults=data)
         self.stdout.write(self.style.SUCCESS(f'Seeded {len(templates)} page templates.'))
 
-        plans = [
-            dict(
-                name='Starter', slug='starter', tier=Plan.STARTER, price=3500,
-                image_limit=10, page_limit=1,
-                description='One page, everything a small service business needs to be found online.',
-                features=[
-                    'Single-page store',
-                    'Up to 10 images',
-                    'WhatsApp-first contact button',
-                    'Pick a real, pre-designed template for your business',
-                    'Your web address: yourbusiness.alphadevhq.com',
-                ],
-                order=0,
-            ),
-            dict(
-                name='Business', slug='business', tier=Plan.BUSINESS, price=5000,
-                image_limit=15, page_limit=3,
-                description='For a business ready to show more: real pages, more photos.',
-                features=[
-                    'Everything in Starter',
-                    'Up to 3 pages (Home, Services, About & Contact)',
-                    'Up to 15 images',
-                    'Priority support',
-                ],
-                order=1,
-            ),
-            dict(
-                name='Pro', slug='pro', tier=Plan.PRO, price=10000,
-                image_limit=25, page_limit=6,
-                description='The full site: every section as its own page, room for a lot more photos.',
-                features=[
-                    'Everything in Business',
-                    'Up to 6 pages (Home, Services, About, Team, Gallery, Contact)',
-                    'Up to 25 images',
-                    'Priority support',
-                    'Connect a domain you already own',
-                ],
-                order=2,
-            ),
-        ]
+        from billing.catalog import PLANS as plans
         for data in plans:
-            Plan.objects.update_or_create(slug=data['slug'], defaults=data)
+            defaults = {k: v for k, v in data.items() if k != 'tier'}
+            Plan.objects.update_or_create(tier=data['tier'], defaults=defaults)
         self.stdout.write(self.style.SUCCESS(f'Seeded {len(plans)} plans.'))

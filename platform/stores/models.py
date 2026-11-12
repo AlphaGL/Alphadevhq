@@ -15,6 +15,17 @@ TEMPLATE_CATEGORY_CHOICES = [
 # Vestigial since page count now comes from the store's plan (see
 # Store.page_limit) rather than a separate catalog entry per tier — kept
 # only so existing StoreTemplate rows don't need a data migration.
+# Addresses a store can't take: each becomes <slug>.alphadevhq.com and
+# alphadevhq.com/<slug>/, so these would hijack our own subdomains or be
+# shadowed by the site's own pages.
+RESERVED_SLUGS = {
+    'www', 'demos', 'demo', 'app', 'api', 'admin', 'mail', 'email', 'blog', 'help', 'support', 'status',
+    'static', 'media', 'assets', 'cdn', 'docs', 'shop', 'store', 'stores',
+    'accounts', 'billing', 'builder', 'dashboard', 'pricing', 'explore', 'preview', 'template-preview',
+    'get-a-store', 'check-name', 'legal', 'cron', 'login', 'signup', 'logout',
+    'alphadev', 'alpha-dev', 'alphadevhq',
+}
+
 TEMPLATE_TIER_CHOICES = [
     ('single', 'Single page'),
     ('multi', 'Multi page'),
@@ -120,6 +131,8 @@ class Store(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             base = slugify(self.business_name)[:140] or 'store'
+            if base in RESERVED_SLUGS:
+                base = f'{base}-store'
             slug = base
             n = 1
             while Store.objects.filter(slug=slug).exclude(pk=self.pk).exists():
@@ -141,20 +154,41 @@ class Store(models.Model):
 
     @property
     def plan(self):
-        sub = getattr(self, 'subscription', None)
-        return sub.plan if sub else None
+        """The plan whose features apply right now: the paid (or trial) plan
+        while it's in good standing, otherwise Free. A store never goes
+        offline for not paying — it just drops to Free's limits, and extra
+        photos/pages are hidden rather than deleted (see visible_images and
+        page_plans), so they come back on upgrade."""
+        if not hasattr(self, '_effective_plan'):
+            from billing.models import Plan
+            sub = self.subscription_or_none
+            self._effective_plan = sub.plan if (sub and sub.is_live) else Plan.free()
+        return self._effective_plan
 
     @property
     def subscription_or_none(self):
         return getattr(self, 'subscription', None)
 
     @property
+    def is_on_free_plan(self):
+        return not self.plan or self.plan.is_free
+
+    @property
+    def is_trialing(self):
+        sub = self.subscription_or_none
+        return bool(sub and sub.status == sub.TRIALING and sub.is_live)
+
+    @property
+    def is_paused(self):
+        """Taken offline by Alpha Dev on purpose (abuse, a request) —
+        distinct from simply not paying, which never takes a store down."""
+        sub = self.subscription_or_none
+        return bool(sub and sub.status == sub.PAUSED)
+
+    @property
     def is_live(self):
         """Whether the public page should actually render for visitors."""
-        if not self.is_published:
-            return False
-        sub = self.subscription_or_none
-        return bool(sub and sub.is_live)
+        return self.is_published and not self.is_paused
 
     @property
     def is_listed(self):
@@ -163,37 +197,50 @@ class Store(models.Model):
 
     @property
     def domain_eligible(self):
-        """Whether this store can use a yourbusiness.alphadevhq.com subdomain
-        or a connected custom domain — true on any paying plan. (A separate
-        concept from the plan's image/page limits, which is where the real
-        upgrade incentive lives.)"""
-        return bool(self.plan)
+        """Every plan, Free included, gets yourbusiness.alphadevhq.com."""
+        return True
+
+    @property
+    def custom_domain_active(self):
+        """A connected domain is only served while the plan includes it."""
+        return bool(self.custom_domain and self.plan and self.plan.allows_custom_domain)
+
+    @property
+    def show_badge(self):
+        """Free sites carry a small 'Made with Alpha Dev' badge."""
+        return self.is_on_free_plan
 
     @property
     def web_address(self):
         """The bare web address to show the owner: their own domain if connected, else slug.alphadevhq.com."""
         from django.conf import settings
-        return self.custom_domain or f'{self.slug}.{settings.PLATFORM_DOMAIN}'
+        if self.custom_domain_active:
+            return self.custom_domain
+        return f'{self.slug}.{settings.PLATFORM_DOMAIN}'
 
     @property
     def live_url(self):
-        """The full address customers should actually be given — prefers a
-        connected custom domain, then the plan's alphadevhq.com subdomain,
-        falling back to the shared /slug/ path everyone gets by default."""
-        from django.conf import settings
-        if self.custom_domain:
-            return f'https://{self.custom_domain}/'
-        if self.domain_eligible:
-            return f'https://{self.slug}.{settings.PLATFORM_DOMAIN}/'
-        return f'https://{settings.PLATFORM_DOMAIN}{self.get_public_url()}'
+        """The full address customers should actually be given — their own
+        domain when the plan includes it, else slug.alphadevhq.com."""
+        return f'https://{self.web_address}/'
 
     @property
     def image_limit(self):
-        return self.plan.image_limit if self.plan else 10
+        return self.plan.image_limit if self.plan else 5
 
     @property
     def page_limit(self):
         return self.plan.page_limit if self.plan else 1
+
+    @property
+    def visible_images(self):
+        """Photos shown publicly — anything over the plan's limit (left over
+        from a lapsed paid plan) is kept but hidden until they upgrade."""
+        return self.images.all()[: self.image_limit]
+
+    @property
+    def hidden_image_count(self):
+        return max(0, self.image_count - self.image_limit)
 
     @property
     def image_count(self):

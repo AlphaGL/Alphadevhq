@@ -1,0 +1,14 @@
+{% if store.show_badge and not is_template_demo %}
+<a class="adv-made-with" href="https://www.alphadevhq.com/?ref=badge&amp;from={{ store.slug|urlencode }}" target="_blank" rel="noopener">
+  <span class="adv-made-with-mark" aria-hidden="true">A</span>
+  <span>Made with <strong>Alpha Dev</strong></span>
+  <span class="adv-made-with-cta">Create your free website &rarr;</span>
+</a>
+<style>
+  .adv-made-with{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 10px;padding:14px 16px;background:#0b0b0c;color:#d4d4d8!important;font:500 13px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-decoration:none!important;letter-spacing:0;text-transform:none}
+  .adv-made-with strong{color:#fff;font-weight:700}
+  .adv-made-with-mark{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:#38d189;color:#0b0b0c;font-weight:800;font-size:12px}
+  .adv-made-with-cta{color:#38d189;font-weight:600}
+  .adv-made-with:hover .adv-made-with-cta{text-decoration:underline}
+</style>
+{% endif %}

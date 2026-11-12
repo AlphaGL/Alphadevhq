@@ -5,12 +5,11 @@ from django.utils import timezone
 class StoreDomainMiddleware:
     """Lets a store be reached on its own domain instead of
     alphadevhq.com/slug/ — either a subdomain we control (<slug>.alphadevhq.com,
-    a free perk on Business/Pro, works the moment DNS for alphadevhq.com
-    itself is wired up, no per-store setup needed) or a custom domain a
-    customer already owns and has pointed at us by hand (store.custom_domain,
-    set manually in the admin once their DNS is live) — available on every
-    paying tier, including Starter, since it costs us one field edit per
-    customer regardless of what they're paying.
+    on every plan including Free, no per-store setup needed) or a custom
+    domain a customer already owns and has pointed at us by hand
+    (store.custom_domain, set manually in the admin once their DNS is live),
+    served only while their plan includes custom domains (Pro and up) —
+    otherwise it redirects to their alphadevhq.com address.
 
     Works by rewriting path_info to the normal /<slug>/... URL before
     Django resolves it — same trick behind most "custom domain per tenant"
@@ -28,6 +27,9 @@ class StoreDomainMiddleware:
 
         if host not in own_hosts:
             store = self._resolve_store(host, platform_domain)
+            if store and not host.endswith(f'.{platform_domain}') and not store.custom_domain_active:
+                from django.http import HttpResponseRedirect
+                return HttpResponseRedirect(f'https://{store.slug}.{platform_domain}{request.get_full_path()}')
             if store:
                 suffix = request.path_info if request.path_info != '/' else ''
                 request.path_info = f'/{store.slug}{suffix}' if suffix else f'/{store.slug}/'
@@ -39,9 +41,9 @@ class StoreDomainMiddleware:
 
         suffix = f'.{platform_domain}'
         if host.endswith(suffix):
-            store = Store.objects.filter(slug=host[: -len(suffix)], external_url='').first()
+            store = Store.objects.filter(slug=host[: -len(suffix)], external_url='').select_related('subscription__plan').first()
         else:
-            store = Store.objects.filter(custom_domain__iexact=host).first()
+            store = Store.objects.filter(custom_domain__iexact=host).select_related('subscription__plan').first()
 
         # Any existing store is routed, live or not, so a lapsed/unpublished
         # store shows its own paused page rather than the Alpha Dev homepage.

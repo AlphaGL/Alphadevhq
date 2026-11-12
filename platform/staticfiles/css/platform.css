@@ -463,3 +463,30 @@
 .legal-page ul{ margin: 8px 0 0 20px; padding: 0; }
 .legal-page li{ font-size: 14.5px; line-height: 1.75; color: var(--ink-1); margin-top: 4px; }
 .legal-page a{ color: var(--ink-0); text-decoration: underline; }
+
+/* Free publish banner + inline form buttons styled as links */
+.publish-banner{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; border-color: rgba(56,209,137,.55); }
+.publish-banner strong{ display:block; color: var(--ink-0); font-size:15px; margin-bottom:2px; }
+.publish-banner form{ margin:0; }
+.dash-quick-actions-links form{ margin:0; }
+.dash-quick-actions-links .link-button{
+  font: inherit; cursor: pointer; width: 100%; text-align: left;
+  display:block; padding: 12px 16px; border-radius: 12px; border: 0;
+  background: rgba(255,255,255,.14); color: #fff; font-size: 13.5px; font-weight: 650;
+}
+.dash-quick-actions-links .link-button:hover{ background: rgba(255,255,255,.22); }
+
+/* Four-plan grid (upgrade page) */
+.plan-grid-4{ grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; margin-top: 34px; }
+@media (max-width: 1100px){ .plan-grid-4{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 640px){ .plan-grid-4{ grid-template-columns: minmax(0,1fr); gap: 22px; } }
+.plan-grid-4 > .platform-card{ display:flex; flex-direction:column; position: relative; }
+.plan-grid-4 .plan-features{ flex: 1; }
+.plan-grid-4 .plan-features li{ position: relative; padding-left: 22px; }
+.plan-grid-4 .plan-features li::before{
+  content:""; position:absolute; left:2px; top:.5em; width:11px; height:6px;
+  border-left:2px solid #1c8c63; border-bottom:2px solid #1c8c63; transform: rotate(-45deg);
+}
+.platform-card.is-current{ border-color: #1c8c63; }
+.plan-popular-badge.is-current{ background: #1c8c63; color: #fff; }
+.plan-cta-note{ text-align:center; padding: 12px 0 2px; margin: 0; }

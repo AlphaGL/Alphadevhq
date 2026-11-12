@@ -2,24 +2,23 @@ from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-TRIAL_GRACE_DAYS = 14   # delete a never-paid trial store this long after the trial ends
-PAST_DUE_GRACE_DAYS = 60  # delete a lapsed-but-previously-paid store this long after it stops being live
-WARNING_DAYS_BEFORE = 5   # send the one warning email this many days before the actual deletion
+INACTIVE_DAYS = 180       # a Free site whose owner hasn't logged in this long is hidden (not deleted)
+WARNING_DAYS_BEFORE = 7   # send the one heads-up email this many days before hiding it
 EVENT_LOG_RETENTION_DAYS = 180  # how long raw webhook/visit rows are kept before pruning
 
 
 class Command(BaseCommand):
     help = (
         "Daily maintenance: expires lapsed subscriptions that slipped through "
-        "without a Paystack webhook, warns and then deletes stores that have "
-        "gone unpaid too long, and prunes old WebhookEvent/DailyVisit rows so "
-        "the database doesn't grow forever. Meant to run once a day via cron."
+        "without a Paystack webhook (they drop to Free, never offline), hides "
+        "abandoned Free sites whose owner hasn't logged in for months, and "
+        "prunes old WebhookEvent/DailyVisit rows. Nothing is ever deleted. "
+        "Meant to run once a day via cron."
     )
 
     def handle(self, *args, **options):
         self._expire_lapsed_active()
-        self._warn_and_delete_trials()
-        self._warn_and_delete_past_due()
+        self._hide_abandoned_free_sites()
         self._prune_old_logs()
 
     # ------------------------------------------------------------------
@@ -40,71 +39,60 @@ class Command(BaseCommand):
             self.stdout.write(f"Marked {count} lapsed ACTIVE subscription(s) as past_due.")
 
     # ------------------------------------------------------------------
-    def _warn_and_delete_trials(self):
-        from billing.models import Subscription
-        from stores.models import Store
-
-        now = timezone.now()
-        candidates = Store.objects.filter(
-            subscription__status=Subscription.TRIALING,
-            subscription__current_period_end__isnull=False,
-            subscription__current_period_end__lt=now,
-        ).select_related('subscription', 'owner')
-
-        deleted = warned = 0
-        for store in candidates:
-            days_since_trial_end = (now - store.subscription.current_period_end).days
-            if days_since_trial_end >= TRIAL_GRACE_DAYS:
-                self._delete_store(store, reason="free trial ended and was never paid for")
-                deleted += 1
-            elif days_since_trial_end >= TRIAL_GRACE_DAYS - WARNING_DAYS_BEFORE:
-                if self._send_warning(store, TRIAL_GRACE_DAYS - days_since_trial_end):
-                    warned += 1
-
-        if deleted or warned:
-            self.stdout.write(f"Trials: deleted {deleted}, warned {warned}.")
-
-    def _warn_and_delete_past_due(self):
-        from billing.models import Subscription
-        from stores.models import Store
-
-        now = timezone.now()
-        candidates = Store.objects.filter(
-            subscription__status=Subscription.PAST_DUE,
-            subscription__grace_period_end__isnull=False,
-            subscription__grace_period_end__lt=now,
-        ).select_related('subscription', 'owner')
-
-        deleted = warned = 0
-        for store in candidates:
-            days_since_grace_end = (now - store.subscription.grace_period_end).days
-            if days_since_grace_end >= PAST_DUE_GRACE_DAYS:
-                self._delete_store(store, reason="payment lapsed and was never renewed")
-                deleted += 1
-            elif days_since_grace_end >= PAST_DUE_GRACE_DAYS - WARNING_DAYS_BEFORE:
-                if self._send_warning(store, PAST_DUE_GRACE_DAYS - days_since_grace_end):
-                    warned += 1
-
-        if deleted or warned:
-            self.stdout.write(f"Past due: deleted {deleted}, warned {warned}.")
-
+    # Free sites stay up as long as someone still looks after them. One
+    # untouched for INACTIVE_DAYS gets a heads-up email, then is hidden
+    # (unpublished, nothing deleted) — logging in and pressing Publish
+    # brings it straight back. Paid sites are never touched here.
     # ------------------------------------------------------------------
-    def _send_warning(self, store, days_left):
-        """One warning email per store, right before it's actually deleted.
-        Returns True if an email was sent this run."""
-        if store.deletion_warning_sent_at:
-            return False
-        if not store.owner.email:
-            return False
+    def _hide_abandoned_free_sites(self):
+        from stores.models import Store
 
+        now = timezone.now()
+        warn_before = now - timezone.timedelta(days=INACTIVE_DAYS - WARNING_DAYS_BEFORE)
+        stores = Store.objects.filter(is_published=True, external_url='').select_related('owner', 'subscription__plan')
+
+        hidden = warned = 0
+        for store in stores:
+            last_seen = store.owner.last_login or store.owner.date_joined
+            if last_seen > warn_before or not store.is_on_free_plan:
+                # Active again since a warning went out — allow a fresh one later.
+                if store.deletion_warning_sent_at and last_seen > store.deletion_warning_sent_at:
+                    store.deletion_warning_sent_at = None
+                    store.save(update_fields=['deletion_warning_sent_at'])
+                continue
+
+            idle_days = (now - last_seen).days
+            warning = store.deletion_warning_sent_at
+            # Always give the full WARNING_DAYS_BEFORE after the email, even
+            # for someone already past INACTIVE_DAYS when they're first seen.
+            warned_long_enough = bool(warning and now - warning >= timezone.timedelta(days=WARNING_DAYS_BEFORE))
+            if idle_days >= INACTIVE_DAYS and warned_long_enough:
+                store.is_published = False
+                store.save(update_fields=['is_published'])
+                self.stdout.write(f"Hid '{store.business_name}' ({store.slug}): owner inactive {idle_days} days.")
+                hidden += 1
+            elif not warning and self._send_warning(store, max(INACTIVE_DAYS - idle_days, WARNING_DAYS_BEFORE)):
+                warned += 1
+
+        if hidden or warned:
+            self.stdout.write(f"Inactive Free sites: hid {hidden}, warned {warned}.")
+
+    def _send_warning(self, store, days_left):
+        """One heads-up email per idle stretch. Returns True if sent."""
+        from django.conf import settings
+
+        if store.deletion_warning_sent_at or not store.owner.email:
+            return False
+        login_url = f"https://www.{settings.PLATFORM_DOMAIN}/accounts/login/"
         try:
             send_mail(
-                subject=f"Your store '{store.business_name}' will be removed in {days_left} days",
+                subject=f"Is '{store.business_name}' still open? Log in to keep your site online",
                 message=(
-                    f"Hi,\n\nYour Alpha Dev Stores site '{store.business_name}' hasn't been paid for "
-                    f"in a while, and it will be permanently deleted in {days_left} days if nothing changes.\n\n"
-                    f"To keep it, just log in and renew: https://alphadevhq.vercel.app/accounts/login/\n\n"
-                    f"If you meant to let it go, no action is needed.\n\n— Alpha Dev"
+                    f"Hi,\n\nYou haven't logged in to Alpha Dev for a while. To keep your free site "
+                    f"'{store.business_name}' online, just log in once in the next {days_left} days:\n"
+                    f"{login_url}\n\n"
+                    f"If you don't, we'll hide the site (nothing is deleted). You can put it back any time "
+                    f"by logging in and pressing Publish.\n\n— Alpha Dev"
                 ),
                 from_email=None,
                 recipient_list=[store.owner.email],
@@ -116,10 +104,6 @@ class Command(BaseCommand):
         store.deletion_warning_sent_at = timezone.now()
         store.save(update_fields=['deletion_warning_sent_at'])
         return True
-
-    def _delete_store(self, store, reason):
-        self.stdout.write(f"Deleting '{store.business_name}' ({store.slug}) — {reason}.")
-        store.delete()
 
     # ------------------------------------------------------------------
     def _prune_old_logs(self):

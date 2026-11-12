@@ -21,44 +21,64 @@ from .models import PaymentLog, Plan, Subscription, WebhookEvent
 @login_required
 def choose_plan(request, store_slug):
     store = get_object_or_404(Store, slug=store_slug, owner=request.user)
-    plans = Plan.objects.all()
-    trial_available = not request.user.profile.trial_used_at
     return render(request, 'billing/choose_plan.html', {
-        'store': store, 'plans': plans, 'trial_available': trial_available,
+        'store': store,
+        'plans': Plan.objects.all(),
+        'current_plan': store.plan,
+        'trial_available': not request.user.profile.trial_used_at,
+        'trial_days': Subscription.TRIAL_DAYS,
     })
 
 
 @login_required
-def start_trial(request, store_slug, plan_slug):
-    """One free live trial per account (not per store) — the Starter plan's
-    page/image limits apply, but no payment is taken and the store goes
-    live immediately for Subscription.TRIAL_DAYS."""
+def publish(request, store_slug, plan_slug=None):
+    """Puts a store online for free. The first store an account publishes
+    also gets Plan.TRIAL_TIER's features for Subscription.TRIAL_DAYS (once
+    per account, not per store), then quietly drops to Free — it stays
+    live either way. `plan_slug` is ignored; it's only accepted so the old
+    /billing/trial/<store>/<plan>/ address keeps working."""
     if request.method != 'POST':
-        return redirect('billing:choose_plan', store_slug=store_slug)
+        return redirect('stores:dashboard', store_slug=store_slug)
 
     store = get_object_or_404(Store, slug=store_slug, owner=request.user)
     profile = request.user.profile
-    if profile.trial_used_at:
-        messages.warning(request, "You've already used your free trial — pick a plan to publish this store.")
-        return redirect('billing:choose_plan', store_slug=store.slug)
+    sub = store.subscription_or_none
+    already_paying = bool(sub and sub.status in (Subscription.ACTIVE, Subscription.PAST_DUE))
 
-    plan = get_object_or_404(Plan, slug=plan_slug)
-    subscription, _ = Subscription.objects.get_or_create(store=store, defaults={'plan': plan})
-    subscription.plan = plan
-    subscription.save(update_fields=['plan'])
-    subscription.start_trial()
-
-    profile.trial_used_at = timezone.now()
-    profile.save(update_fields=['trial_used_at'])
+    trial_started = False
+    if not profile.trial_used_at and not already_paying:
+        trial_plan = Plan.objects.filter(tier=Plan.TRIAL_TIER).first()
+        if trial_plan:
+            sub, _ = Subscription.objects.get_or_create(store=store, defaults={'plan': trial_plan})
+            sub.plan = trial_plan
+            sub.save(update_fields=['plan'])
+            sub.start_trial()
+            profile.trial_used_at = timezone.now()
+            profile.save(update_fields=['trial_used_at'])
+            trial_started = True
 
     store.is_published = True
     store.save(update_fields=['is_published'])
 
-    messages.success(
-        request,
-        f"Your store is live for a free {Subscription.TRIAL_DAYS}-day trial. "
-        "Pick a plan before it ends to keep it live.",
-    )
+    if trial_started:
+        messages.success(
+            request,
+            f"Your site is live! You also get everything in {sub.plan.name} free for {Subscription.TRIAL_DAYS} days. "
+            "After that it stays live on the Free plan — nothing is deleted.",
+        )
+    else:
+        messages.success(request, "Your site is live. Share your link!")
+    return redirect('stores:dashboard', store_slug=store.slug)
+
+
+@login_required
+def unpublish(request, store_slug):
+    if request.method != 'POST':
+        return redirect('stores:dashboard', store_slug=store_slug)
+    store = get_object_or_404(Store, slug=store_slug, owner=request.user)
+    store.is_published = False
+    store.save(update_fields=['is_published'])
+    messages.success(request, "Your site is now hidden. Publish it again any time.")
     return redirect('stores:dashboard', store_slug=store.slug)
 
 
@@ -66,6 +86,8 @@ def start_trial(request, store_slug, plan_slug):
 def checkout(request, store_slug, plan_slug):
     store = get_object_or_404(Store, slug=store_slug, owner=request.user)
     plan = get_object_or_404(Plan, slug=plan_slug)
+    if plan.is_free or request.method != 'POST':
+        return redirect('billing:choose_plan', store_slug=store.slug)
 
     cycle = request.POST.get('cycle', Subscription.MONTHLY)
     if cycle not in Subscription.PERIOD_DAYS:

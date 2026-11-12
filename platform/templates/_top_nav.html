@@ -7,6 +7,7 @@
     <nav class="nav-links" aria-label="Primary">
       <a href="{% url 'stores:home' %}">Alpha Dev</a>
       <a href="{% url 'stores:explore' %}">Find a Business</a>
+      <a href="{% url 'stores:pricing' %}">Pricing</a>
       {% if user.is_authenticated %}<a href="{% url 'stores:store_list' %}">Dashboard</a>{% endif %}
     </nav>
     <div class="nav-actions">
@@ -18,7 +19,7 @@
         <a class="btn btn-ghost btn-sm hide-mobile" href="{% url 'accounts:logout' %}">Log out</a>
       {% else %}
         <a class="btn btn-ghost btn-sm hide-mobile" href="{% url 'accounts:login' %}">Log in</a>
-        <a class="btn btn-primary btn-sm hide-mobile" href="{% url 'accounts:signup' %}">Get started</a>
+        <a class="btn btn-primary btn-sm hide-mobile" href="{% url 'accounts:signup' %}">Create free site</a>
       {% endif %}
       <button class="menu-toggle" aria-label="Open menu"><span></span><span></span></button>
     </div>
@@ -28,11 +29,12 @@
 <div class="mobile-menu">
   <a href="{% url 'stores:home' %}">Alpha Dev</a>
   <a href="{% url 'stores:explore' %}">Find a Business</a>
+  <a href="{% url 'stores:pricing' %}">Pricing</a>
   {% if user.is_authenticated %}
     <a href="{% url 'stores:store_list' %}">Dashboard</a>
     <a href="{% url 'accounts:logout' %}">Log out</a>
   {% else %}
     <a href="{% url 'accounts:login' %}">Log in</a>
-    <a class="btn btn-primary" href="{% url 'accounts:signup' %}">Get started</a>
+    <a class="btn btn-primary" href="{% url 'accounts:signup' %}">Create free site</a>
   {% endif %}
 </div>

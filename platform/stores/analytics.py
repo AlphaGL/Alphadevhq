@@ -101,7 +101,7 @@ def category_benchmark(store):
     peers = (
         Store.objects.filter(category=store.category, is_published=True)
         .exclude(pk=store.pk)
-        .select_related('subscription')
+        .select_related('subscription__plan')
     )
     peers = [p for p in peers if p.is_live]
     if len(peers) < 3:
@@ -120,21 +120,30 @@ def category_benchmark(store):
 
 
 def renewal_status(subscription):
-    """A short label + urgency level for the renewal/payment countdown."""
+    """A short label + urgency level for the plan/renewal countdown. Nothing
+    here ever threatens the site going offline — running out just means
+    dropping to the Free plan."""
     if not subscription:
         return None
     now = timezone.now()
-    if subscription.status == subscription.TRIALING and subscription.current_period_end:
-        days_left = (subscription.current_period_end - now).days
-        urgency = 'critical' if days_left <= 1 else 'warning'
-        return {'label': f'Free trial — {max(days_left, 0)} day{"s" if days_left != 1 else ""} left, pick a plan to stay live', 'urgency': urgency}
+    if subscription.status == subscription.TRIALING and subscription.is_live:
+        days_left = max((subscription.current_period_end - now).days, 0)
+        urgency = 'warning' if days_left <= 2 else 'ok'
+        plural = "s" if days_left != 1 else ""
+        return {
+            'label': f'{subscription.plan.name} free trial: {days_left} day{plural} left. After that you stay live on Free',
+            'urgency': urgency,
+        }
     if subscription.status == subscription.ACTIVE and subscription.current_period_end:
-        days_left = (subscription.current_period_end - now).days
+        days_left = max((subscription.current_period_end - now).days, 0)
         urgency = 'critical' if days_left <= 3 else 'warning' if days_left <= 7 else 'ok'
-        return {'label': f'Renews in {max(days_left, 0)} day{"s" if days_left != 1 else ""}', 'urgency': urgency}
-    if subscription.status == subscription.PAST_DUE and subscription.grace_period_end:
-        days_left = (subscription.grace_period_end - now).days
-        return {'label': f'Payment due — {max(days_left, 0)} day{"s" if days_left != 1 else ""} left in grace period', 'urgency': 'critical'}
+        return {'label': f'{subscription.plan.name} renews in {days_left} day{"s" if days_left != 1 else ""}', 'urgency': urgency}
+    if subscription.status == subscription.PAST_DUE and subscription.is_live:
+        days_left = max((subscription.grace_period_end - now).days, 0)
+        return {
+            'label': f'Payment due. {days_left} day{"s" if days_left != 1 else ""} until you move to the Free plan',
+            'urgency': 'critical',
+        }
     return None
 
 

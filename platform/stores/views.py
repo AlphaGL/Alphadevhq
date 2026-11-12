@@ -97,8 +97,9 @@ def slug_check(request):
     name = request.GET.get('name', '').strip()
     if not name:
         return JsonResponse({'available': None, 'slug': ''})
+    from .models import RESERVED_SLUGS
     slug = slugify(name)[:140] or ''
-    available = bool(slug) and not Store.objects.filter(slug=slug).exists()
+    available = bool(slug) and slug not in RESERVED_SLUGS and not Store.objects.filter(slug=slug).exists()
     return JsonResponse({'available': available, 'slug': slug})
 
 
@@ -133,7 +134,7 @@ def store_list(request):
     if stores.count() == 1:
         return redirect('stores:dashboard', store_slug=stores.first().slug)
 
-    tier_counts = {'starter': 0, 'business': 0, 'pro': 0, 'none': 0}
+    tier_counts = {'free': 0, 'starter': 0, 'pro': 0, 'business': 0}
     total_visits_today = 0
     total_visits_week = 0
     needs_attention = []
@@ -141,10 +142,8 @@ def store_list(request):
 
     for store in stores:
         sub = store.subscription_or_none
-        if sub and sub.plan:
-            tier_counts[sub.plan.tier] = tier_counts.get(sub.plan.tier, 0) + 1
-        else:
-            tier_counts['none'] += 1
+        tier = store.plan.tier if store.plan else 'free'
+        tier_counts[tier] = tier_counts.get(tier, 0) + 1
 
         total_visits_today += store.visits_today()
         week_total = store.daily_visits.filter(date__gte=week_start).aggregate(total=Sum('count'))['total']
@@ -394,7 +393,12 @@ def editor_add_image(request, store_slug):
         return JsonResponse({'ok': False}, status=405)
     store = _get_store(request, store_slug)
     if not store.can_add_image:
-        return JsonResponse({'ok': False, 'error': f'Your plan allows up to {store.image_limit} images.'}, status=400)
+        plan_name = store.plan.name if store.plan else 'Free'
+        return JsonResponse({
+            'ok': False,
+            'error': f"You've used all {store.image_limit} photos on the {plan_name} plan. Upgrade to add more.",
+            'upgrade_url': reverse('billing:choose_plan', args=[store.slug]),
+        }, status=400)
     file = request.FILES.get('image')
     if not file:
         return JsonResponse({'ok': False, 'error': 'No file received'}, status=400)
@@ -439,7 +443,7 @@ def explore(request):
     per-store properties are used rather than queryset annotations since
     combining two separate reverse-relation aggregates (views + ratings)
     in one annotated query would double-count; fine at the current scale."""
-    stores = Store.objects.filter(is_published=True, is_approved=True).select_related('template')
+    stores = Store.objects.filter(is_published=True, is_approved=True).select_related('template', 'subscription__plan')
     stores = [s for s in stores if s.is_live or s.external_url]
 
     category = request.GET.get('category', '')
@@ -466,7 +470,9 @@ def explore(request):
     except ValueError:
         visitor_lat = visitor_lng = None
 
-    PLAN_RANK = {'pro': 0, 'business': 1, 'starter': 2}
+    # Business is pinned to the top of its category (a plan perk), Pro and
+    # Starter rank above Free once distance is taken into account.
+    PLAN_RANK = {'business': 0, 'pro': 1, 'starter': 2, 'free': 3}
 
     def sort_key(s):
         dist = s.distance_km_from(visitor_lat, visitor_lng) if visitor_lat is not None else None
@@ -477,6 +483,7 @@ def explore(request):
         tier_rank = 0 if s.external_url else PLAN_RANK.get(plan_tier, 3)
         return (
             0 if s.is_featured else 1,
+            0 if tier_rank == 0 else 1,
             dist if dist is not None else float('inf'),
             tier_rank,
             -s.total_views,
@@ -591,7 +598,8 @@ def template_preview(request, slug):
     ]
     use_template_url = f"{reverse('stores:builder_new')}?template={tpl.slug}"
     from billing.models import Plan
-    image_limit = Plan.objects.filter(slug='starter').values_list('image_limit', flat=True).first() or 10
+    free_plan = Plan.free()
+    image_limit = free_plan.image_limit if free_plan else 5
     # ?clean=1 hides the demo banner/watermark — used only by our own
     # screenshot tooling to generate the gallery thumbnail image.
     return render(request, f'store_templates/{tpl.layout_key}.html', {
@@ -622,7 +630,7 @@ def preview_store(request, token):
     return render(request, _store_template_name(store), {
         'store': store,
         'sections': sections,
-        'images': store.images.all(),
+        'images': store.visible_images,
         'social_links': store.social_links.all(),
         'is_preview': True,
     })
@@ -633,9 +641,6 @@ def _not_live_response(request, store):
     now, or None if it's fine to render."""
     if store.is_live:
         return None
-    sub = store.subscription_or_none
-    if sub and sub.status == sub.PAST_DUE and not sub.is_live:
-        return render(request, 'stores/store_paused.html', {'store': store}, status=200)
     if not store.is_published:
         return render(request, 'stores/store_not_live.html', {'store': store}, status=200)
     return render(request, 'stores/store_paused.html', {'store': store}, status=200)
@@ -703,7 +708,7 @@ def public_store(request, slug):
     plan = page_plans.page_plan_for(store.page_limit)
     template_name = _multi_page_template_name(store) if plan else None
 
-    context = {'store': store, 'images': store.images.all(), 'social_links': store.social_links.all()}
+    context = {'store': store, 'images': store.visible_images, 'social_links': store.social_links.all()}
     if template_name:
         home = plan[0]
         context['sections'] = all_sections.filter(section_type__in=home['section_types'])
@@ -740,7 +745,7 @@ def public_store_page(request, slug, page_slug):
     all_sections = store.sections.filter(is_enabled=True).order_by('order')
     context = {
         'store': store,
-        'images': store.images.all(),
+        'images': store.visible_images,
         'social_links': store.social_links.all(),
         'sections': all_sections.filter(section_type__in=page['section_types']),
         'nav_pages': _nav_pages_for(store, plan),

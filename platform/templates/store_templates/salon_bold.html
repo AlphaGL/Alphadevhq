@@ -154,8 +154,9 @@
 {% endfor %}
 
 <footer class="sb-footer">
-  <div class="container">Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a></div>
+  <div class="container">{% if is_template_demo %}Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a>{% endif %}</div>
 </footer>
 <script src="{% static 'js/store-common.js' %}" defer></script>
+{% include 'store_templates/_made_with_badge.html' %}
 </body>
 </html>

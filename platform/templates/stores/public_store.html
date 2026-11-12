@@ -87,9 +87,10 @@
 
 <footer class="public-store-footer">
   <div class="container">
-    Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a>
+    {% if is_template_demo %}Built with <a href="{% url 'stores:store_landing' %}">Alpha Dev</a>{% endif %}
   </div>
 </footer>
 
+{% include 'store_templates/_made_with_badge.html' %}
 </body>
 </html>

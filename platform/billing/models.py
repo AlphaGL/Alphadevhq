@@ -3,10 +3,15 @@ from django.utils import timezone
 
 
 class Plan(models.Model):
+    FREE = 'free'
     STARTER = 'starter'
-    BUSINESS = 'business'
     PRO = 'pro'
-    TIER_CHOICES = [(STARTER, 'Starter'), (BUSINESS, 'Business'), (PRO, 'Pro')]
+    BUSINESS = 'business'
+    TIER_CHOICES = [(FREE, 'Free'), (STARTER, 'Starter'), (PRO, 'Pro'), (BUSINESS, 'Business')]
+
+    # The plan new stores try for free (Subscription.TRIAL_DAYS) before
+    # dropping to Free.
+    TRIAL_TIER = PRO
 
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -16,6 +21,9 @@ class Plan(models.Model):
     page_limit = models.PositiveIntegerField(default=1)
     description = models.CharField(max_length=255, blank=True)
     features = models.JSONField(default=list, blank=True)
+    allows_custom_domain = models.BooleanField(
+        default=False, help_text="Can serve the store on a domain the owner already owns (e.g. mybusiness.com)",
+    )
     order = models.PositiveIntegerField(default=0)
 
     # Paystack bills monthly and annual as separate Plan objects on their
@@ -30,6 +38,20 @@ class Plan(models.Model):
 
     def __str__(self):
         return f"{self.name} (NGN {self.price:,.0f}/mo)"
+
+    @property
+    def is_free(self):
+        return self.tier == self.FREE
+
+    @classmethod
+    def free(cls):
+        """The Free plan row, or None if the plans haven't been seeded yet
+        (callers fall back to Free-sized limits in that case)."""
+        return cls.objects.filter(tier=cls.FREE).first()
+
+    @classmethod
+    def paid(cls):
+        return cls.objects.exclude(tier=cls.FREE)
 
     # Annual = 10x the monthly price ("2 months free") — the standard SaaS
     # annual-discount convention. Derived from price rather than stored, so
@@ -52,10 +74,10 @@ class Subscription(models.Model):
     PAUSED = 'paused'
     CANCELLED = 'cancelled'
     STATUS_CHOICES = [
-        (TRIALING, 'Trialing (live for free, one-time, until the trial ends)'),
+        (TRIALING, 'Trialing (paid-plan features for free, once per account, then Free)'),
         (ACTIVE, 'Active'),
         (PAST_DUE, 'Past due (grace period)'),
-        (PAUSED, 'Paused'),
+        (PAUSED, 'Paused (taken offline by Alpha Dev)'),
         (CANCELLED, 'Cancelled'),
     ]
 
@@ -65,7 +87,7 @@ class Subscription(models.Model):
     PERIOD_DAYS = {MONTHLY: 30, ANNUAL: 365}
 
     GRACE_DAYS = 5
-    TRIAL_DAYS = 3
+    TRIAL_DAYS = 7
 
     store = models.OneToOneField('stores.Store', on_delete=models.CASCADE, related_name='subscription')
     plan = models.ForeignKey(Plan, on_delete=models.PROTECT, related_name='subscriptions')
@@ -87,7 +109,9 @@ class Subscription(models.Model):
 
     @property
     def is_live(self):
-        """Whether the public store page should actually be reachable."""
+        """Whether this subscription's plan benefits currently apply. When
+        it's False the store isn't taken offline — it simply falls back to
+        the Free plan (see Store.plan)."""
         if self.status == self.ACTIVE:
             return True
         if self.status == self.TRIALING:

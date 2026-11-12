@@ -1,48 +1,61 @@
 {% extends "base.html" %}
-{% block title %}Choose a plan — Alpha Dev Stores{% endblock %}
+{% block title %}Plans — Alpha Dev{% endblock %}
 {% block content %}
 <div class="platform-wide">
-  <h1 class="platform-title" style="text-align:center">Go live</h1>
-  <p class="platform-sub" style="text-align:center">Your store is built. Pick a plan to publish it at <strong>{{ store.web_address }}</strong></p>
-
-  {% if trial_available %}
-    <div class="platform-card glass" style="margin-top:24px;text-align:center;max-width:460px;margin-left:auto;margin-right:auto">
-      <h3 style="font-family:var(--font-display);font-size:17px;font-weight:650">Not sure yet?</h3>
-      <p class="platform-sub">Try it free for 3 days — your store goes live immediately, no payment needed. One free trial per account.</p>
-      <form method="post" action="{% url 'billing:start_trial' store.slug 'starter' %}" style="margin-top:12px">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-ghost btn-block">Start free 3-day trial</button>
-      </form>
-    </div>
-  {% endif %}
+  <h1 class="platform-title" style="text-align:center">Pick your plan</h1>
+  <p class="platform-sub" style="text-align:center">
+    {% if store.is_trialing %}You're trying <strong>{{ current_plan.name }}</strong> free right now. When the trial ends, {{ store.business_name }} stays live on Free.
+    {% else %}{{ store.business_name }} is on the <strong>{{ current_plan.name|default:"Free" }}</strong> plan. Upgrade any time. If you ever stop paying, your site stays live on Free.{% endif %}
+  </p>
 
   <div class="cycle-toggle" id="cycleToggle">
     <button type="button" class="cycle-toggle-btn is-active" data-cycle-option="monthly">Monthly</button>
-    <button type="button" class="cycle-toggle-btn" data-cycle-option="annual">Annual <span class="cycle-toggle-badge">2 months free</span></button>
+    <button type="button" class="cycle-toggle-btn" data-cycle-option="annual">Yearly <span class="cycle-toggle-badge">2 months free</span></button>
   </div>
 
-  <div class="plan-grid">
+  <div class="plan-grid plan-grid-4">
     {% for plan in plans %}
-      <div class="platform-card glass{% if plan.tier == 'business' %} is-popular{% endif %}">
-        {% if plan.tier == 'business' %}<span class="plan-popular-badge">Most popular</span>{% endif %}
+            <div class="platform-card glass{% if plan.tier == 'pro' %} is-popular{% endif %}{% if current_plan and current_plan.pk == plan.pk and not store.is_trialing %} is-current{% endif %}">
+        {% if current_plan and current_plan.pk == plan.pk and not store.is_trialing %}<span class="plan-popular-badge is-current">Your plan</span>
+        {% elif plan.tier == 'pro' %}<span class="plan-popular-badge">Most popular</span>{% endif %}
         <h3 style="font-family:var(--font-display);font-size:19px;font-weight:650">{{ plan.name }}</h3>
-        <p class="platform-sub">{{ plan.description }}</p>
+        <p class="platform-sub" style="margin-top:2px">{{ plan.description }}</p>
         <div class="plan-price">
-          <span class="price-monthly">&#8358;{{ plan.price|floatformat:0 }}<small>/month</small></span>
-          <span class="price-annual" hidden>&#8358;{{ plan.annual_price|floatformat:0 }}<small>/year</small></span>
+          {% if plan.is_free %}
+            <span>&#8358;0<small> forever</small></span>
+          {% else %}
+            <span class="price-monthly">&#8358;{{ plan.price|floatformat:"0g" }}<small>/month</small></span>
+            <span class="price-annual" hidden>&#8358;{{ plan.annual_price|floatformat:"0g" }}<small>/year</small></span>
+          {% endif %}
         </div>
-        <p class="plan-price-sub price-annual" hidden>&#8358;{{ plan.annual_monthly_equivalent|floatformat:0 }}/month, billed once a year</p>
+        {% if not plan.is_free %}<p class="plan-price-sub price-annual" hidden>Works out to &#8358;{{ plan.annual_monthly_equivalent|floatformat:"0g" }}/month</p>{% endif %}
         <ul class="plan-features">
-          {% for f in plan.features %}<li>&#8226; {{ f }}</li>{% endfor %}
+          {% for f in plan.features %}<li>{{ f }}</li>{% endfor %}
         </ul>
-        <form method="post" action="{% url 'billing:checkout' store.slug plan.slug %}" class="plan-checkout-form">
-          {% csrf_token %}
-          <input type="hidden" name="cycle" value="monthly" class="plan-cycle-input">
-          <button type="submit" class="btn btn-primary btn-block">Choose {{ plan.name }}</button>
-        </form>
+        {% if plan.is_free %}
+          {% if store.is_published %}
+            <p class="helptext plan-cta-note">{% if current_plan.is_free %}You're on this plan{% else %}Your site moves here if you stop paying{% endif %}</p>
+          {% else %}
+            <form method="post" action="{% url 'billing:publish' store.slug %}" class="plan-checkout-form">{% csrf_token %}
+              <button type="submit" class="btn btn-ghost btn-block">Publish free</button>
+            </form>
+          {% endif %}
+        {% elif current_plan and current_plan.pk == plan.pk and not store.is_trialing %}
+          <p class="helptext plan-cta-note">You're on this plan</p>
+        {% else %}
+          <form method="post" action="{% url 'billing:checkout' store.slug plan.slug %}" class="plan-checkout-form">
+            {% csrf_token %}
+            <input type="hidden" name="cycle" value="monthly" class="plan-cycle-input">
+            <button type="submit" class="btn {% if plan.tier == 'pro' %}btn-primary{% else %}btn-ghost{% endif %} btn-block">Choose {{ plan.name }}</button>
+          </form>
+        {% endif %}
       </div>
     {% endfor %}
   </div>
+
+  <p class="platform-sub" style="text-align:center;margin-top:28px">
+    No cut of your sales, ever. Need something bigger? <a href="https://demos.alphadevhq.com" target="_blank" rel="noopener"><strong>We build custom websites &rarr;</strong></a>
+  </p>
 </div>
 
 <script>
