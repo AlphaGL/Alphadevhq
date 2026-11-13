@@ -1,3 +1,4 @@
+{% load store_extras %}
 {% with canonical=store.live_url|add:"" %}{% if page and not page.is_home %}{% with canonical_page=canonical|add:page.slug|add:"/" %}<link rel="canonical" href="{{ canonical_page }}">
 <meta property="og:url" content="{{ canonical_page }}">{% endwith %}{% else %}<link rel="canonical" href="{{ canonical }}">
 <meta property="og:url" content="{{ canonical }}">{% endif %}{% endwith %}
@@ -5,7 +6,7 @@
 <meta property="og:site_name" content="{{ store.business_name }}">
 <meta property="og:title" content="{{ store.business_name }}{% if store.tagline %} — {{ store.tagline }}{% endif %}">
 {% if store.tagline or store.bio %}<meta property="og:description" content="{{ store.tagline|default:store.bio|truncatewords:25 }}">{% endif %}
-{% if store.logo %}<meta property="og:image" content="{{ store.logo.url }}">{% endif %}
+{% if store.logo %}<meta property="og:image" content="{{ store.logo.url|cdn:240 }}">{% endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

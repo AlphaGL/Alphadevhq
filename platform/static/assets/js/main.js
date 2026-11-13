@@ -34,11 +34,13 @@
   });
 
   /* ---------------- Loader ---------------- */
-  window.addEventListener("load", function(){
-    setTimeout(function(){ body.classList.add("is-ready"); }, 250);
-  });
-  // Fallback in case 'load' is delayed
-  setTimeout(function(){ body.classList.add("is-ready"); }, 2200);
+  // Reveal as soon as the HTML is ready. Waiting for 'load' meant waiting
+  // for every image and the video, which kept slow phones staring at the
+  // loader for seconds.
+  function ready(){ body.classList.add("is-ready"); }
+  if (document.readyState !== "loading") setTimeout(ready, 120);
+  else document.addEventListener("DOMContentLoaded", function(){ setTimeout(ready, 120); });
+  setTimeout(ready, 900);
 
   /* ---------------- Nav state ---------------- */
   document.addEventListener("DOMContentLoaded", function(){
@@ -593,4 +595,26 @@
     });
   });
 
+})();
+
+/* ---------------- Explainer video: load only when seen ----------------
+   The 880 KB video used to start downloading the moment the page opened,
+   competing with everything else on slow mobile data. Now it waits until
+   it scrolls into view, and pauses when scrolled away. */
+(function(){
+  function init(){
+    var v = document.getElementById("explainerVideo");
+    if (!v) return;
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    if (!("IntersectionObserver" in window)) { v.play().catch(function(){}); return; }
+    new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) v.play().catch(function(){});
+        else if (!v.paused) v.pause();
+      });
+    }, { rootMargin: "200px 0px" }).observe(v);
+  }
+  if (document.readyState !== "loading") init();
+  else document.addEventListener("DOMContentLoaded", init);
 })();

@@ -1449,3 +1449,22 @@ body.lightbox-open{ overflow: hidden; }
 .soon-tag{ display:inline-block; margin-left: 6px; padding: 2px 7px; border-radius: var(--radius-pill); font-size: 10.5px; font-weight: 700; letter-spacing: .04em; background: rgba(28,140,99,.14); color: #1c8c63; vertical-align: 1px; }
 .pricing-grid.is-4 .price-card{ position: relative; }
 .pricing-grid.is-4 .price-badge{ position: absolute; top: -13px; left: 24px; margin: 0; }
+
+/* ================= PHONES & SLOW DEVICES =================
+   The drifting blurred glows, the full-screen grain overlay and backdrop
+   blur all force the phone's GPU to repaint big areas on every scroll
+   frame. On budget Android phones that's what makes scrolling stutter.
+   Touch screens get a still, lighter version that looks almost the same. */
+@media (hover: none), (max-width: 900px){
+  .atmosphere .orb{ animation: none; will-change: auto; filter: blur(60px); mix-blend-mode: normal; }
+  .atmosphere .orb-1{ width: 360px; height: 360px; }
+  .atmosphere .orb-2{ width: 300px; height: 300px; }
+  .atmosphere .orb-3{ display: none; }
+  .grain{ display: none; }
+  .nav-inner.glass, .to-top.glass, .signin-pill.glass{
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: var(--bg-0);
+  }
+  .glass{ box-shadow: 0 10px 30px -20px rgba(var(--shadow-color), .5); }
+  .cursor-dot, .cursor-ring{ display: none !important; }
+}

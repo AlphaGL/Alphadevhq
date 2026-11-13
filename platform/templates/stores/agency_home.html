@@ -1,3 +1,4 @@
+{% load static store_extras %}
 <!doctype html>
 <html lang="en" data-theme="dark">
 <head>
@@ -35,7 +36,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;650;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="/static/assets/css/style.css">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 
 <script type="application/ld+json">
 {
@@ -246,7 +247,7 @@
         How it works, in 20 seconds
       </div>
       <div class="explainer-video-wrap glass" data-reveal>
-        <video class="explainer-video" id="explainerVideo" autoplay muted loop playsinline preload="metadata"
+        <video class="explainer-video" id="explainerVideo" muted loop playsinline preload="none"
                poster="/static/assets/video/how-it-works.jpg"
                aria-label="How Alpha Dev Stores works: pick a design, add your name and photos, and customers message you on WhatsApp. Free to start, live today.">
           <source src="/static/assets/video/how-it-works.mp4" type="video/mp4">
@@ -276,7 +277,7 @@
 
         <div class="feature-row" data-reveal>
           <div class="feature-media">
-            {% if showcase_template_1.preview_image %}<img src="{{ showcase_template_1.preview_image.url }}" alt="">{% endif %}
+            {% if showcase_template_1.preview_image %}<img src="{{ showcase_template_1.preview_image.url|cdn:720 }}" alt="" loading="lazy" decoding="async">{% endif %}
           </div>
           <div class="feature-copy">
             <h3>Pick a look you like</h3>
@@ -287,7 +288,7 @@
 
         <div class="feature-row is-reverse" data-reveal>
           <div class="feature-media">
-            {% if showcase_template_2.preview_image %}<img src="{{ showcase_template_2.preview_image.url }}" alt="">{% endif %}
+            {% if showcase_template_2.preview_image %}<img src="{{ showcase_template_2.preview_image.url|cdn:720 }}" alt="" loading="lazy" decoding="async">{% endif %}
           </div>
           <div class="feature-copy">
             <h3>Add your name and a few photos</h3>
@@ -501,7 +502,7 @@
             <div class="work-category-preview">
               {% for template in cat_templates|slice:":3" %}
                 {% if template.preview_image %}
-                  <img src="{{ template.preview_image.url }}" alt="">
+                  <img src="{{ template.preview_image.url|cdn:720 }}" alt="" loading="lazy" decoding="async">
                 {% else %}
                   <div class="work-category-swatch" style="background:{{ template.accent_color }}"></div>
                 {% endif %}
@@ -1045,6 +1046,6 @@
   </div>
 </div>
 
-<script src="/static/assets/js/main.js"></script>
+<script src="{% static 'assets/js/main.js' %}" defer></script>
 </body>
 </html>

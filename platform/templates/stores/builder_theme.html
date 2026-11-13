@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load store_extras %}
 {% block title %}Pick a template — Alpha Dev Stores{% endblock %}
 {% block content %}
 <div class="platform-wide">
@@ -31,7 +32,7 @@
           <input type="radio" name="template" value="{{ tpl.id }}" {% if selected_template_id == tpl.id %}checked{% endif %} required>
           <div class="template-card-preview">
             {% if tpl.preview_image %}
-              <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
+              <img src="{{ tpl.preview_image.url|cdn:720 }}" alt="{{ tpl.name }}" loading="lazy" decoding="async">
             {% else %}
               <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
             {% endif %}

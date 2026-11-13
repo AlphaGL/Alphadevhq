@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load store_extras %}
 {% block title %}Find a Business Near You — Alpha Dev{% endblock %}
 {% block content %}
 <div class="platform-wide">
@@ -40,7 +41,7 @@
         <a href="{{ store.get_display_url }}"{% if store.external_url %} target="_blank" rel="noopener"{% endif %} class="explore-card glass">
           {% if store.is_featured %}<span class="badge-pill explore-card-badge">Featured</span>{% elif store.external_url %}<span class="badge-pill explore-card-badge">Built by Alpha Dev</span>{% endif %}
           {% if store.logo %}
-            <img src="{{ store.logo.url }}" alt="" class="explore-card-logo">
+            <img src="{{ store.logo.url|cdn:240 }}" alt="" class="explore-card-logo" loading="lazy" decoding="async">
           {% else %}
             <div class="explore-card-logo explore-card-logo-placeholder">{{ store.business_name|slice:":1" }}</div>
           {% endif %}

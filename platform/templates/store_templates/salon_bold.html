@@ -1,3 +1,4 @@
+{% load store_extras %}
 {% load static store_extras %}<!doctype html>
 <html lang="en"{% if is_editor %} data-editor data-save-field-url="{% url 'stores:editor_save_field' store.slug %}" data-save-social-url="{% url 'stores:editor_save_social' store.slug %}" data-upload-logo-url="{% url 'stores:editor_upload_logo' store.slug %}" data-add-image-url="{% url 'stores:editor_add_image' store.slug %}" data-toggle-section-url-template="{{ toggle_section_url_tpl }}" data-delete-image-url-template="{{ delete_image_url_tpl }}" data-move-section-up-url-template="{{ move_section_up_url_tpl }}" data-move-section-down-url-template="{{ move_section_down_url_tpl }}"{% endif %}>
 <head>
@@ -22,7 +23,7 @@
 <header class="sb-hero" id="top">
   <div class="container">
     <div{% if is_editor %} data-editable-image="logo" class="sb-logo" style="margin:0 auto 22px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06)"{% endif %}>
-      {% if store.logo %}<img src="{{ store.logo.url }}" alt="{{ store.business_name }}"{% if not is_editor %} class="sb-logo"{% else %} style="width:100%;height:100%;object-fit:cover;border-radius:50%"{% endif %}>{% elif is_editor %}<span style="font-size:11px;color:#fff;opacity:.5">Logo</span>{% endif %}
+      {% if store.logo %}<img src="{{ store.logo.url|cdn:240 }}" alt="{{ store.business_name }}"{% if not is_editor %} class="sb-logo"{% else %} style="width:100%;height:100%;object-fit:cover;border-radius:50%"{% endif %}>{% elif is_editor %}<span style="font-size:11px;color:#fff;opacity:.5">Logo</span>{% endif %}
     </div>
     <div class="sb-eyebrow">{{ store.get_category_display }}</div>
     <h1 class="sb-name"{% if is_editor %} data-editable-field="business_name" data-singleline contenteditable="true"{% endif %}>{{ store.business_name }}</h1>
@@ -88,12 +89,12 @@
             {% if is_editor %}
               <div class="gallery-item">
                 <button type="button" class="gallery-delete-btn" data-delete-image="{{ image.id }}" aria-label="Remove photo">&times;</button>
-                <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
+                <img src="{{ image.image.url|cdn:1200 }}" alt="{{ image.caption }}" loading="lazy">
               </div>
             {% elif is_template_demo %}
               <div class="gallery-img-placeholder"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></div>
             {% else %}
-              <img src="{{ image.image.url }}" alt="{{ image.caption }}" loading="lazy">
+              <img src="{{ image.image.url|cdn:1200 }}" alt="{{ image.caption }}" loading="lazy">
             {% endif %}
           {% endfor %}
           {% if is_editor %}<div class="gallery-add-tile" data-editable-image="gallery">+</div>{% endif %}

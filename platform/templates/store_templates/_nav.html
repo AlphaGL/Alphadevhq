@@ -1,7 +1,8 @@
+{% load store_extras %}
 <nav class="store-nav">
   <div class="store-nav-inner">
     <a href="#top" class="store-nav-brand">
-      {% if store.logo %}<img src="{{ store.logo.url }}" alt="">{% endif %}
+      {% if store.logo %}<img src="{{ store.logo.url|cdn:240 }}" alt="">{% endif %}
       {{ store.business_name }}
     </a>
     <button type="button" class="store-nav-toggle" aria-label="Menu">

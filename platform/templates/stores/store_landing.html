@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load store_extras %}
 {% block title %}Alpha Dev Stores — a site for your business in minutes{% endblock %}
 {% block content %}
 <div class="platform-narrow" style="text-align:center">
@@ -26,7 +27,7 @@
         <div class="category-card-preview">
           {% for tpl in cat_templates|slice:":3" %}
             {% if tpl.preview_image %}
-              <img src="{{ tpl.preview_image.url }}" alt="">
+              <img src="{{ tpl.preview_image.url|cdn:720 }}" alt="" loading="lazy" decoding="async">
             {% else %}
               <div class="category-card-preview-swatch" style="background:{{ tpl.accent_color }}"></div>
             {% endif %}
@@ -50,7 +51,7 @@
           <div class="template-card">
             <a href="{% url 'stores:template_preview' tpl.slug %}" target="_blank" rel="noopener" class="template-card-preview">
               {% if tpl.preview_image %}
-                <img src="{{ tpl.preview_image.url }}" alt="{{ tpl.name }}">
+                <img src="{{ tpl.preview_image.url|cdn:720 }}" alt="{{ tpl.name }}" loading="lazy" decoding="async">
               {% else %}
                 <div class="template-card-preview-placeholder" style="background:{{ tpl.accent_color }}"></div>
               {% endif %}

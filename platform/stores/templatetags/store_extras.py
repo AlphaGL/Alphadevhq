@@ -42,3 +42,20 @@ def service_tags(text):
         if item['tag'] and item['tag'] not in tags:
             tags.append(item['tag'])
     return tags
+
+
+@register.filter
+def cdn(url, width=800):
+    """Ask Cloudinary for a resized, compressed copy of an uploaded image:
+    `{{ img.url|cdn:640 }}`. Picks WebP/AVIF automatically per browser and
+    never upscales. A 500 KB template screenshot comes back ~15 KB, which
+    is the difference between instant and painfully slow on a cheap
+    Android phone. Non-Cloudinary URLs (local dev) pass through unchanged."""
+    url = str(url or '')
+    marker = '/image/upload/'
+    if 'res.cloudinary.com' not in url or marker not in url:
+        return url
+    head, tail = url.split(marker, 1)
+    if tail.startswith(('f_', 'q_', 'w_', 'c_')):
+        return url  # already transformed
+    return f"{head}{marker}f_auto,q_auto,c_limit,w_{int(width)}/{tail}"
